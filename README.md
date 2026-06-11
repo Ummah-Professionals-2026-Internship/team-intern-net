@@ -1,14 +1,36 @@
 # Team Intern-net
 
-Using React, Node.js, PostgreSQL, JavaScript
+Using React, FastAPI, PostgreSQL
 
 ## Getting Started
 
 
 ```bash
+# Navigate to frontend
+cd client
+
+# Install Dependencies (may need to install NodeJS first)
 npm install
-npm ci
+
+# To run application
 npm run dev
+
+# Navigate to backend
+cd backend
+
+# Create a virtual environment
+python -m venv venv
+
+# Activate the virtual environment (Windows PowerShell)
+.\venv\Scripts\Activate.ps1
+
+# On macOS/Linux use: source venv/bin/activate
+
+# Install required packages (may need to download Python)
+pip install -r requirements.txt
+
+# Run backend (locally)
+uvicorn main:app --reload
 
 ```
 
