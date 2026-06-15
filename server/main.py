@@ -1,5 +1,5 @@
 import uvicorn
-from fastapi import fastapi
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel # Automatically validates data coming in and formats data going out
 from typing import List # May be removed if not needed
