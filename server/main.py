@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel # Automatically validates data coming in and formats data going out
 from typing import List # May be removed if not needed
 
-app = FastAPI(title="My API")
+app = FastAPI()
 
 origins = [
     "https://localhost:5173",
