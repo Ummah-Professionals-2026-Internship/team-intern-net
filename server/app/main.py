@@ -7,10 +7,9 @@ from app.routers import test
 
 app = FastAPI()
 
-app.include_router(test.router)
-
 origins = [
-    "https://localhost:5173",
+    "http://localhost:5173",
+    "http://127.0.0.1:5173"
     # Add more origins (i.e Ummah Professional links when needed)
 ]
 
@@ -24,6 +23,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(test.router)
+
 
 
 @app.get("/")
@@ -35,3 +36,7 @@ async def root():
 async def health():
     return {"status": "ok"}
 
+
+@app.get("/users")
+async def get_users():
+    return [{"id": 1, "name": "Test"}]
