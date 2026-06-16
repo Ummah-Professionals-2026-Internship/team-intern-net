@@ -5,15 +5,15 @@ function App() {
   const [message, setMessage] = useState('Loading...')
 
   useEffect(() => {
-    fetch('http://localhost:8000/')
+    fetch('http://127.0.0.1:8000/')
       .then(res => res.json())
       .then(data => {
         console.log(data)
-        setMessage(data.message)
+        setMessage(data.message || "No message found")
       })
       .catch(err => {
         console.error(err)
-        setMessage('Error')
+        setMessage("Backend not reachable")
       })
       
   }, [])
