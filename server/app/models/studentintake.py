@@ -5,7 +5,7 @@ from app.db.base import Base
 from app.models.enums import ServiceType, Gender
 
 
-class Intake(Base):
+class StudentIntake(Base):
     __tablename__ = "student_intake_forms"
 
     id: Mapped[int] = mapped_column(primary_key=True)

@@ -4,6 +4,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel # Automatically validates data coming in and formats data going out
 from typing import List # May be removed if not needed
 from app.routers import test
+from sqlalchemy import text
+from fastapi import Depends
+from sqlalchemy.ext.asyncio import AsyncSession
+from app.db.database import get_db
+
 
 app = FastAPI()
 
@@ -37,6 +42,9 @@ async def health():
     return {"status": "ok"}
 
 
-@app.get("/users")
-async def get_users():
-    return [{"id": 1, "name": "Test"}]
+@app.get("/db-check")
+async def db_check(db: AsyncSession = Depends(get_db)):
+    result = await db.execute(text("SELECT 1"))
+    return {"db_status": result.scalar()}
+
+

@@ -22,6 +22,18 @@ class Settings(BaseSettings):
             f"{self.DATABASE_PORT}/"
             f"{self.DATABASE_NAME}"
         )
+    
+    
+    @property
+    def database_url_sync(self) -> str:
+        """Sync URL for Alembic"""
+        return (
+            f"postgresql://{self.DATABASE_USER}:"
+            f"{self.DATABASE_PASSWORD}@"
+            f"{self.DATABASE_HOST}:"
+            f"{self.DATABASE_PORT}/"
+            f"{self.DATABASE_NAME}"
+        )
 
 
 settings = Settings()
