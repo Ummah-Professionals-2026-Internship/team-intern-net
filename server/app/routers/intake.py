@@ -6,6 +6,7 @@ from typing import Optional
 from app.db.database import get_db
 from app.models.studentintake import StudentIntake
 from app.models.enums import ServiceType, Gender
+from app.core.email import send_email
 
 router = APIRouter()
 
@@ -35,6 +36,18 @@ async def submit_intake(form: IntakeForm, db: AsyncSession = Depends(get_db)):
     db.add(intake)
     await db.commit()
     await db.refresh(intake)
+
+    await send_email(
+        subject="We received your Career Prep request!",
+        recipient=form.email,
+        body=f"""
+        <h2>Hi {form.name},</h2>
+        <p>Thank you for submitting your Career Prep request. Our team will review your information and match you with a mentor soon.</p>
+        <p><strong>Service Requested:</strong> {form.service_type.value}</p>
+        <p>We'll be in touch with next steps!</p>
+        """
+    )
+
     return {"message": "Intake submitted successfully", "intake_id": intake.id}
 
 @router.get("/intake")
