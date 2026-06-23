@@ -4,6 +4,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel # Automatically validates data coming in and formats data going out
 from typing import List # May be removed if not needed
 from app.routers import test
+from app.routers import dashboard
+from app.routers import auth
+
 from sqlalchemy import text
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -29,7 +32,8 @@ app.add_middleware(
 )
 
 app.include_router(test.router)
-
+app.include_router(dashboard.router)
+app.include_router(auth.router)
 
 
 @app.get("/")

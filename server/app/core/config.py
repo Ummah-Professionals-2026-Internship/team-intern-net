@@ -8,6 +8,9 @@ class Settings(BaseSettings):
     DATABASE_USER: str
     DATABASE_PASSWORD: str
 
+    JWT_SECRET_KEY: str
+    JWT_ALGORITHM: str = "HS256" #Added for auth & security &deps
+
     model_config = SettingsConfigDict(
         env_file=".env",
         extra="ignore"
