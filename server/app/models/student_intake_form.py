@@ -13,6 +13,32 @@ if TYPE_CHECKING:
     from .mentor_assignment import MentorAssignment 
 
 class StudentIntakeForm(Base):
+    """
+    Captures a student's service request. Supports two submission flows:
+ 
+    First-time submission (no account):
+    - full_name and email are populated from the form
+    - student_id is NULL at insert time
+    - The backend creates a User + Student record from this data, then
+      backfills student_id and clears full_name/email on this row
+    - Login credentials are sent to the student via email
+ 
+    Returning student submission (has account):
+    - student_id is populated immediately from the authenticated user
+    - full_name and email remain NULL (already on the users table)
+ 
+    Business rules:
+    - Before first-time submission the backend checks if email already exists
+      in users — if so the student is redirected to login instead
+    - major here represents major at time of request and may differ from
+      students.major which is the student's current profile major
+    - desired_career is per-request and lives here not on students table
+    - status transitions: submitted → assigned → completed / cancelled
+    - ondelete=SET NULL on student_id — if a student is deleted the form
+      record is preserved for historical reference
+    """
+
+
     __tablename__ = "student_intake_forms"
 
     id             : Mapped[int]                       = mapped_column(primary_key=True, autoincrement=True)

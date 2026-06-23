@@ -12,6 +12,25 @@ if TYPE_CHECKING:
     from .mentor_assignment import MentorAssignment 
 
 class Meeting(Base):
+    """
+    Represents a scheduled meeting between a mentor and student.
+ 
+    Business rules:
+    - slot_id is UNIQUE — one slot can only ever back one meeting, preventing
+      double booking at the DB level
+    - When a meeting is created, availability_slots.is_booked must be set to
+      TRUE in the same transaction to keep slot state consistent
+    - When a meeting is cancelled, availability_slots.is_booked must be set
+      back to FALSE in the same transaction so the slot becomes bookable again
+    - start_datetime and end_datetime are intentionally denormalised from
+      availability_slots — stored here so email generation does not require
+      an extra join to the slots table
+    - cancelled_reason is only populated when status = 'cancelled'
+    - meeting_notes is only populated when status = 'completed'
+    - ondelete=RESTRICT on assignment_id and slot_id — a meeting cannot be
+      orphaned by deleting its assignment or slot
+    """
+
     __tablename__ = "meetings"
 
     id               : Mapped[int]                  = mapped_column(primary_key=True, autoincrement=True)
