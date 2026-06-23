@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import Optional, List
-from pydantic import BaseModel, HttpUrl
+from pydantic import BaseModel, HttpUrl, field_validator
 from app.models.enums import ServiceTypeEnum
 from app.schemas.user import UserResponse
 
@@ -17,6 +17,14 @@ class MentorProfileUpdate(BaseModel):
     service_types: Optional[List[ServiceTypeEnum]] = None
     is_available: Optional[bool] = None
     max_monthly_sessions: Optional[int] = None
+
+    @field_validator("service_types")
+    @classmethod
+    def validate_service_types(cls, v: list | None) -> list | None:
+        if v is not None and len(v) == 0:
+            raise ValueError("service_types cannot be an empty list if provided")
+        return v
+
 
 
 class MentorResponse(BaseModel):

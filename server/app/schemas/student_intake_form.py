@@ -1,8 +1,8 @@
 from datetime import datetime
 from typing import Optional
-from pydantic import BaseModel, EmailStr
-from app.models.enums import ServiceTypeEnum, IntakeFormStatusEnum, EducationLevelEnum, AcademicStandingEnum
-
+from pydantic import BaseModel, EmailStr, field_validator, model_validator
+from app.models.enums import ServiceTypeEnum, IntakeFormStatusEnum, EducationLevelEnum, AcademicStandingEnum, GenderEnum
+import re
 
 # First time submission (no account yet)
 
@@ -22,7 +22,7 @@ class IntakeFormCreate(BaseModel):
     # Account creation fields
     full_name         : str
     email             : EmailStr
-    gender            : Optional[str] = None
+    gender            : Optional[GenderEnum] = None
     # Profile fields
     education_level   : EducationLevelEnum
     academic_standing : Optional[AcademicStandingEnum] = None  # only for undergraduates
@@ -32,6 +32,24 @@ class IntakeFormCreate(BaseModel):
     service_type      : ServiceTypeEnum
     desired_career    : Optional[str] = None
     comments          : Optional[str] = None
+
+    @field_validator("phone")
+    @classmethod
+    def validate_phone(cls, v: str | None) -> str | None:
+        if v is None:
+            return v
+        #pattern = r"^\+?[1-9]\d{1,14}$"                        # International
+        pattern = r"^\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}$"      # US specific number
+        if not re.match(pattern, v.strip()):
+            raise ValueError("Invalid phone number format")
+        return v.strip()
+    
+    @model_validator(mode="after")
+    def validate_academic_standing(self) -> "IntakeFormCreate":
+        if self.education_level != EducationLevelEnum.undergraduate and self.academic_standing is not None:
+            raise ValueError("academic_standing only applies to undergraduate students")
+        return self
+
 
 
 # Returning student (already has account)

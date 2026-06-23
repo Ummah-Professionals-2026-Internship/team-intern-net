@@ -1,7 +1,8 @@
 from datetime import datetime
 from typing import Optional, List
-from pydantic import BaseModel, EmailStr, HttpUrl
+from pydantic import BaseModel, EmailStr, HttpUrl, field_validator
 from app.models.enums import ServiceTypeEnum, ApplicationStatusEnum
+
 
 
 # Public mentor application form
@@ -20,6 +21,13 @@ class MentorApplicationCreate(BaseModel):
     state         : Optional[str] = None
     other_info    : Optional[str] = None
     service_types : List[ServiceTypeEnum]
+
+    @field_validator("service_types")
+    @classmethod
+    def validate_service_types(cls, v: list) -> list:
+        if not v:
+            raise ValueError("At least one service type must be selected")
+        return v
 
 
 # Admin review (approve/reject)
