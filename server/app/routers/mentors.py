@@ -2,82 +2,65 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from pydantic import BaseModel, EmailStr
-from typing import Optional
-from passlib.context import CryptContext
+from typing import Optional, List
 from app.db.database import get_db
-from app.models.user import User
-from app.models.mentor import Mentor
-from app.models.enums import UserType, Gender, MentorStatus
+from app.models.mentor_application import MentorApplication
+from app.models.enums import ServiceTypeEnum, GenderEnum, ApplicationStatusEnum
 
 router = APIRouter()
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 class MentorApplicationForm(BaseModel):
-    name: str
+    full_name: str
     email: EmailStr
-    gender: Gender
-    linkedin_url: Optional[str] = None
+    employer: Optional[str] = None
     job_title: Optional[str] = None
-    company: Optional[str] = None
-    bio: Optional[str] = None
-    tags: Optional[str] = None  # comma-separated specializations
+    industry: Optional[str] = None
+    experience: Optional[str] = None
+    linkedin_url: Optional[str] = None
+    major: Optional[str] = None
+    alma_mater: Optional[str] = None
+    county: Optional[str] = None
+    state: Optional[str] = None
+    other_info: Optional[str] = None
+    service_types: List[ServiceTypeEnum] = []
 
 @router.post("/mentors/apply")
 async def apply_mentor(form: MentorApplicationForm, db: AsyncSession = Depends(get_db)):
     # Check if email already exists
-    result = await db.execute(select(User).where(User.email == form.email))
-    existing_user = result.scalar_one_or_none()
-    if existing_user:
-        raise HTTPException(status_code=400, detail="Email already in use")
+    result = await db.execute(
+        select(MentorApplication).where(MentorApplication.email == form.email)
+    )
+    existing = result.scalar_one_or_none()
+    if existing:
+        raise HTTPException(status_code=400, detail="Email already submitted an application")
 
-    # Create placeholder password (replaced once approved)
-    temp_password = pwd_context.hash("pending_approval")
-
-    user = User(
-        name=form.name,
+    application = MentorApplication(
+        full_name=form.full_name,
         email=form.email,
-        password_hash=temp_password,
-        user_type=UserType.MENTOR,
-        gender=form.gender
-    )
-    db.add(user)
-    await db.flush()  # get user.id before commit
-
-    mentor = Mentor(
-        user_id=user.id,
-        status=MentorStatus.PENDING,
-        linkedin_url=form.linkedin_url,
+        employer=form.employer,
         job_title=form.job_title,
-        company=form.company,
-        bio=form.bio,
-        tags=form.tags
+        industry=form.industry,
+        experience=form.experience,
+        linkedin_url=form.linkedin_url,
+        major=form.major,
+        alma_mater=form.alma_mater,
+        county=form.county,
+        state=form.state,
+        other_info=form.other_info,
+        service_types=form.service_types,
+        status=ApplicationStatusEnum.pending
     )
-    db.add(mentor)
+    db.add(application)
     await db.commit()
-    await db.refresh(mentor)
+    await db.refresh(application)
 
-    return {"message": "Mentor application submitted successfully", "user_id": user.id}
+    return {"message": "Mentor application submitted successfully", "application_id": application.id}
 
 @router.get("/mentors/applications")
 async def get_mentor_applications(db: AsyncSession = Depends(get_db)):
     result = await db.execute(
-        select(User, Mentor)
-        .join(Mentor, Mentor.user_id == User.id)
-        .where(Mentor.status == MentorStatus.PENDING)
+        select(MentorApplication).where(
+            MentorApplication.status == ApplicationStatusEnum.pending
+        )
     )
-    applications = result.all()
-    return [
-        {
-            "user_id": user.id,
-            "name": user.name,
-            "email": user.email,
-            "gender": user.gender,
-            "linkedin_url": mentor.linkedin_url,
-            "job_title": mentor.job_title,
-            "company": mentor.company,
-            "bio": mentor.bio,
-            "tags": mentor.tags,
-            "status": mentor.status
-        }
-        for user, mentor in applications
-    ]
+    return result.scalars().all()
