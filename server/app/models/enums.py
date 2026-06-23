@@ -1,36 +1,56 @@
 import enum
 
 
-class UserType(str, enum.Enum):
-    ADMIN = "Admin"
-    MENTOR = "Mentor"
-    STUDENT = "Student"
+class RoleEnum(str, enum.Enum):
+    admin = "admin"
+    mentor = "mentor"
+    student = "student"
 
 
-class Gender(str, enum.Enum):
-    M = "M"
-    F = "F"
+class GenderEnum(str, enum.Enum):
+    m = "m"
+    f = "f"
+
+class ServiceTypeEnum(str, enum.Enum):
+    mock_interview = "mock_interview"
+    resume_review = "resume_review"
+    career_advice = "career_advice"
 
 
-class MentorStatus(str, enum.Enum):
-    ACTIVE = "Active"
-    INACTIVE = "Inactive"
+class EducationLevelEnum(str, enum.Enum):
+    high_school = "high_school"
+    undergraduate = "undergraduate"
+    graduate = "graduate"
 
 
-class EducationLevel(str, enum.Enum):
-    HIGH_SCHOOL = "High school"
-    UNDERGRAD = "college undergraduate"
-    GRADUATE = "college graduate"
+class AcademicStandingEnum(str, enum.Enum):
+    freshman = "freshman"
+    sophomore = "sophomore"
+    junior = "junior"
+    senior = "senior"
 
 
-class AcademicStanding(str, enum.Enum):
-    FRESHMAN = "Freshman"
-    SOPHOMORE = "Sophomore"
-    JUNIOR = "Junior"
-    SENIOR = "Senior"
+class ApplicationStatusEnum(str, enum.Enum):
+    pending = "pending"
+    approved = "approved"
+    rejected = "rejected"
 
 
-class ServiceType(str, enum.Enum):
-    MOCK_INTERVIEW = "Mock Interview"
-    RESUME_REVIEW = "Resume Review"
-    CAREER_ADVICE = "Career Advice"
+class IntakeFormStatusEnum(str, enum.Enum):
+    submitted = "submitted"
+    assigned = "assigned"
+    completed = "completed"
+    cancelled = "cancelled"
+
+
+class AssignmentStatusEnum(str, enum.Enum):
+    active = "active"
+    completed = "completed"
+    cancelled = "cancelled"
+
+
+class MeetingStatusEnum(str, enum.Enum):
+    scheduled = "scheduled"
+    completed = "completed"
+    cancelled = "cancelled"
+    no_show = "no_show"
