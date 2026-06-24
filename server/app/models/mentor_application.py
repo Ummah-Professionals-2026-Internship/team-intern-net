@@ -42,5 +42,7 @@ class MentorApplication(Base):
     created_user_id : Mapped[Optional[int]]                = mapped_column(ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
 
     # Relationships
-    reviewer     : Mapped[Optional["User"]] = relationship(foreign_keys=[reviewed_by], back_populates="reviewed_applications")
-    created_user : Mapped[Optional["User"]] = relationship(foreign_keys=[created_user_id])
+    # reviewer     : Mapped[Optional["User"]] = relationship(foreign_keys=[reviewed_by], back_populates="reviewed_applications")
+    # created_user : Mapped[Optional["User"]] = relationship(foreign_keys=[created_user_id])
+    reviewer     : Mapped[Optional["User"]] = relationship(foreign_keys=[reviewed_by])
+    created_user : Mapped[Optional["User"]] = relationship(foreign_keys=[created_user_id]) 
