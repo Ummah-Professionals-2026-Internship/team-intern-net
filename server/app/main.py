@@ -10,6 +10,9 @@ from sqlalchemy import text
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.database import get_db
+from app.schemas import LoginRequest, TokenResponse, LoggedInUser # ignore For demo purpose
+from app.models.enums import RoleEnum # Ignore for demo purpose
+
 
 
 app = FastAPI()
@@ -50,3 +53,16 @@ async def db_check(db: AsyncSession = Depends(get_db)):
     return {"db_status": result.scalar()}
 
 
+# For demo prupose ignore 
+@app.post("/demo_login", response_model=TokenResponse)
+def login(loginModel: LoginRequest):
+    return TokenResponse(
+        access_token="token",
+        refresh_token="refresh",
+        user=LoggedInUser(
+            id=1,
+            email="example@gmail.com",
+            full_name="John Doe",
+            role=RoleEnum.student
+        )
+    )
