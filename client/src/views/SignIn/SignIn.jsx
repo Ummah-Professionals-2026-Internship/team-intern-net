@@ -2,9 +2,6 @@ import React, { useState } from 'react';
 import Button from '../../components/ui/Button';
 import InputField from '../../components/ui/InputField';
 
-import { useAuth } from '../../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
-
 // Importing svgs
 import logoWhite from '../../assets/horizontal white 1.svg';
 import swirlBg from '../../assets/horizontal-swirl.svg';
@@ -16,17 +13,15 @@ const SignIn = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { login, authError } = useAuth();
-  const navigate = useNavigate();
 
   const togglePasswordVisibility = () => {
     setShowPassword((prev) => !prev);
   };
 
-  const handleFormSubmit = async (e) => {
+  const handleFormSubmit = (e) => {
     e.preventDefault();
-    const result = await login(email, password);
-    if (result.success) navigate('/dashboard');
+    
+    console.log('Submitting credentials:', { email, password });
   };
 
   return (
@@ -95,7 +90,6 @@ const SignIn = () => {
             />
 
             <div className="forgot-password-link">
-              {authError && <p className="form-error" role="alert">{authError}</p>}
               <a href="/forgot-password">Forgot Password?</a>
             </div>
 
