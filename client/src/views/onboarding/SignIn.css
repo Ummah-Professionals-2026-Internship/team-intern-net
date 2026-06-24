@@ -1,0 +1,474 @@
+/* ==========================================================================
+   0. DESIGN TOKENS
+   ========================================================================== */
+:root {
+  --font-base: 'Kollektif', sans-serif;
+
+  --color-primary: #007ca6;
+  --color-primary-hover: #005f80;
+  --color-primary-light: #8acbdb;
+  --color-text-dark: #1a1a1a;
+  --color-text-brand: #025571;
+  --color-white: #ffffff;
+  --color-gold: #fdbb37;
+  --color-border: #e7e8ee;
+  --color-placeholder: #aaaaaa;
+
+  --input-height: clamp(38px, 3.89vw, 56px);
+
+  --space-2xs: clamp(4px, 0.6vw, 8px);
+  --space-xs:  clamp(8px, 1vw, 12px);
+  --space-sm:  clamp(12px, 1.5vw, 16px);
+  --space-md:  clamp(16px, 2.2vw, 24px);
+  --space-lg:  clamp(24px, 3vw, 32px);
+  --space-xl:  clamp(32px, 4vw, 48px);
+  --space-2xl: clamp(40px, 5.5vw, 64px);
+}
+
+
+/* ==========================================================================
+   1. GLOBAL RESET & CANVAS SETUP
+   ========================================================================== */
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  font-family: var(--font-base);
+  background-color: transparent;
+  overflow-x: hidden;
+  color: var(--color-text-dark);
+}
+
+*, *::before, *::after {
+  box-sizing: inherit;
+}
+
+
+/* ==========================================================================
+   2. MAIN VIEWS SPLIT LAYOUT
+   ========================================================================== */
+.signin-page-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  width: 100%;
+  min-height: 100vh;
+}
+
+
+/* ==========================================================================
+   3. LEFT COLUMN (BRANDING SIDEBAR)
+   ========================================================================== */
+.signin-sidebar {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  min-height: 100vh;
+  background: linear-gradient(to bottom, var(--color-primary) 0%, var(--color-primary) 66.346%, var(--color-primary-light) 100%);
+  overflow: hidden;
+}
+
+.sidebar-bg-wave {
+  position: relative;
+  width: 100%;
+  height: auto;
+  display: block;
+  flex-shrink: 0;
+  z-index: 1;
+}
+
+.sidebar-content {
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 5.37% 7.14% 3.32% 7.14%;
+}
+
+.sidebar-logo {
+  width: clamp(140px, 46.58%, 313px);
+  height: auto;
+  margin-bottom: clamp(24px, 15.14%, 155px);
+}
+
+.sidebar-tagline,
+.sidebar-description {
+  font-family: var(--font-base);
+  text-align: center;
+  margin: 0;
+}
+
+.sidebar-tagline {
+  color: var(--color-white);
+  font-size: clamp(16px, 3.47vw, 50px);
+  font-weight: 700;
+  line-height: 1.2;
+  word-break: break-word;
+  width: clamp(200px, 78.87%, 530px);
+}
+
+.text-gold {
+  color: var(--color-gold);
+}
+
+.sidebar-description {
+  font-weight: normal;
+  font-size: clamp(12px, 2.78vw, 40px);
+  line-height: 1.4;
+  color: var(--color-white);
+  width: clamp(200px, 76.49%, 514px);
+  align-self: center;
+  margin-top: var(--space-lg);
+  flex-shrink: 0;
+}
+
+
+/* ==========================================================================
+   4. RIGHT COLUMN (FORM WRAPPERS)
+   ========================================================================== */
+.signin-form-section {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  box-sizing: border-box;
+  background-color: var(--color-white);
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-xl) var(--space-lg) var(--space-2xl);
+  min-height: 100vh;
+}
+
+.signin-form-container {
+  width: 100%;
+  max-width: clamp(280px, 42.43vw, 611px);
+}
+
+.form-header {
+  margin-bottom: var(--space-xl); /* tight gap to email label */
+  text-align: center;
+}
+
+.form-header h2,
+.form-header p {
+  font-family: var(--font-base);
+  font-weight: bold;
+  font-style: normal;
+  color: var(--color-text-brand);
+  text-align: center;
+  white-space: nowrap;
+  margin: 0;
+}
+
+.form-header h2 {
+  font-size: clamp(22px, 3.47vw, 50px);
+  line-height: 1.1;
+  margin-bottom: var(--space-2xs); /* tight gap to subtitle */
+}
+
+.form-header p {
+  font-size: clamp(12px, 2.08vw, 30px);
+  line-height: normal;
+}
+
+
+/* ==========================================================================
+   5. CUSTOM COMPONENT INTERNALS (<InputField /> & <Button />)
+   ========================================================================== */
+.input-field-container {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: var(--space-lg); /* gap between input bottom and next label */
+}
+
+.input-field-container label {
+  font-family: var(--font-base);
+  font-weight: bold;
+  font-style: normal;
+  font-size: clamp(14px, 3.13vw, 45px);
+  line-height: normal;
+  color: var(--color-text-brand);
+  margin-bottom: var(--space-2xs); /* labels sit close to their input */
+  text-align: left;
+}
+
+.input-field-container input {
+  box-sizing: border-box;
+  height: var(--input-height);
+  width: 100%;
+  padding: 0 clamp(32px, 3.06vw, 44px) 0 clamp(10px, 1.11vw, 16px);
+  border: 1px solid var(--color-border);
+  border-radius: clamp(4px, 0.56vw, 8px);
+  background-color: var(--color-white);
+  box-shadow: none;
+  font-size: clamp(12px, 1.11vw, 16px);
+  font-family: var(--font-base);
+  color: var(--color-text-dark);
+}
+
+.input-field-container input::placeholder {
+  color: var(--color-placeholder);
+}
+
+.input-field-container input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(0, 124, 166, 0.2);
+}
+
+/* Wraps just the <input>, so the toggle button below can center on it
+   precisely instead of on the label+input+link group above it. */
+.input-wrapper {
+  position: relative;
+}
+
+.custom-btn {
+  display: inline-flex;
+  border: none;
+  cursor: pointer;
+}
+
+.signin-submit-btn {
+  background-color: var(--color-primary);
+  border-radius: clamp(8px, 0.83vw, 12px);
+  width: clamp(180px, 57.12%, 349px);
+  height: clamp(36px, 3.4vw, 49px);
+  padding: var(--space-xs) var(--space-md);
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-base);
+  font-weight: bold;
+  font-style: normal;
+  font-size: clamp(14px, 2.22vw, 32px);
+  color: var(--color-white);
+  text-align: center;
+  white-space: nowrap;
+  transition: background-color 0.2s ease;
+}
+
+.signin-submit-btn:hover {
+  background-color: var(--color-primary-hover);
+}
+
+
+/* ==========================================================================
+   6. PASSWORD INTERACTION OVERLAYS & ACTIONS
+   ========================================================================== */
+.password-toggle-btn {
+  position: absolute;
+  top: 50%;
+  right: var(--space-xs);
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 0;
+}
+
+.password-toggle-btn svg {
+  width: clamp(14px, 1.53vw, 22px);
+  height: clamp(14px, 1.53vw, 22px);
+}
+
+.form-error {
+  color: #c0392b;
+  font-size: 0.85rem;
+  margin: -8px 0 12px;
+  position: 10px;
+}
+
+.forgot-password-link {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: var(--space-xs); /* sits close under the password field */
+}
+
+.forgot-password-link a {
+  font-family: var(--font-base);
+  font-weight: bold;
+  font-style: normal;
+  font-size: clamp(10px, 1.39vw, 20px);
+  color: var(--color-text-brand);
+  text-decoration: none;
+}
+
+.forgot-password-link a:hover {
+  text-decoration: underline;
+}
+
+.form-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: var(--space-2xl); /* gap from forgot password to button */
+  gap: var(--space-xs);
+}
+
+.signup-redirect {
+  font-family: var(--font-base);
+  font-weight: normal;
+  font-style: normal;
+  font-size: clamp(10px, 0.9vw, 13px);
+  color: var(--color-text-brand);
+  text-align: center;
+}
+
+.signup-redirect a {
+  text-decoration: none;
+  color: var(--color-text-brand);
+}
+
+
+/* ==========================================================================
+   7. NOTICE LOGO BAR FOOTER
+   ========================================================================== */
+.form-footer-notice {
+  position: absolute;
+  bottom: clamp(12px, 2.34vw, 24px);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  white-space: nowrap;
+}
+
+.form-footer-notice span {
+  font-family: var(--font-base);
+  font-size: clamp(9px, 1.04vw, 15px);
+  color: var(--color-text-brand);
+}
+
+.info-svg-icon {
+  width: clamp(14px, 1.39vw, 20px);
+  height: clamp(14px, 1.39vw, 20px);
+  flex-shrink: 0;
+}
+
+
+/* ==========================================================================
+   8. MEDIA RESPONSIVE CANVAS CONSTRAINTS
+   ========================================================================== */
+@media (max-width: 1024px) {
+  .signin-page-wrapper {
+    grid-template-columns: 1fr;
+    min-height: 100vh;
+    height: auto;
+  }
+
+  .signin-sidebar {
+    min-height: 50vh;
+    height: auto;
+  }
+
+  .sidebar-content {
+    padding: 5% 8% 4% 8%;
+  }
+
+  .sidebar-logo {
+    margin-bottom: 5%;
+  }
+
+  .sidebar-tagline {
+    width: 90%;
+    font-size: clamp(18px, 5vw, 36px);
+    margin-bottom: 0;
+  }
+
+  .sidebar-description {
+    width: 85%;
+    font-size: clamp(13px, 3.5vw, 24px);
+    margin-top: 5%;
+    padding-bottom: 5%;
+  }
+
+  .signin-form-section {
+    min-height: auto;
+    padding: 8% 8% 12%;
+    justify-content: flex-start;
+  }
+
+  .signin-form-container {
+    max-width: 100%;
+  }
+
+  .form-header {
+    margin-bottom: var(--space-lg);
+  }
+
+  .form-header h2 {
+    font-size: clamp(22px, 5vw, 38px);
+    margin-bottom: var(--space-2xs);
+  }
+
+  .form-header p {
+    font-size: clamp(12px, 3vw, 22px);
+  }
+
+  .input-field-container {
+    margin-bottom: var(--space-md);
+  }
+
+  .input-field-container label {
+    font-size: clamp(14px, 4vw, 28px);
+    margin-bottom: var(--space-2xs);
+  }
+
+  .input-field-container input {
+    height: clamp(40px, 7vw, 52px);
+    font-size: clamp(13px, 2.5vw, 18px);
+  }
+
+  .signin-submit-btn {
+    width: 100%;
+    font-size: clamp(14px, 3.5vw, 24px);
+    height: clamp(40px, 7vw, 52px);
+  }
+
+  .forgot-password-link {
+    margin-top: var(--space-2xs);
+  }
+
+  .forgot-password-link a {
+    font-size: clamp(11px, 2.5vw, 16px);
+  }
+
+  .form-actions {
+    margin-top: var(--space-lg);
+  }
+
+  .form-footer-notice {
+    position: static;
+    transform: none;
+    margin-top: 6%;
+    justify-content: center;
+    white-space: normal;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .sidebar-tagline {
+    font-size: clamp(16px, 6vw, 28px);
+  }
+
+  .sidebar-description {
+    font-size: clamp(12px, 4vw, 18px);
+  }
+
+  .form-header h2 {
+    font-size: clamp(20px, 6vw, 32px);
+    white-space: normal;
+  }
+
+  .form-header p {
+    white-space: normal;
+  }
+
+  .input-field-container label {
+    font-size: clamp(13px, 5vw, 22px);
+  }
+}
