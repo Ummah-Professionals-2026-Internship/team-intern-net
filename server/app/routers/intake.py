@@ -1,27 +1,16 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-from pydantic import BaseModel, EmailStr
-from typing import Optional
 from app.db.database import get_db
 from app.models.student_intake_form import StudentIntakeForm
-from app.models.enums import ServiceTypeEnum, GenderEnum
+from app.schemas.student_intake_form import IntakeFormCreate, IntakeFormResponse
 from app.core.email import send_email
+from typing import List
 
 router = APIRouter()
 
-class IntakeForm(BaseModel):
-    full_name: str
-    email: EmailStr
-    phone: Optional[str] = None
-    service_type: ServiceTypeEnum
-    desired_career: Optional[str] = None
-    major: Optional[str] = None
-    gender: GenderEnum
-    comments: Optional[str] = None
-
-@router.post("/intake")
-async def submit_intake(form: IntakeForm, db: AsyncSession = Depends(get_db)):
+@router.post("/intake", response_model=IntakeFormResponse)
+async def submit_intake(form: IntakeFormCreate, db: AsyncSession = Depends(get_db)):
     intake = StudentIntakeForm(
         full_name=form.full_name,
         email=form.email,
@@ -41,3 +30,10 @@ async def submit_intake(form: IntakeForm, db: AsyncSession = Depends(get_db)):
         recipient=form.email,
         body="<h2>Hi " + form.full_name + ",</h2><p>Thank you for submitting your Career Prep request. Our team will review your information and match you with a mentor soon.</p><p><strong>Service Requested:</strong> " + form.service_type.value + "</p><p>We'll be in touch with next steps!</p>"
     )
+
+    return intake
+
+@router.get("/intake", response_model=List[IntakeFormResponse])
+async def get_intake(db: AsyncSession = Depends(get_db)):
+    result = await db.execute(select(StudentIntakeForm))
+    return result.scalars().all()

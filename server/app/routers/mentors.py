@@ -1,31 +1,17 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-from pydantic import BaseModel, EmailStr
-from typing import Optional, List
 from app.db.database import get_db
 from app.models.mentor_application import MentorApplication
-from app.models.enums import ServiceTypeEnum, GenderEnum, ApplicationStatusEnum
+from app.models.enums import ApplicationStatusEnum
+from app.schemas.mentor_application import MentorApplicationCreate, MentorApplicationResponse
+from app.core.email import send_email
+from typing import List
 
 router = APIRouter()
 
-class MentorApplicationForm(BaseModel):
-    full_name: str
-    email: EmailStr
-    employer: Optional[str] = None
-    job_title: Optional[str] = None
-    industry: Optional[str] = None
-    experience: Optional[str] = None
-    linkedin_url: Optional[str] = None
-    major: Optional[str] = None
-    alma_mater: Optional[str] = None
-    county: Optional[str] = None
-    state: Optional[str] = None
-    other_info: Optional[str] = None
-    service_types: List[ServiceTypeEnum] = []
-
-@router.post("/mentors/apply")
-async def apply_mentor(form: MentorApplicationForm, db: AsyncSession = Depends(get_db)):
+@router.post("/mentors/apply", response_model=MentorApplicationResponse)
+async def apply_mentor(form: MentorApplicationCreate, db: AsyncSession = Depends(get_db)):
     # Check if email already exists
     result = await db.execute(
         select(MentorApplication).where(MentorApplication.email == form.email)
@@ -41,7 +27,7 @@ async def apply_mentor(form: MentorApplicationForm, db: AsyncSession = Depends(g
         job_title=form.job_title,
         industry=form.industry,
         experience=form.experience,
-        linkedin_url=form.linkedin_url,
+        linkedin_url=str(form.linkedin_url) if form.linkedin_url else None,
         major=form.major,
         alma_mater=form.alma_mater,
         county=form.county,
@@ -54,9 +40,15 @@ async def apply_mentor(form: MentorApplicationForm, db: AsyncSession = Depends(g
     await db.commit()
     await db.refresh(application)
 
-    return {"message": "Mentor application submitted successfully", "application_id": application.id}
+    await send_email(
+        subject="We received your mentor application!",
+        recipient=form.email,
+        body="<h2>Hi " + form.full_name + ",</h2><p>Thank you for applying to be a mentor with Ummah Professionals. Our team will review your application and get back to you soon.</p><p>We appreciate your interest in supporting the next generation of professionals!</p>"
+    )
 
-@router.get("/mentors/applications")
+    return application
+
+@router.get("/mentors/applications", response_model=List[MentorApplicationResponse])
 async def get_mentor_applications(db: AsyncSession = Depends(get_db)):
     result = await db.execute(
         select(MentorApplication).where(
