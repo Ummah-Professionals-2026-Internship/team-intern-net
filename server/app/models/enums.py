@@ -15,6 +15,8 @@ class ServiceTypeEnum(str, enum.Enum):
     mock_interview = "mock_interview"
     resume_review = "resume_review"
     career_advice = "career_advice"
+    healthcare_service = "healthcare_service"
+    mentorship_program = "mentorship_program"
 
 
 class EducationLevelEnum(str, enum.Enum):

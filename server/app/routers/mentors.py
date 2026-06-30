@@ -6,33 +6,34 @@ from typing import Optional, List
 from app.db.database import get_db
 from app.models.mentor_application import MentorApplication
 from app.models.enums import ServiceTypeEnum, GenderEnum, ApplicationStatusEnum
+from app.schemas.mentor_application import MentorApplicationCreate
 
 router = APIRouter()
 
-class MentorApplicationForm(BaseModel):
-    full_name: str
-    email: EmailStr
-    employer: Optional[str] = None
-    job_title: Optional[str] = None
-    industry: Optional[str] = None
-    experience: Optional[str] = None
-    linkedin_url: Optional[str] = None
-    major: Optional[str] = None
-    alma_mater: Optional[str] = None
-    county: Optional[str] = None
-    state: Optional[str] = None
-    other_info: Optional[str] = None
-    service_types: List[ServiceTypeEnum] = []
+# class MentorApplicationForm(BaseModel):
+#     full_name: str
+#     email: EmailStr
+#     employer: Optional[str] = None
+#     job_title: Optional[str] = None
+#     industry: Optional[str] = None
+#     experience: Optional[str] = None
+#     linkedin_url: Optional[str] = None
+#     major: Optional[str] = None
+#     alma_mater: Optional[str] = None
+#     county: Optional[str] = None
+#     state: Optional[str] = None
+#     other_info: Optional[str] = None
+#     service_types: List[ServiceTypeEnum] = []
 
 @router.post("/mentors/apply")
-async def apply_mentor(form: MentorApplicationForm, db: AsyncSession = Depends(get_db)):
+async def apply_mentor(form: MentorApplicationCreate, db: AsyncSession = Depends(get_db)):
     # Check if email already exists
     result = await db.execute(
         select(MentorApplication).where(MentorApplication.email == form.email)
     )
     existing = result.scalar_one_or_none()
     if existing:
-        raise HTTPException(status_code=400, detail="Email already submitted an application")
+        raise HTTPException(status_code=400, detail="An application has already been submitted using this email address.")
 
     application = MentorApplication(
         full_name=form.full_name,
@@ -41,9 +42,10 @@ async def apply_mentor(form: MentorApplicationForm, db: AsyncSession = Depends(g
         job_title=form.job_title,
         industry=form.industry,
         experience=form.experience,
-        linkedin_url=form.linkedin_url,
+        linkedin_url=str(form.linkedin_url) if form.linkedin_url else None,
         major=form.major,
         alma_mater=form.alma_mater,
+        phone_number=form.phone_number,
         county=form.county,
         state=form.state,
         other_info=form.other_info,

@@ -19,6 +19,7 @@ class MentorApplication(Base):
     full_name       : Mapped[str]                          = mapped_column(String(255))
     email           : Mapped[str]                          = mapped_column(String(255))
     employer        : Mapped[Optional[str]]                = mapped_column(String(255), nullable=True)
+    phone_number    : Mapped[Optional[str]]                = mapped_column(String(20), nullable=True)
     job_title       : Mapped[Optional[str]]                = mapped_column(String(255), nullable=True)
     industry        : Mapped[Optional[str]]                = mapped_column(String(255), nullable=True)
     experience      : Mapped[Optional[str]]                = mapped_column(Text, nullable=True)

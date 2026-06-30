@@ -1,7 +1,7 @@
 """add mentor application fields
 
 Revision ID: 1c5da7f0eb5c
-Revises: 6dc01b69a97d
+Revises: c4bcc614c281
 Create Date: 2026-06-17 23:21:28.080975
 
 """
@@ -13,7 +13,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision: str = '1c5da7f0eb5c'
-down_revision: Union[str, Sequence[str], None] = '6dc01b69a97d'
+down_revision: Union[str, Sequence[str], None] = 'c4bcc614c281'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 

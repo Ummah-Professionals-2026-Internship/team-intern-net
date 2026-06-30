@@ -5,23 +5,22 @@ import umIcon from "../../assets/images/um-small-logo.png";
 import { useState } from "react";
 
 const VOLUNTEERING_OPTIONS = [
-  "Healthcare Service",
-  "Mentorship Program",
-  "General Career Advice",
-  "Mock Interview",
-  "Resume Review",
+  { label: "Healthcare Service", value: "healthcare_service" },
+  { label: "Mentorship Program", value: "mentorship_program" },
+  { label: "General Career Advice", value: "career_advice" },
+  { label: "Mock Interview", value: "mock_interview" },
+  { label: "Resume Review", value: "resume_review" },
 ];
 
 const INDUSTRY_OPTIONS = [
-  "Technology",
-  "Healthcare",
-  "Finance & Banking",
+  "Business",
   "Education",
   "Engineering",
-  "Legal",
-  "Marketing & Advertising",
-  "Non-Profit & Social Services",
-  "Government & Public Policy",
+  "Finance",
+  "Healthcare",
+  "Information Technology",
+  "Law",
+  "Social Services",
   "Other",
 ];
 
@@ -50,8 +49,30 @@ export default function MentorApplicationForm() {
     volunteeringFor: [],
   });
 
+
+  const fieldMap = {
+    full_name: "fullName",
+    phone_number: "phoneNumber",
+    email: "email",
+    employer: "employer",
+    job_title: "jobTitle",
+    industry: "industry",
+    experience: "experienceLevel",
+    linkedin_url: "linkedIn",
+    major: "major",
+    alma_mater: "almaMater",
+    county: "county",
+    state: "state",
+    other_info: "otherInfo",
+    service_types: "volunteeringFor",
+  };
+
+
   const [submitted, setSubmitted] = useState(false);
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [serverError, setServerError] = useState("");
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -59,14 +80,14 @@ export default function MentorApplicationForm() {
     if (errors[name]) setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
-  const toggleVolunteering = (option) => {
+  const toggleVolunteering = (value) => {
     setForm((prev) => {
-      const already = prev.volunteeringFor.includes(option);
+      const already = prev.volunteeringFor.includes(value);
       return {
         ...prev,
         volunteeringFor: already
-          ? prev.volunteeringFor.filter((o) => o !== option)
-          : [...prev.volunteeringFor, option],
+          ? prev.volunteeringFor.filter((o) => o !== value)
+          : [...prev.volunteeringFor, value],
       };
     });
     if (errors.volunteeringFor) setErrors((prev) => ({ ...prev, volunteeringFor: "" }));
@@ -91,7 +112,9 @@ export default function MentorApplicationForm() {
     if (form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
       next.email = "Enter a valid email address";
     }
-
+    if (form.linkedIn && !/^https?:\/\/.+\..+/.test(form.linkedIn)) {
+      next.linkedIn = "Enter a valid URL (e.g. https://linkedin.com/in/yourname)";
+    }
     if (form.volunteeringFor.length === 0) {
       next.volunteeringFor = "Select at least one service";
     }
@@ -99,13 +122,63 @@ export default function MentorApplicationForm() {
     return next;
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const next = validate();
     if (Object.keys(next).length > 0) {
       setErrors(next);
       return;
     }
-    setSubmitted(true);
+    
+    setLoading(true);
+    setServerError("");
+
+    try {
+    const response = await fetch("http://localhost:8000/mentors/apply", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        full_name: form.fullName,
+        phone_number: form.phoneNumber,
+        email: form.email,
+        employer: form.employer,
+        job_title: form.jobTitle,
+        industry: form.industry,
+        experience: form.experienceLevel,
+        linkedin_url: form.linkedIn || null,
+        major: form.major,
+        alma_mater: form.almaMater,
+        county: form.county,
+        state: form.state,
+        other_info: form.otherInfo,
+        service_types: form.volunteeringFor,
+      }),
+
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      console.log("Backend error:", data);
+      if (data.detail && Array.isArray(data.detail)) {
+        // map FastAPI validation errors back to form fields
+        const backendErrors = {};
+        data.detail.forEach((err) => {
+          const snakeField = err.loc[1];
+          const camelField = fieldMap[snakeField] || snakeField;
+          backendErrors[camelField] = err.msg;
+        });
+        setErrors(backendErrors);
+      } else {
+        // fallback for non-validation errors
+        setServerError(data.detail || "Something went wrong. Please try again.");
+      }
+    } else {
+      setSubmitted(true);
+    }
+  } catch (_err) {
+    setServerError("Network error. Please check your connection and try again.");
+  } finally {
+    setLoading(false);
+  }
+  
   };
 
   if (submitted) {
@@ -118,7 +191,7 @@ export default function MentorApplicationForm() {
           <h2 className="caa-success-title">Application Submitted</h2>
           <p className="caa-success-body">
             Thank you for signing up, <strong>{form.fullName}</strong>. Your application
-            will be reviewed by Ummah Professionals and login credentials will be emailed
+            will be reviewed by Ummah Professionals and login credentials will be emailed to <strong>{form.email}</strong>
             after approval.
           </p>
           <button
@@ -134,7 +207,6 @@ export default function MentorApplicationForm() {
 
   return (
     <div className="caa-page">
-      {/* <BackgroundPattern /> */}
       <div className="caa-bg-image" style={{ backgroundImage: `url(${bgImage})` }}/>
 
       <div className="caa-card">
@@ -158,7 +230,7 @@ export default function MentorApplicationForm() {
                 name="fullName"
                 value={form.fullName}
                 onChange={handleChange}
-                placeholder="Jane Smith"
+                placeholder="John Doe"
               />
             </Field>
 
@@ -179,7 +251,7 @@ export default function MentorApplicationForm() {
                 type="email"
                 value={form.email}
                 onChange={handleChange}
-                placeholder="jane@example.com"
+                placeholder="example@gmail.com"
               />
             </Field>
 
@@ -189,7 +261,7 @@ export default function MentorApplicationForm() {
                 name="linkedIn"
                 value={form.linkedIn}
                 onChange={handleChange}
-                placeholder="linkedin.com/in/janesmith"
+                placeholder="https://linkedin.com/in/yourname"
               />
             </Field>
 
@@ -200,7 +272,7 @@ export default function MentorApplicationForm() {
                   name="county"
                   value={form.county}
                   onChange={handleChange}
-                  placeholder="Kings County"
+                  placeholder="Newark County"
                 />
               </Field>
               <Field label="State">
@@ -209,7 +281,7 @@ export default function MentorApplicationForm() {
                   name="state"
                   value={form.state}
                   onChange={handleChange}
-                  placeholder="NY"
+                  placeholder="NJ"
                 />
               </Field>
             </div>
@@ -309,12 +381,12 @@ export default function MentorApplicationForm() {
               <div className="caa-tag-group">
                 {VOLUNTEERING_OPTIONS.map((opt) => (
                   <button
-                    key={opt}
+                    key={opt.value}
                     type="button"
-                    className={`caa-tag ${form.volunteeringFor.includes(opt) ? "caa-tag--active" : ""}`}
-                    onClick={() => toggleVolunteering(opt)}
+                    className={`caa-tag ${form.volunteeringFor.includes(opt.value) ? "caa-tag--active" : ""}`}
+                    onClick={() => toggleVolunteering(opt.value)}
                   >
-                    {opt}
+                    {opt.label}
                   </button>
                 ))}
               </div>
@@ -338,8 +410,9 @@ export default function MentorApplicationForm() {
 
         {/* Submit */}
         <div className="caa-footer">
-          <button className="caa-btn-submit" onClick={handleSubmit}>
-            Submit Application
+          {serverError && <p className="caa-error-msg">{serverError}</p>}
+          <button className="caa-btn-submit" onClick={handleSubmit} disabled={loading}>
+            {loading ? "Submitting..." : "Submit Application"}
           </button>
           <p className="caa-footer-note">
             <span className="caa-footer-icon">ⓘ</span>
@@ -364,26 +437,3 @@ function Field({ label, required, error, children }) {
     </div>
   );
 }
-
-/* Generic geometric SVG background — no external image needed */
-// function BackgroundPattern() {
-//   return (
-//     <svg
-//       className="caa-bg-pattern"
-//       aria-hidden="true"
-//       xmlns="http://www.w3.org/2000/svg"
-//       preserveAspectRatio="xMidYMid slice"
-//     >
-//       <defs>
-//         <pattern id="caa-dots" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
-//           <circle cx="20" cy="20" r="1.5" fill="rgba(255,255,255,0.18)" />
-//         </pattern>
-//       </defs>
-//       <rect width="100%" height="100%" fill="url(#caa-dots)" />
-//       {/* Decorative arcs */}
-//       <circle cx="-60" cy="50%" r="340" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="60" />
-//       <circle cx="105%" cy="20%" r="220" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="80" />
-//       <circle cx="80%" cy="90%" r="180" fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="50" />
-//     </svg>
-//   );
-// }

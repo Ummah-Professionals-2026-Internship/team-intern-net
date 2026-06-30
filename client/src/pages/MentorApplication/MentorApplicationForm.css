@@ -171,7 +171,7 @@
 
 /* ---------- Sections ---------- */
 .caa-section {
-  padding: 20px 40px;
+  padding: 0px 40px 20px 40px;
   /* border-bottom: 1px solid #f3f4f6; */
 }
 
@@ -185,13 +185,14 @@
   font-weight: 700;
   color: #111827;
   font-family: 'Kollektif', system-ui, -apple-system, sans-serif;
+  margin: 0;
 }
 
 /* ---------- Grid layouts ---------- */
 .caa-grid-2 {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 20px 32px;
+  gap: 0px 32px;
 }
 
 .caa-grid-2--top-align {
@@ -340,13 +341,13 @@
 
 /* ---------- Footer / Submit ---------- */
 .caa-footer {
-  padding: 20px 40px;
-  border-top: 1px solid #f3f4f6;
+  /* padding: 20px 40px; */
+  /* border-top: 1px solid #f3f4f6; */
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
-  background: #f9fafb;
+  gap: 5px;
+  /* background: #f9fafb; */
 }
 
 .caa-btn-submit {
