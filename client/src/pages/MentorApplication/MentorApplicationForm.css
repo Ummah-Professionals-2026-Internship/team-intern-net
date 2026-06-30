@@ -1,0 +1,471 @@
+/* .prep-page {
+  min-height: 100vh;
+  background: linear-gradient(0deg, #8ACBDB 0%, #007CA6 66%);  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  padding: 40px;
+}
+.bg-image {
+  position: absolute;
+  inset: 0;
+  background-size: contain;
+  background-color: lightgray;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: transparent;
+  z-index: 0;
+
+}
+.form-card {
+  width: 100%;
+  max-width: 1280px;
+  min-height: 600px;
+  border-radius: 20px;
+  background: #fff;  
+  box-shadow: 0 4px 20px rgba(2, 85, 113, 0.25);
+  z-index: 1;
+  padding: 40px;
+} */
+
+@font-face {
+  font-family: "Kollektif";
+  src: url("../../fonts/kollektif-webfont/Kollektif.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Kollektif Bold";
+  src: url("../../fonts/kollektif-webfont/Kollektif-Bold.woff") format("woff");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ============================================================
+   CareerAdvisorApplication.css
+   All selectors are namespaced with .caa- so nothing bleeds
+   into the rest of the application.
+   ============================================================ */
+/* ---------- Page shell ---------- */
+.caa-page {
+  height: 100vh;
+  overflow: hidden;
+  background: linear-gradient(0deg, #8ACBDB 0%, #007CA6 66%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  box-sizing: border-box;
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+}
+
+/* ---------- Background Image ---------- */
+.caa-bg-image {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background-size: 100% auto;
+  background-repeat: no-repeat;
+  background-position: center center;
+  pointer-events: none;
+  z-index: 0;
+}
+@media (max-width: 680px) {
+  .caa-bg-image {
+    background-size: cover;
+    background-position: center;
+  }
+}
+
+/* ---------- Card ---------- */
+.caa-card {
+  position: relative;
+  z-index: 1;
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(2, 85, 113, 0.25);
+  width: calc(100% - 158px);;
+  max-width: calc(100% - 158px);
+  padding: 40px;
+  height: calc(100vh - 48px);
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+/* Chrome/Safari */
+.caa-card::-webkit-scrollbar {
+  width: 6px;
+}
+
+.caa-card::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.caa-card::-webkit-scrollbar-thumb {
+  background: #c0d9e0 transparent;
+  border-radius: 999px;
+}
+
+
+/* ---------- Header ---------- */
+.caa-header {
+  display: flex;
+  align-items: center;
+  /* padding: clamp(20px, 4.2vh, 43px) clamp(16px, 2.1vw, 30px) 0; */
+  border-bottom: none;
+}
+
+
+.caa-logo {
+  flex-shrink: 0;
+  /* width: 48px; */
+  width: clamp(36px, 3.6vw, 52px);
+  height: clamp(36px, 3.6vw, 52px);  
+  /* height: 47px; */
+  /* aspect-ratio: 48/47; */
+  inset: 0;
+  border-radius: 12px;  
+  background-color: #ffffff;
+  background-repeat: no-repeat;
+  background-size: cover;
+  display: flex;
+  margin-top: -48px;  
+}
+
+.caa-header-text {
+  flex: 1;
+  text-align: center;
+  line-height: normal;
+
+}
+
+.caa-title {
+  margin: 0 0 4px;
+  font-size: 35px;
+  font-family: 'Kollektif Bold', system-ui, sans-serif;
+  font-weight: 700;
+  color: #025571;
+  line-height: normal;  
+}
+
+.caa-subtitle {
+  margin: 0;
+  font-size: 20px;
+  color: #007CA6;
+  font-family: 'Kollektif', system-ui, -apple-system, sans-serif;
+  font-weight: 400;
+
+}
+
+.caa-header-spacer {
+  width: clamp(36px, 3.6vw, 52px); /* always matches logo width */  
+  flex-shrink: 0;
+}
+
+
+/* ---------- Sections ---------- */
+.caa-section {
+  padding: 20px 40px;
+  /* border-bottom: 1px solid #f3f4f6; */
+}
+
+/* .caa-section:last-of-type {
+  border-bottom: none;
+} */
+
+.caa-section-title {
+  /* margin: 0 0 20px; */
+  font-size: 24px;
+  font-weight: 700;
+  color: #111827;
+  font-family: 'Kollektif', system-ui, -apple-system, sans-serif;
+}
+
+/* ---------- Grid layouts ---------- */
+.caa-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px 32px;
+}
+
+.caa-grid-2--top-align {
+  align-items: start;
+}
+
+/* Two short inputs side-by-side (County + State) */
+.caa-grid-inline {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 12px;
+}
+
+/* ---------- Field ---------- */
+.caa-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.caa-label {
+  font-size: 12px;
+  color: #374151;
+  font-family: 'Kollektif', system-ui, -apple-system, sans-serif;
+}
+
+.caa-required {
+  color: #dc2626;
+}
+
+.caa-hint {
+  margin: 0 0 12px;
+  font-size: 13px;
+  color: #0e7490;
+  font-family: 'Kollektif', system-ui, -apple-system, sans-serif;
+}
+
+/* ---------- Inputs & selects ---------- */
+.caa-input,
+.caa-select,
+.caa-textarea {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1.5px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #111827;
+  background: #f9fafb;
+  transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+  box-sizing: border-box;
+  font-family: 'Kollektif', system-ui, -apple-system, sans-serif;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.caa-input:focus,
+.caa-select:focus,
+.caa-textarea:focus {
+  border-color: #0e7490;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(14, 116, 144, 0.12);
+}
+
+.caa-input::placeholder,
+.caa-textarea::placeholder {
+  color: #9ca3af;
+}
+
+.caa-input--error,
+.caa-select.caa-input--error {
+  border-color: #dc2626;
+  background: #fef2f2;
+}
+
+.caa-input--error:focus,
+.caa-select.caa-input--error:focus {
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+}
+
+.caa-input--full {
+  width: 100%;
+}
+
+/* Select arrow */
+.caa-select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b7280' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 38px;
+  cursor: pointer;
+}
+
+/* Textarea */
+.caa-textarea {
+  resize: vertical;
+  min-height: 100px;
+  line-height: 1.5;
+}
+
+/* ---------- Error message ---------- */
+.caa-error-msg {
+  margin: 0;
+  font-size: 12px;
+  color: #dc2626;
+  font-family: 'Kollektif', system-ui, -apple-system, sans-serif;
+}
+
+/* ---------- Volunteering tags ---------- */
+.caa-tag-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.caa-tag {
+  padding: 9px 18px;
+  border: 1.5px solid #d1d5db;
+  border-radius: 100px;
+  background: #ffffff;
+  font-size: 13px;
+  font-weight: 500;
+  color: #374151;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, color 0.15s, box-shadow 0.15s;
+  font-family: 'Kollektif', system-ui, -apple-system, sans-serif;
+  white-space: nowrap;
+}
+
+.caa-tag:hover {
+  border-color: #0e7490;
+  color: #0e7490;
+}
+
+.caa-tag--active {
+  background: #0e7490;
+  border-color: #0e7490;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(14, 116, 144, 0.28);
+}
+
+.caa-tag--active:hover {
+  background: #0c6880;
+  color: #ffffff;
+}
+
+/* ---------- Footer / Submit ---------- */
+.caa-footer {
+  padding: 20px 40px;
+  border-top: 1px solid #f3f4f6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  background: #f9fafb;
+}
+
+.caa-btn-submit {
+  padding: 14px 48px;
+  background: #0e7490;
+  color: #ffffff;
+  border: none;
+  border-radius: 100px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 0.02em;
+  transition: background 0.15s, box-shadow 0.15s, transform 0.1s;
+  font-family: 'Kollektif', system-ui, -apple-system, sans-serif;
+}
+
+.caa-btn-submit:hover {
+  background: #0c6880;
+  box-shadow: 0 6px 20px rgba(14, 116, 144, 0.35);
+  transform: translateY(-1px);
+}
+
+.caa-btn-submit:active {
+  transform: translateY(0);
+}
+
+.caa-footer-note {
+  margin: 0;
+  font-size: 12.5px;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+  font-family: 'Kollektif', system-ui, -apple-system, sans-serif;
+}
+
+.caa-footer-icon {
+  color: #0e7490;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+/* ---------- Success state ---------- */
+.caa-success-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 48px;
+  text-align: center;
+  gap: 16px;
+}
+
+.caa-success-icon {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: #0e7490;
+  color: #ffffff;
+  font-size: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+
+.caa-success-title {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 700;
+  color: #111827;
+  font-family: 'Kollektif', system-ui, -apple-system, sans-serif;
+}
+
+.caa-success-body {
+  margin: 0;
+  font-size: 15px;
+  color: #4b5563;
+  max-width: 420px;
+  line-height: 1.6;
+  font-family: 'Kollektif', system-ui, -apple-system, sans-serif;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 680px) {
+  .caa-header {
+    padding: 24px 20px 20px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .caa-section {
+    padding: 24px 20px;
+  }
+
+  .caa-grid-2 {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .caa-footer {
+    padding: 24px 20px;
+  }
+
+  .caa-btn-submit {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .caa-btn-submit,
+  .caa-input,
+  .caa-select,
+  .caa-textarea,
+  .caa-tag {
+    transition: none;
+  }
+}
