@@ -173,8 +173,9 @@ export default function MentorApplicationForm() {
     } else {
       setSubmitted(true);
     }
-  } catch (_err) {
+  } catch (err) {
     setServerError("Network error. Please check your connection and try again.");
+    console.log(err)
   } finally {
     setLoading(false);
   }
