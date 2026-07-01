@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends
-from app.models.enums import UserType #Already has user type from enums
+from app.models.enums import RoleEnum #UserType #Already has user type from enums
 from app.core.deps import get_current_user
 
 router = APIRouter()
