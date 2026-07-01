@@ -7,6 +7,8 @@ from app.db.database import get_db
 from app.models.mentor_application import MentorApplication
 from app.models.enums import ServiceTypeEnum, GenderEnum, ApplicationStatusEnum
 from app.schemas.mentor_application import MentorApplicationCreate
+from app.core.email import send_email
+
 
 router = APIRouter()
 
@@ -55,6 +57,17 @@ async def apply_mentor(form: MentorApplicationCreate, db: AsyncSession = Depends
     db.add(application)
     await db.commit()
     await db.refresh(application)
+    
+    await send_email(
+        subject="Thank You for Your Application - Ummah Professionals",
+        recipient=form.email,
+        body=f""" <h2>Assalamu Alaikum, </h2>
+            <p>Thank you for your interest in becoming a Career Advisor with Ummah Professionals. We have received your application and our team will review it shortly.</p>
+            <p>In the meantime, if you have any questions, feel free to reach out to us.</p>
+            <p>We appreciate your willingness to give back to the community and look forward to potentially welcoming you to our network of volunteers.</p>
+            <p>Jazakum Allahu Khayran,<br>The Ummah Professionals Team</p>
+            """
+    )
 
     return {"message": "Mentor application submitted successfully", "application_id": application.id}
 
