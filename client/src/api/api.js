@@ -2,11 +2,8 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: "http://localhost:8000",
-    headers: {
-    'Content-Type': 'application/json'
-  }
-
+    baseURL: import.meta.emv.VITE_API_BASE_URL || "https://localhost:8000",
+    timeout: 15000
 });
 
 let _getToken = () => null;
@@ -22,17 +19,33 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (res) => res,
   (err) => {
-    const isLoginRoute = err.config?.url?.includes('/auth/login');
-    if (err.response?.status === 401 && !isLoginRoute) {
+    if (err.response?.status === 401) {
       sessionStorage.removeItem('role');
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
       window.location.href = '/signin';
     }
-    
     return Promise.reject(err);
-
   }
 );
+/**
+ * Sends form data and associated files to the backend intake router.
+ * @param {FormData} formData - An instance of JavaScript FormData containing fields and files.
+ * @param {(progress: number) => void} [onProgress] - Optional upload progress callback (0-100).
+ */
+
+export const submitIntakeForm = async (formData, onProgress) => {
+  const response = await api.post('/intake', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data', // sending/uploading files
+    },
+
+    onUploadProgress: (progressEvent) => {
+      if (onProgress && progressEvent.total) {
+        const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+        onProgress(percentCompleted);
+      }
+    }
+  });
+  return response.data;
+};
 
 export default api;
