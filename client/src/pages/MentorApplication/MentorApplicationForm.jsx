@@ -108,7 +108,9 @@ export default function MentorApplicationForm() {
     Object.entries(required).forEach(([key, msg]) => {
       if (!form[key].trim()) next[key] = msg;
     });
-
+    if (form.phoneNumber && !/^\+?[0-9\s()-]{7,20}$/.test(form.phoneNumber)) {
+      next.phoneNumber = "Enter a valid phone number";
+    }
     if (form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
       next.email = "Enter a valid email address";
     }
@@ -118,6 +120,7 @@ export default function MentorApplicationForm() {
     if (form.volunteeringFor.length === 0) {
       next.volunteeringFor = "Select at least one service";
     }
+
 
     return next;
   };
