@@ -61,7 +61,7 @@ async def apply_mentor(form: MentorApplicationCreate, db: AsyncSession = Depends
     await send_email(
         subject="Thank You for Your Application - Ummah Professionals",
         recipient=form.email,
-        body=f""" <h2>Assalamu Alaikum, </h2>
+        body=f""" <p>Assalamu Alaikum, </p>
             <p>Thank you for your interest in becoming a Career Advisor with Ummah Professionals. We have received your application and our team will review it shortly.</p>
             <p>In the meantime, if you have any questions, feel free to reach out to us.</p>
             <p>We appreciate your willingness to give back to the community and look forward to potentially welcoming you to our network of volunteers.</p>
