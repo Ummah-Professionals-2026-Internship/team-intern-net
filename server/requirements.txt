@@ -1,6 +1,7 @@
 # Core Framework
 fastapi>=0.136.0
 pydantic>=2.10.0
+pydantic-settings>=2.2.0
 uvicorn[standard]>=0.30.0
 
 # Database & ORM
