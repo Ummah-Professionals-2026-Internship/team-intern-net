@@ -16,7 +16,7 @@ npm install
 npm run dev
 
 # Navigate to backend
-cd backend
+cd server
 
 # Create a virtual environment
 python -m venv venv
@@ -30,7 +30,7 @@ python -m venv venv
 pip install -r requirements.txt
 
 # Run backend (locally)
-uvicorn main:app --reload
+uvicorn app.main:app --reload
 
 ```
 
