@@ -8,6 +8,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from pydantic import BaseModel, EmailStr
+from app.core.email import send_email
 from typing import Optional, List
 from app.db.database import get_db
 from app.models.mentor_application import MentorApplication
@@ -60,6 +61,12 @@ async def apply_mentor(form: MentorApplicationForm, db: AsyncSession = Depends(g
     db.add(application)
     await db.commit()
     await db.refresh(application)
+
+    await send_email(
+        subject="We received your mentor application!",
+        recipient=form.email,
+        body="<h2>Hi " + form.full_name + ",</h2><p>Thank you for applying to be a mentor with Ummah Professionals. Our team will review your application and get back to you soon.</p><p>We appreciate your interest in supporting the next generation of professionals!</p>"
+    )
 
     return {"message": "Mentor application submitted successfully", "application_id": application.id}
 
