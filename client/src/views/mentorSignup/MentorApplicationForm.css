@@ -1,34 +1,3 @@
-/* .prep-page {
-  min-height: 100vh;
-  background: linear-gradient(0deg, #8ACBDB 0%, #007CA6 66%);  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  padding: 40px;
-}
-.bg-image {
-  position: absolute;
-  inset: 0;
-  background-size: contain;
-  background-color: lightgray;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-color: transparent;
-  z-index: 0;
-
-}
-.form-card {
-  width: 100%;
-  max-width: 1280px;
-  min-height: 600px;
-  border-radius: 20px;
-  background: #fff;  
-  box-shadow: 0 4px 20px rgba(2, 85, 113, 0.25);
-  z-index: 1;
-  padding: 40px;
-} */
-
 @font-face {
   font-family: "Kollektif";
   src: url("../../fonts/kollektif-webfont/Kollektif.woff") format("woff");
@@ -148,7 +117,7 @@
 .caa-title {
   margin: 0 0 4px;
   font-size: 35px;
-  font-family: 'Kollektif Bold', system-ui, sans-serif;
+  /* font-family: 'Kollektif Bold', system-ui, sans-serif; */
   font-weight: 700;
   color: #025571;
   line-height: normal;  
