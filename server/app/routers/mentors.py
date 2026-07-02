@@ -40,6 +40,7 @@ async def apply_mentor(form: MentorApplicationCreate, db: AsyncSession = Depends
     application = MentorApplication(
         full_name=form.full_name,
         email=form.email,
+        gender=form.gender,
         employer=form.employer,
         job_title=form.job_title,
         industry=form.industry,

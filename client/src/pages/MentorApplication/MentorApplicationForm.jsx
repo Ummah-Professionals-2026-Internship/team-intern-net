@@ -24,6 +24,11 @@ const INDUSTRY_OPTIONS = [
   "Other",
 ];
 
+const GENDER_OPTIONS = [
+  "Brother",
+  "Sister",
+];
+
 const EXPERIENCE_LEVELS = [
   "Entry Level (0-2 years)",
   "Mid Level (3-5 years)",
@@ -37,6 +42,7 @@ export default function MentorApplicationForm() {
     phoneNumber: "",
     email: "",
     linkedIn: "",
+    gender: "",
     county: "",
     state: "",
     almaMater: "",
@@ -49,11 +55,16 @@ export default function MentorApplicationForm() {
     volunteeringFor: [],
   });
 
+  const genderMap = {
+    "Brother": "m",
+    "Sister": "f",
+  };
 
   const fieldMap = {
     full_name: "fullName",
     phone_number: "phoneNumber",
     email: "email",
+    gender: "gender",
     employer: "employer",
     job_title: "jobTitle",
     industry: "industry",
@@ -98,6 +109,7 @@ export default function MentorApplicationForm() {
       fullName: "Full name is required",
       phoneNumber: "Phone number is required",
       email: "Email is required",
+      gender: "Gender is required",
       employer: "Employer is required",
       jobTitle: "Job title is required",
       industry: "Please select an industry",
@@ -126,6 +138,7 @@ export default function MentorApplicationForm() {
   };
 
   const handleSubmit = async () => {
+    console.log(genderMap[form.gender])
     const next = validate();
     if (Object.keys(next).length > 0) {
       setErrors(next);
@@ -143,6 +156,7 @@ export default function MentorApplicationForm() {
         full_name: form.fullName,
         phone_number: form.phoneNumber,
         email: form.email,
+        gender: genderMap[form.gender] || null,
         employer: form.employer,
         job_title: form.jobTitle,
         industry: form.industry,
@@ -218,7 +232,7 @@ export default function MentorApplicationForm() {
         <div className="caa-header">
           <div className="caa-logo" style={{ backgroundImage: `url(${umIcon})` }}/>
           <div className="caa-header-text">
-            <h1 className="caa-title">Career Advisor Application</h1>
+            <h1 className="caa-title">Career Advisor</h1>
             <p className="caa-subtitle">Sign up to be a part of our network of volunteers</p>
           </div>
           <div className="caa-header-spacer"></div>
@@ -258,15 +272,18 @@ export default function MentorApplicationForm() {
                 placeholder="example@gmail.com"
               />
             </Field>
-
-            <Field label="LinkedIn">
-              <input
-                className="caa-input"
-                name="linkedIn"
-                value={form.linkedIn}
+             <Field label="Gender" required error={errors.gender}>
+             <select
+                className={`caa-select ${errors.gender ? "caa-input--error" : ""}`}
+                name="gender"
+                value={form.gender}
                 onChange={handleChange}
-                placeholder="https://linkedin.com/in/yourname"
-              />
+              >
+                <option value="">Gender</option>
+                {GENDER_OPTIONS.map((o) => (
+                  <option key={o} value={o}>{o}</option>
+                ))}
+              </select>
             </Field>
 
             <div className="caa-grid-inline">
@@ -289,14 +306,13 @@ export default function MentorApplicationForm() {
                 />
               </Field>
             </div>
-
-            <Field label="Alma Mater">
+            <Field label="LinkedIn">
               <input
                 className="caa-input"
-                name="almaMater"
-                value={form.almaMater}
+                name="linkedIn"
+                value={form.linkedIn}
                 onChange={handleChange}
-                placeholder="List all universities for undergraduate and graduate studies"
+                placeholder="https://linkedin.com/in/yourname"
               />
             </Field>
           </div>
@@ -305,15 +321,28 @@ export default function MentorApplicationForm() {
         {/* Major / Field of Study */}
         <section className="caa-section">
           <h2 className="caa-section-title">Major / Field of Study</h2>
-          <Field label="Major">
-            <input
-              className="caa-input caa-input--full"
-              name="major"
-              value={form.major}
-              onChange={handleChange}
-              placeholder="Undergraduate and/or graduate majors"
-            />
-          </Field>
+
+          <div className="caa-grid-2">
+            <Field label="Major">
+              <input
+                className="caa-input caa-input--full"
+                name="major"
+                value={form.major}
+                onChange={handleChange}
+                placeholder="Undergraduate and/or graduate majors"
+              />
+            </Field>
+            <Field label="Alma Mater">
+                <input
+                  className="caa-input"
+                  name="almaMater"
+                  value={form.almaMater}
+                  onChange={handleChange}
+                  placeholder="List all universities for undergraduate and graduate studies"
+                />
+              </Field>            
+          </div>
+
         </section>
 
         {/* Professional Background */}
