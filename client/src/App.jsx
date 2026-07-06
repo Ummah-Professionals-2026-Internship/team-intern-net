@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
-import SignIn from './views/onboarding/SignIn';
+// import SignIn from './views/onboarding/SignIn';
 import './App.css';
 
 // import { Router } from 'express'
