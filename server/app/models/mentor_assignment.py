@@ -16,6 +16,21 @@ if TYPE_CHECKING:
 
 
 class MentorAssignment(Base):
+    """
+    Tracks the assignment of a mentor to a student triggered by an intake form submission.
+ 
+    Business rules:
+    - A mentor can only have one active assignment at a time, enforced by a partial
+      unique index on mentor_id WHERE status = 'active'
+    - A student can only have one active assignment at a time, enforced by a partial
+      unique index on student_id WHERE status = 'active'
+    - Only an admin can create an assignment (assigned_by FK → users.id)
+    - intake_form_id links the assignment back to the student request that triggered it
+    - completed_at is only populated when status transitions to 'completed'
+    - ondelete=RESTRICT on all FKs — assignments cannot be orphaned by deleting
+      a mentor, student, or intake form
+    """
+
     __tablename__ = "mentor_assignments"
 
     id             : Mapped[int]                      = mapped_column(primary_key=True, autoincrement=True)

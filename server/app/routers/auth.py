@@ -1,30 +1,46 @@
-from fastapi import APIRouter, HTTPException
-from app.core.security import create_token
-from app.mock_users import MOCK_USERS #Change l8r with database
+#Authenticates the user via the database
+from fastapi import APIRouter, HTTPException, Depends
+from app.core.security import create_token, verify_password
+
+from sqlalchemy.ext.asyncio import AsyncSession
+from app.db.database import get_db # SQL Async imported and database too
+
+from sqlalchemy import select # Selecting is imported from SQL
+from app.models.user import User #User imported from models
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 @router.post("/login") #Asks & Receives login req:email & password
-async def login(email: str, password: str):
+async def login(
+    email: str,
+    password: str,
+    db: AsyncSession = Depends(get_db)
+):
+    result = await db.execute(
+    select(User).where(User.email == email) #Searches user via email in users in db
+)
 
-    user = next(
-    ( 
-        u for u in MOCK_USERS
-        if u["email"] == email and u["password"] == password
-    ), None) #Finds user in mock users, replace SQL
+    user = result.scalar_one_or_none() 
 
     if not user:
         raise HTTPException(
             status_code=401,
-            detail = "Invalid credentials"
-        ) #If no match found, no user
+            detail = "No user found!"
+        ) #If no user match found, error
     
+    if not verify_password(password, user.password_hash):
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid credentials!"
+        ) #If password (gets hashed) doesn't match with stored hashed_password, error
+
+
     token = create_token(
-        {"sub": user["id"], "role": user["role"].value}
-    ) #Then create a token for user with id & role
+    {"sub": str(user.id), "role": user.role.value, }
+    )  #Then create a token for user with id & role
 
     return {
         "access_token": token,
         "token_type": "bearer"
-    } #Return token
+    } #Returns the token
 

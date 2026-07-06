@@ -1,3 +1,4 @@
+#Runs the actual app
 import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -7,10 +8,15 @@ from app.routers import test
 from app.routers import dashboard
 from app.routers import auth
 
+from app.routers import intake
+from app.routers import mentors
 from sqlalchemy import text
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.database import get_db
+from app.schemas import LoginRequest, TokenResponse, LoggedInUser # ignore For demo purpose
+from app.models.enums import RoleEnum # Ignore for demo purpose
+
 
 
 app = FastAPI()
@@ -32,9 +38,12 @@ app.add_middleware(
 )
 
 app.include_router(test.router)
+
 app.include_router(dashboard.router)
 app.include_router(auth.router)
 
+app.include_router(intake.router)
+app.include_router(mentors.router)
 
 @app.get("/")
 async def root():
@@ -52,3 +61,16 @@ async def db_check(db: AsyncSession = Depends(get_db)):
     return {"db_status": result.scalar()}
 
 
+# For demo prupose ignore 
+@app.post("/demo_login", response_model=TokenResponse)
+def login(loginModel: LoginRequest):
+    return TokenResponse(
+        access_token="token",
+        refresh_token="refresh",
+        user=LoggedInUser(
+            id=1,
+            email="example@gmail.com",
+            full_name="John Doe",
+            role=RoleEnum.student
+        )
+    )

@@ -1,3 +1,4 @@
+#Not USED: Used to be for login testing when db wasn't here
 from app.models.enums import UserType
 
 MOCK_USERS = [

@@ -11,6 +11,20 @@ if TYPE_CHECKING:
     from .mentor import Mentor
 
 class AvailabilitySlot(Base):
+    """
+    Represents a time window a mentor has marked as available for meetings.
+ 
+    Business rules:
+    - end_datetime must be strictly greater than start_datetime, enforced by
+      a CHECK constraint (chk_slot_valid_duration) at the DB level and a
+      model_validator in the Pydantic schema at the API level
+    - is_booked is set to TRUE atomically when a meeting is created against
+      this slot — both operations happen in the same transaction
+    - A slot can only back one meeting at a time, enforced by the unique
+      constraint on meetings.slot_id
+    - ondelete=CASCADE — if a mentor is deleted all their slots are removed
+    """
+
     __tablename__ = "availability_slots"
 
     id             : Mapped[int]      = mapped_column(primary_key=True, autoincrement=True)
