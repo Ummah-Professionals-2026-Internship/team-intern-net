@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Optional, List
 from pydantic import BaseModel, EmailStr, HttpUrl, field_validator
-from app.models.enums import ServiceTypeEnum, ApplicationStatusEnum
+from app.models.enums import ServiceTypeEnum, ApplicationStatusEnum, GenderEnum
 
 
 
@@ -13,9 +13,11 @@ class MentorApplicationCreate(BaseModel):
     employer      : Optional[str] = None
     job_title     : Optional[str] = None
     industry      : Optional[str] = None
+    gender        : Optional[GenderEnum] = None
     experience    : Optional[str] = None
     linkedin_url  : Optional[HttpUrl] = None
     major         : Optional[str] = None
+    phone_number  : Optional[str] = None
     alma_mater    : Optional[str] = None
     county        : Optional[str] = None
     state         : Optional[str] = None
@@ -56,12 +58,14 @@ class MentorApplicationResponse(BaseModel):
     job_title       : Optional[str] = None
     industry        : Optional[str] = None
     experience      : Optional[str] = None
+    gender          : Optional[GenderEnum] = None
     linkedin_url    : Optional[str] = None
     major           : Optional[str] = None
     alma_mater      : Optional[str] = None
     county          : Optional[str] = None
     state           : Optional[str] = None
     other_info      : Optional[str] = None
+    phone_number    : Optional[str] = None
     service_types   : List[ServiceTypeEnum] = []
     status          : ApplicationStatusEnum
     applied_at      : datetime
