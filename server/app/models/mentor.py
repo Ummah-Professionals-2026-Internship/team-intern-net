@@ -26,6 +26,7 @@ class Mentor(Base):
     alma_mater           : Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     county               : Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
     state                : Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
+    phone_number         : Mapped[Optional[str]] = mapped_column(String(20), nullable=True)
     service_types        : Mapped[List[str]]     = mapped_column(
                                                        ARRAY(PGEnum(ServiceTypeEnum, name="service_type_enum", create_type=False)),
                                                        server_default="{}"

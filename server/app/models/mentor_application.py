@@ -5,7 +5,7 @@ from sqlalchemy.dialects.postgresql import ARRAY, ENUM as PGEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
-from .enums import ApplicationStatusEnum, ServiceTypeEnum
+from .enums import ApplicationStatusEnum, ServiceTypeEnum, GenderEnum
 
 
 if TYPE_CHECKING:
@@ -19,6 +19,8 @@ class MentorApplication(Base):
     full_name       : Mapped[str]                          = mapped_column(String(255))
     email           : Mapped[str]                          = mapped_column(String(255))
     employer        : Mapped[Optional[str]]                = mapped_column(String(255), nullable=True)
+    phone_number    : Mapped[Optional[str]]                = mapped_column(String(20), nullable=True)
+    gender          : Mapped[GenderEnum]                   = mapped_column(SAEnum(GenderEnum, name="gender_enum"), nullable=True)
     job_title       : Mapped[Optional[str]]                = mapped_column(String(255), nullable=True)
     industry        : Mapped[Optional[str]]                = mapped_column(String(255), nullable=True)
     experience      : Mapped[Optional[str]]                = mapped_column(Text, nullable=True)

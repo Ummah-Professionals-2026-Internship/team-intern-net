@@ -9,6 +9,7 @@ from app.schemas.user import UserResponse
 class MentorProfileUpdate(BaseModel):
     bio: Optional[str] = None
     linkedin_url: Optional[HttpUrl] = None
+    phone_number: Optional[str] = None
     employer: Optional[str] = None
     job_title: Optional[str] = None
     industry: Optional[str] = None
@@ -35,6 +36,7 @@ class MentorResponse(BaseModel):
     employer: Optional[str] = None
     job_title: Optional[str] = None
     industry: Optional[str] = None
+    phone_number: Optional[str] = None
     alma_mater: Optional[str] = None
     county: Optional[str] = None
     state: Optional[str] = None
