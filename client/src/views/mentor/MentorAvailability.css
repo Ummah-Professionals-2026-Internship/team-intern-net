@@ -1,0 +1,438 @@
+/* ============================================================
+   MentorAvailability.css
+   All selectors namespaced with .mav- to avoid global bleed
+   ============================================================ */
+
+/* ---------- Layout ---------- */
+@font-face {
+  font-family: "Kollektif";
+  src: url("../../fonts/kollektif-webfont/Kollektif.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Kollektif Bold";
+  src: url("../../fonts/kollektif-webfont/Kollektif-Bold.woff") format("woff");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+
+
+.mav-container {
+  display: flex;
+  gap: 32px;
+  padding: 32px;
+  height: 100%;
+  box-sizing: border-box;
+  font-family: "Kollektif", system-ui, -apple-system, sans-serif;
+}
+
+/* ---------- Calendar Panel ---------- */
+.mav-calendar-panel {
+  flex: 1;
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
+  padding: 32px;
+  box-sizing: border-box;
+  min-width: 0;
+  overflow: hidden;
+  position: relative
+}
+
+
+.mav-loading {
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px;
+  z-index: 10;
+}
+
+.mav-spinner {
+  width: 28px;
+  height: 28px;
+  border: 3px solid #e5e7eb;
+  border-top-color: #025571;
+  border-radius: 50%;
+  animation: mav-spin 0.7s linear infinite;
+}
+
+@keyframes mav-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ---------- Calendar Header ---------- */
+.mav-calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.mav-month-title {
+  font-size: 20px;
+  font-weight: 700;
+  font-family: "Kollektif Bold", system-ui, -apple-system, sans-serif;
+  color: #111827;
+  margin: 0;
+  letter-spacing: 0.04em;
+}
+
+.mav-nav-btn {
+  width: 32px;
+  height: 32px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #374151;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, border-color 0.15s;
+  line-height: 1;
+}
+
+.mav-nav-btn:hover {
+  background: #f3f4f6;
+  border-color: #d1d5db;
+}
+
+/* ---------- Day labels ---------- */
+.mav-day-labels {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  margin-bottom: 8px;
+}
+
+.mav-day-label {
+  text-align: center;
+  font-size: 12px;
+  font-family: "Kollektif Bold", system-ui, -apple-system, sans-serif;
+  color: black;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 4px 0;
+}
+
+/* ---------- Calendar Grid ---------- */
+.mav-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  /* gap: 4px; */
+}
+
+.mav-cell {
+  position: relative;
+  height: 110px;
+  aspect-ratio: unset;
+  display: flex;
+  font-family: "Kollektif Bold", system-ui, -apple-system, sans-serif;
+  font-size: 20px;
+  color: black;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.15s;
+  padding: 0;
+  gap: 2px;
+}
+
+.mav-cell:hover:not(.mav-cell--selected) {
+  background: #f0f9ff;
+}
+
+.mav-cell--empty {
+  pointer-events: none;
+  cursor: default;
+}
+
+.mav-cell--today .mav-cell-number {
+  color: #007CA6;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.mav-cell--selected {
+  background: #025571;
+}
+
+.mav-cell--selected .mav-cell-number {
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.mav-cell--selected .mav-dot {
+  background: #ffffff;
+}
+
+.mav-cell-number {
+  font-size: 20px;
+  color: black;
+  line-height: 1;
+}
+
+/* ---------- Availability dot ---------- */
+.mav-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #16a34a;
+  flex-shrink: 0;
+}
+
+/* ---------- Right Side Panel ---------- */
+.mav-side-panel {
+  width: 300px;
+  flex-shrink: 0;
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
+  padding: 24px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.mav-empty-state {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #9ca3af;
+  font-size: 14px;
+  text-align: center;
+}
+
+/* ---------- Side Panel Header ---------- */
+.mav-side-header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.mav-side-date {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.mav-side-title {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 500;
+  color: #6b7280;
+}
+
+/* ---------- Slots list ---------- */
+.mav-slots {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+}
+
+.mav-no-slots {
+  margin: 0;
+  font-size: 13px;
+  color: #9ca3af;
+}
+
+.mav-slot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 10px 14px;
+}
+
+.mav-slot-time {
+  font-size: 14px;
+  color: #111827;
+  font-weight: 500;
+}
+
+.mav-slot-remove {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 15px;
+  color: #ef4444;
+  padding: 2px 4px;
+  border-radius: 4px;
+  transition: background 0.15s;
+  line-height: 1;
+}
+
+.mav-slot-remove:hover {
+  background: #fef2f2;
+}
+
+/* ---------- Add Slot ---------- */
+.mav-add-slot {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mav-time-inputs {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.mav-time-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.mav-time-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #6b7280;
+}
+
+.mav-time-input {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1.5px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 13px;
+  color: #111827;
+  background: #f9fafb;
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.15s;
+  font-family: "Kollektif", system-ui, -apple-system, sans-serif;
+}
+
+.mav-time-input:focus {
+  border-color: #025571;
+  background: #ffffff;
+}
+
+.mav-time-sep {
+  font-size: 16px;
+  color: #9ca3af;
+  padding-bottom: 8px;
+  flex-shrink: 0;
+}
+
+.mav-slot-error {
+  margin: 0;
+  font-size: 12px;
+  color: #dc2626;
+}
+
+.mav-btn-add {
+  width: 100%;
+  padding: 11px;
+  background: #025571;
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+  font-family: "Kollektif", system-ui, -apple-system, sans-serif;
+}
+
+.mav-btn-add:hover {
+  background: #024a62;
+}
+
+.mav-toast {
+  background: #16a34a;
+  color: #ffffff;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+  animation: mav-fade-in 0.2s ease;
+}
+
+@keyframes mav-fade-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+
+/* ---------- Side Footer ---------- */
+.mav-side-footer {
+  display: flex;
+  gap: 10px;
+  margin-top: auto;
+}
+
+.mav-btn-cancel {
+  flex: 1;
+  padding: 10px;
+  border: 1.5px solid #d1d5db;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #DA1D37;
+  border: 1px solid #DA1D37;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  font-family: "Kollektif", system-ui, -apple-system, sans-serif;
+}
+
+.mav-btn-cancel:hover {
+  background: #f3f4f6;
+  border-color: #DA1D37;
+}
+
+.mav-btn-save {
+  flex: 1;
+  padding: 10px;
+  background: #40AE50;
+  border: 1px solid #40AE50;
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.mav-btn-save:hover {
+  background: #4b5563;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 768px) {
+  .mav-container {
+    flex-direction: column;
+    padding: 16px;
+  }
+
+  .mav-side-panel {
+    width: 100%;
+  }
+}

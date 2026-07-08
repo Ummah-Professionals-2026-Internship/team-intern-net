@@ -1,6 +1,9 @@
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import "./MentorLayout.css";
+import umLogo from "../../assets/images/um-text-logo.png";
 
+
+{/* change icons*/}
 const NAV_ITEMS = [
   { label: "Dashboard", to: "/mentor/dashboard", icon: "🏠" },
   { label: "Requests",  to: "/mentor/requests",  icon: "📋" },
@@ -24,8 +27,7 @@ export default function MentorLayout() {
       <aside className="ml-sidebar">
         {/* Logo / brand */}
         <div className="ml-brand">
-          <div className="ml-brand-icon">UP</div>
-          <span className="ml-brand-name">ummah<br />professionals</span>
+          <div className="ml-brand-icon" style={{ backgroundImage: `url(${umLogo})` }} />
         </div>
 
         {/* Nav links */}
@@ -38,7 +40,7 @@ export default function MentorLayout() {
                 `ml-nav-item${isActive ? " ml-nav-item--active" : ""}`
               }
             >
-              <span className="ml-nav-icon">{icon}</span>
+              {/* <span className="ml-nav-icon">{icon}</span> */}
               <span className="ml-nav-label">{label}</span>
             </NavLink>
           ))}
@@ -46,7 +48,8 @@ export default function MentorLayout() {
 
         {/* Logout pinned to bottom */}
         <button className="ml-logout" onClick={handleLogout}>
-          <span className="ml-nav-icon">↩</span>
+            {/* /* add logout icon */}
+          {/* <span className="ml-nav-icon">↩</span> */}
           <span className="ml-nav-label">Logout</span>
         </button>
 

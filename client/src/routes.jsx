@@ -8,6 +8,7 @@ import SignIn from './views/onboarding/SignIn';
 
 import MentorApplicationForm from './views/mentorSignup/MentorApplicationForm';
 import MentorLayout from "./views/mentor/MentorLayout";
+import MentorAvailability from './views/mentor/MentorAvailability';
 
 export const router = createBrowserRouter([
     // 1. Auth Routes
@@ -33,14 +34,14 @@ export const router = createBrowserRouter([
     {
         path: '/mentor',
         element: <MentorLayout  />,
-        // children: [
-        //     { index: true, element: <MentorHome /> },
-        //     { path: "requests",  element: <MentorRequests /> },
-        //     { path: "meetings",  element: <MentorMeetings /> },
-        //     { path: "availability", element: <MentorAvailability /> },
-        //     { path: "profile",   element: <MentorProfile /> },
-        //     { path: "settings",  element: <MentorSettings /> },
-        // ]
+        children: [
+            { path: "availability", element: <MentorAvailability /> },
+            // { index: true, element: <MentorHome /> },
+            // { path: "requests",  element: <MentorRequests /> },
+            // { path: "meetings",  element: <MentorMeetings /> },
+            // { path: "profile",   element: <MentorProfile /> },
+            // { path: "settings",  element: <MentorSettings /> },
+        ]
     }
 
 
