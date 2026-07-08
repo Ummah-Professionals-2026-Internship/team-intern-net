@@ -5,7 +5,7 @@ import umLogo from "../../assets/images/um-text-logo.png";
 
 {/* change icons*/}
 const NAV_ITEMS = [
-  { label: "Dashboard", to: "/mentor", icon: "🏠" },
+  { label: "Dashboard", to: "/mentor/", icon: "🏠" },
   { label: "Requests",  to: "/mentor/requests",  icon: "📋" },
   { label: "Meetings",  to: "/mentor/meetings",   icon: "📅" },
   { label: "Availability", to: "/mentor/availability", icon: "🕐" },
@@ -36,7 +36,7 @@ export default function MentorLayout() {
             <NavLink
               key={to}
               to={to}
-              end={to === "/mentor"}
+              end={to === "/mentor/"}
               className={({ isActive }) =>
                 `ml-nav-item${isActive ? " ml-nav-item--active" : ""}`
               }

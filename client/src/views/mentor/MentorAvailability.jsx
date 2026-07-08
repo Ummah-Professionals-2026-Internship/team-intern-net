@@ -152,10 +152,13 @@ export default function MentorAvailability() {
     const diffMinutes = (endMs - startMs) / (1000 * 60);
 
     if (diffMinutes < 30) {
-    setSlotError("Time slot must be at least 30 minutes.");
-    return;
+        setSlotError("Time slot must be at least 30 minutes.");
+        return;
     }
-
+    if (diffMinutes > 60){
+        setSlotError("Time slot cannot be more than 60 minutes.");
+        return;
+    }
     const newStart = toUTCDatetime(selectedDate, newSlot.start);
     const newEnd = toUTCDatetime(selectedDate, newSlot.end);
 
