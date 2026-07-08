@@ -3,6 +3,7 @@ import { createBrowserRouter, Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 import App from './App';
 import SignIn from './views/onboarding/SignIn';
+import CareerPrep from './views/onboarding/CareerPrep';
 
 // import Home from './views/Home';
 // import Admin from './views/admin/admin';
@@ -23,6 +24,11 @@ export const router = createBrowserRouter([
     {
         path: '/signin',
         element: <SignIn />,
+    },
+
+    {
+        path: '/prep',
+        element: <CareerPrep />,
     },
 
     {
