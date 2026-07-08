@@ -112,7 +112,14 @@ export default function MentorAvailability() {
         setNewSlot({ start: "", end: "" });
         setSlotError("");
     };
-  const isToday = (day) =>
+
+    const isDateInPast = (dateKey) => {
+        if (!dateKey) return false;
+        const date = new Date(dateKey + "T00:00:00");
+        const todayMidnight = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+        return date < todayMidnight;
+    };
+    const isToday = (day) =>
     day === today.getDate() &&
     viewMonth === today.getMonth() &&
     viewYear === today.getFullYear();
@@ -125,9 +132,22 @@ export default function MentorAvailability() {
   };
 
   const handleDayClick = (day) => {
+
+    // Remove unsaved local slots from previous selected date
+    if (selectedDate) {
+        setAvailability((prev) => {
+        const existingSlots = prev[selectedDate] || [];
+        const savedSlots = existingSlots.filter((s) => !String(s.id).startsWith("local_"));
+        const next = { ...prev };
+        if (savedSlots.length === 0) delete next[selectedDate];
+        else next[selectedDate] = savedSlots;
+        return next;
+        });
+    }
     setSelectedDate(toDateKey(viewYear, viewMonth, day));
     setNewSlot({ start: "", end: "" });
     setSlotError("");
+    setConfirmDeleteId(null);
   };
 
   const selectedSlots = selectedDate ? (availability[selectedDate] || []) : [];
@@ -389,39 +409,44 @@ export default function MentorAvailability() {
             </div>
 
             {/* Add time slot */}
-            <div className="mav-add-slot">
-              <div className="mav-time-inputs">
-                <div className="mav-time-field">
-                  <label className="mav-time-label">Start</label>
-                  <input
-                    type="time"
-                    className="mav-time-input"
-                    value={newSlot.start}
-                    onChange={(e) => { setNewSlot(p => ({ ...p, start: e.target.value })); setSlotError(""); }}
-                  />
+            {!isDateInPast(selectedDate) && (
+                <div className="mav-add-slot">
+                <div className="mav-time-inputs">
+                    <div className="mav-time-field">
+                    <label className="mav-time-label">Start</label>
+                    <input
+                        type="time"
+                        className="mav-time-input"
+                        value={newSlot.start}
+                        onChange={(e) => { setNewSlot(p => ({ ...p, start: e.target.value })); setSlotError(""); }}
+                    />
+                    </div>
+                    <span className="mav-time-sep">–</span>
+                    <div className="mav-time-field">
+                    <label className="mav-time-label">End</label>
+                    <input
+                        type="time"
+                        className="mav-time-input"
+                        value={newSlot.end}
+                        onChange={(e) => { setNewSlot(p => ({ ...p, end: e.target.value })); setSlotError(""); }}
+                    />
+                    </div>
                 </div>
-                <span className="mav-time-sep">–</span>
-                <div className="mav-time-field">
-                  <label className="mav-time-label">End</label>
-                  <input
-                    type="time"
-                    className="mav-time-input"
-                    value={newSlot.end}
-                    onChange={(e) => { setNewSlot(p => ({ ...p, end: e.target.value })); setSlotError(""); }}
-                  />
+                {slotError && <p className="mav-slot-error">{slotError}</p>}
+                <button className="mav-btn-add" onClick={addSlot}>
+                    Add Time Slot
+                </button>
                 </div>
-              </div>
-              {slotError && <p className="mav-slot-error">{slotError}</p>}
-              <button className="mav-btn-add" onClick={addSlot}>
-                Add Time Slot
-              </button>
-            </div>
+            )}
+
 
             {saveSuccess && (<div className="mav-toast"> Availability saved successfully!</div> )}
             
             <div className="mav-side-footer">
               <button className="mav-btn-cancel" onClick={handleCancel}>Cancel</button>
-              <button className="mav-btn-save" onClick={handleSave} disabled={loading}> {loading ? "Saving..." : "Save"} </button>
+              {!isDateInPast(selectedDate) && (
+                <button className="mav-btn-save" onClick={handleSave} disabled={loading}> {loading ? "Saving..." : "Save"} </button>
+              )}
             </div>
           </>
         )}
