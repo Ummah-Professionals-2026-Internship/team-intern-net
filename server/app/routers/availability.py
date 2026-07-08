@@ -8,6 +8,7 @@ from app.schemas.availability_slot import (
     AvailabilitySlotBulkResponse,
     AvailabilitySlotResponse,
 )
+from datetime import datetime, timezone
 
 router = APIRouter()
 
@@ -61,12 +62,24 @@ async def set_availability(
 
 @router.get("/mentors/availability", response_model=list[AvailabilitySlotResponse])
 async def get_availability(
+    month: int,
+    year: int,
     mentor_id: int = Depends(get_current_mentor_id),
     db: AsyncSession = Depends(get_db),
 ):
+    start = datetime(year, month, 1, tzinfo=timezone.utc)
+    # last day of month
+    if month == 12:
+        end = datetime(year + 1, 1, 1, tzinfo=timezone.utc)
+    else:
+        end = datetime(year, month + 1, 1, tzinfo=timezone.utc)
+
     result = await db.execute(
         select(AvailabilitySlot)
-        .where(AvailabilitySlot.mentor_id == mentor_id)
+        .where(AvailabilitySlot.mentor_id == mentor_id,
+               AvailabilitySlot.start_datetime >= start,
+               AvailabilitySlot.start_datetime < end,
+        )
         .order_by(AvailabilitySlot.start_datetime)
     )
     return result.scalars().all()

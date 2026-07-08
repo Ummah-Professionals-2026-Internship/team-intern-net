@@ -43,6 +43,8 @@ export default function MentorAvailability() {
   const [availability, setAvailability] = useState({});
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [confirmDeleteId, setConfirmDeleteId] = useState(null);
+  const [deletingId, setDeletingId] = useState(null);
 
   // Slot being added
   const [newSlot, setNewSlot] = useState({ start: "", end: "" });
@@ -54,22 +56,25 @@ export default function MentorAvailability() {
         setLoading(true);
       
         try {
-        const response = await fetch("http://localhost:8000/mentors/availability");
-        const data = await response.json();
-        
-        // Group slots by date key
-        const grouped = {};
-        data.forEach((slot) => {
-          const dateKey = slot.start_datetime.split("T")[0];
-          if (!grouped[dateKey]) grouped[dateKey] = [];
-          grouped[dateKey].push({
-            id: slot.id,
-            start: slot.start_datetime,
-            end: slot.end_datetime,
-          });
-        });
-      
-        setAvailability(grouped);
+            const response = await fetch(`http://localhost:8000/mentors/availability?month=${viewMonth + 1}&year=${viewYear}`);
+            const data = await response.json();
+            
+            // Group slots by date key
+            const grouped = {};
+            data.forEach((slot) => {
+                const dateKey = slot.start_datetime.split("T")[0];
+                
+                if (!grouped[dateKey]) grouped[dateKey] = [];
+                grouped[dateKey].push({
+                    id: slot.id,
+                    start: slot.start_datetime,
+                    end: slot.end_datetime,
+                    is_booked: slot.is_booked,
+                });
+
+            });
+            setAvailability(grouped);
+
       } catch (err) {
             console.log(err)    
             console.error("Failed to fetch availability");
@@ -80,7 +85,7 @@ export default function MentorAvailability() {
     };
   
     fetchAvailability();
-    }, []);
+    }, [viewMonth, viewYear]);
 
   // Calendar grid
   const { calendarDays, firstDayOfWeek } = useMemo(() => {
@@ -92,16 +97,21 @@ export default function MentorAvailability() {
     };
   }, [viewYear, viewMonth]);
 
-  const prevMonth = () => {
-    if (viewMonth === 0) { setViewMonth(11); setViewYear(y => y - 1); }
-    else setViewMonth(m => m - 1);
-  };
+    const prevMonth = () => {
+        if (viewMonth === 0) { setViewMonth(11); setViewYear(y => y - 1); }
+        else setViewMonth(m => m - 1);
+        setSelectedDate(null);
+        setNewSlot({ start: "", end: "" });
+        setSlotError("");
+    };
 
-  const nextMonth = () => {
-    if (viewMonth === 11) { setViewMonth(0); setViewYear(y => y + 1); }
-    else setViewMonth(m => m + 1);
-  };
-
+    const nextMonth = () => {
+        if (viewMonth === 11) { setViewMonth(0); setViewYear(y => y + 1); }
+        else setViewMonth(m => m + 1);
+        setSelectedDate(null);
+        setNewSlot({ start: "", end: "" });
+        setSlotError("");
+    };
   const isToday = (day) =>
     day === today.getDate() &&
     viewMonth === today.getMonth() &&
@@ -170,7 +180,6 @@ export default function MentorAvailability() {
 
   const removeSlot = async (id) => {
 
-    // If local slot (not yet saved), just remove from state
     if (String(id).startsWith("local_")) {
         setAvailability((prev) => {
         const updated = (prev[selectedDate] || []).filter((s) => s.id !== id);
@@ -179,19 +188,20 @@ export default function MentorAvailability() {
         else next[selectedDate] = updated;
         return next;
         });
+        setConfirmDeleteId(null);
         return;
     }
 
-
+    setDeletingId(id);
     try {
         const response = await fetch(`http://localhost:8000/mentors/availability/${id}`, {
         method: "DELETE",
         });
 
         if (!response.ok) {
-        const data = await response.json();
-        setSlotError(data.detail || "Failed to delete slot.");
-        return;
+            const data = await response.json();
+            setSlotError(data.detail || "Failed to delete slot.");
+            return;
         }
 
         // remove from local state only after successful delete
@@ -202,10 +212,16 @@ export default function MentorAvailability() {
         else next[selectedDate] = updated;
         return next;
         });
+        setSaveSuccess(true);
+        setTimeout(() => setSaveSuccess(false), 3000);
     } catch (err) {
         console.log(err)
         setSlotError("Network error. Please try again.");
+    } finally {
+        setDeletingId(null);
+        setConfirmDeleteId(null);
     }
+
 
   };
   const handleSave = async () => {
@@ -235,9 +251,10 @@ export default function MentorAvailability() {
             setAvailability((prev) => ({
                 ...prev,
                 [selectedDate]: data.slots.map((slot) => ({
-                id: slot.id,
-                start: slot.start_datetime,
-                end: slot.end_datetime,
+                    id: slot.id,
+                    start: slot.start_datetime,
+                    end: slot.end_datetime,
+                    is_booked: slot.is_booked, 
                 })),
             }));
             setSaveSuccess(true);
@@ -269,7 +286,11 @@ export default function MentorAvailability() {
             </div>
         )}
         <div className="mav-calendar-header">
-          <button className="mav-nav-btn" onClick={prevMonth} aria-label="Previous month">
+          <button 
+            className="mav-nav-btn" 
+            onClick={prevMonth} 
+            disabled={viewMonth === today.getMonth() && viewYear === today.getFullYear()}
+            aria-label="Previous month" >
             &#8249;
           </button>
           <h2 className="mav-month-title">
@@ -325,20 +346,43 @@ export default function MentorAvailability() {
               {selectedSlots.length === 0 && (
                 <p className="mav-no-slots">No slots added yet.</p>
               )}
-              {selectedSlots.map((slot) => (
-                <div key={slot.id} className="mav-slot">
-                  <span className="mav-slot-time">
+            {selectedSlots.map((slot) => (
+            <div key={slot.id} className="mav-slot-wrapper">
+                <div className="mav-slot">
+                <span className="mav-slot-time">
                     {formatTime(slot.start)} – {formatTime(slot.end)}
-                  </span>
-                  <button
+                </span>
+                {slot.is_booked ? null : (
+                    <button
                     className="mav-slot-remove"
-                    onClick={() => removeSlot(slot.id)}
+                    onClick={() => setConfirmDeleteId(confirmDeleteId === slot.id ? null : slot.id)}
                     aria-label="Remove slot"
-                  >
-                    🗑
-                  </button>
+                    >
+                    <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="13" cy="13" r="13" fill="white"/>
+                        <circle cx="13" cy="13" r="12.5" stroke="#DA1D37" strokeOpacity="0.34"/>
+                        <path d="M20.5623 6.8125L5.43726 6.81251" stroke="#FF383C" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M10.9375 10.9375V16.4375" stroke="#FF383C" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M15.0625 10.9375V16.4375" stroke="#FF383C" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M19.1875 6.8125V19.875C19.1875 20.0573 19.1151 20.2322 18.9861 20.3611C18.8572 20.4901 18.6823 20.5625 18.5 20.5625H7.5C7.31766 20.5625 7.1428 20.4901 7.01386 20.3611C6.88493 20.2322 6.8125 20.0573 6.8125 19.875V6.8125" stroke="#FF383C" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M16.4375 6.8125V5.4375C16.4375 5.07283 16.2926 4.46523C15.7769 4.20737 15.4272 4.0625 15.0625 4.0625H10.9375C10.5728 4.0625 10.2231 4.20737 9.96523 4.46523C9.70737 4.72309 9.5625 5.07283 9.5625 5.4375V6.8125" stroke="#FF383C" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                    </button>
+                )}
                 </div>
-              ))}
+
+                {/* Confirm row appears below the slot */}
+                {confirmDeleteId === slot.id && (
+                <div className="mav-confirm">
+                    <span className="mav-confirm-text">Delete this slot?</span>
+                    <div className="mav-confirm-actions">
+                    <button className="mav-confirm-no" onClick={() => setConfirmDeleteId(null)}>Cancel</button>
+                    <button className="mav-confirm-yes" onClick={() => removeSlot(slot.id)} disabled={deletingId === slot.id} >{deletingId === slot.id ? "Deleting..." : "Delete"}</button>
+                    </div>
+                </div>
+                )}
+            </div>
+            ))}
             </div>
 
             {/* Add time slot */}

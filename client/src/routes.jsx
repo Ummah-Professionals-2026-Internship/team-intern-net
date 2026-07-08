@@ -9,6 +9,9 @@ import SignIn from './views/onboarding/SignIn';
 import MentorApplicationForm from './views/mentorSignup/MentorApplicationForm';
 import MentorLayout from "./views/mentor/MentorLayout";
 import MentorAvailability from './views/mentor/MentorAvailability';
+import MentorRequests from './views/mentor/MentorRequests';
+import MentorDashboard from './views/mentor/MentorDashboard';
+import MentorMeetings from './views/mentor/MentorMeetings';
 
 export const router = createBrowserRouter([
     // 1. Auth Routes
@@ -35,10 +38,10 @@ export const router = createBrowserRouter([
         path: '/mentor',
         element: <MentorLayout  />,
         children: [
+            { index: true, element: <MentorDashboard />, },
             { path: "availability", element: <MentorAvailability /> },
-            // { index: true, element: <MentorHome /> },
-            // { path: "requests",  element: <MentorRequests /> },
-            // { path: "meetings",  element: <MentorMeetings /> },
+            { path: "requests",  element: <MentorRequests /> },
+            { path: "meetings",  element: <MentorMeetings /> },
             // { path: "profile",   element: <MentorProfile /> },
             // { path: "settings",  element: <MentorSettings /> },
         ]

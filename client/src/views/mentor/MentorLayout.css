@@ -124,8 +124,7 @@
   border: none;
   background: transparent;
   color: #ceeaf3;
-  font-size: 13px;
-  font-weight: 500;
+  font-size: 25px;
   font-family: 'Kollektif', system-ui, -apple-system, sans-serif;
   cursor: pointer;
   transition: background 0.15s, color 0.15s;
