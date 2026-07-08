@@ -68,11 +68,13 @@
 .caa-bg-image {
   position: fixed;
   inset: 0;
+  margin: auto;
   width: 100%;
-  height: 100%;
+  height: auto;
+  aspect-ratio: 290/111;
   background-size: cover;
   background-repeat: no-repeat;
-  background-position: center center;
+  background-position: center;
   pointer-events: none;
   z-index: 0;
 }
@@ -222,7 +224,7 @@
 }
 
 .form-field textarea {
-  height: clamp(120px, 18vw, 180px);
+  height: clamp(120px, 18vw, 190px);
   resize: vertical;
   line-height: 1.4;
 }
@@ -366,6 +368,10 @@
   margin-top: 4px;
 }
 
+.career-prep-card select#gender {
+  max-width: calc(50% - (clamp(20px, 4vw, 48px) / 2));
+}
+
 .radio-option {
   display: flex;
   align-items: center;
@@ -456,6 +462,10 @@
   .career-prep-page {
     padding: 12px;
     align-items: flex-start;
+  }
+
+  .career-prep-card select#gender {
+    max-width: 100%;
   }
 
   .career-prep-card {

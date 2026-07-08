@@ -6,7 +6,7 @@ import featherAdd from "../../assets/images/feather-add.svg";
 import infoIcon from "../../assets/images/info-icon.svg";
 import umLogo from "../../assets/images/um-logo.png";
 import userVoice from "../../assets/images/user-voice.svg";
-import appBg from "../../assets/images/app-bg.png";
+import appBg from "../../assets/horizontal-swirl.svg";
 import uploadIcon from "../../assets/images/upload.svg";
 import "./CareerPrep.css";
 
@@ -369,19 +369,20 @@ export default function CareerPrep() {
           {/* Gender */}
           <section className="form-section">
             <h2 className="section-title">Gender <span className="required-mark">*</span></h2>
-            <div className="gender-options">
-              {GENDER_OPTIONS.map(({ label, value }) => (
-                <label key={value} className="radio-option">
-                  <input
-                    type="radio"
-                    name="gender"
-                    value={value}
-                    checked={form.gender === value}
-                    onChange={handleChange}
-                  />
-                  {label}
-                </label>
-              ))}
+            <div className="form-field">
+              <select 
+                id="gender" 
+                name="gender" 
+                value={form.gender} 
+                onChange={handleChange}
+              >
+                <option value=""></option>
+                {GENDER_OPTIONS.map(({ label, value }) => (
+                  <option key={value} value={value}>
+                    {label}
+                  </option>
+                ))}
+              </select>
             </div>
             {errors.gender && <p className="field-error">{errors.gender}</p>}
           </section>
