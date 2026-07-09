@@ -21,14 +21,41 @@
 }
 
 
+.mav-page{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 8px 32px 32px;
+    box-sizing: border-box;
+}
+
+.mav-title-section{
+    margin-bottom: 24px;
+}
+
+.mav-title {
+    margin: 0;
+    font-family: "Kollektif Bold", system-ui, -apple-system, sans-serif;
+    font-weight: 700;
+    font-size: 35px;
+    color: #000;
+    line-height: normal;
+    margin-bottom: 5px;
+}
+
+.mav-subtitle {
+    /* margin: 6px 0 0; */
+    font-family: "Kollektif", system-ui, -apple-system, sans-serif;
+    color: #363538;
+    line-height: 1.4;
+}
 
 .mav-container {
   display: flex;
   gap: 32px;
-  padding: 32px;
-  height: 100%;
-  box-sizing: border-box;
+  flex: 1;
   font-family: "Kollektif", system-ui, -apple-system, sans-serif;
+  min-height: 0;
 }
 
 /* ---------- Calendar Panel ---------- */

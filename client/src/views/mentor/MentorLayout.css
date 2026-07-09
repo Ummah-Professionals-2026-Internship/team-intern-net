@@ -62,6 +62,8 @@
 
 
 /* ── Nav ── */
+
+
 .ml-nav {
   display: flex;
   flex-direction: column;
@@ -111,7 +113,12 @@
 }
 
 /* ── Logout (pinned bottom) ── */
+.ml-sidebar-footer {
+  padding: 0 16px 16px;
+}
+
 .ml-logout {
+  width: 100%;
   display: flex;
   align-items: center;
   gap: 12px;

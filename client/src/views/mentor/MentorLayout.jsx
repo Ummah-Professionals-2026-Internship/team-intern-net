@@ -56,15 +56,17 @@ export default function MentorLayout() {
           ))}
         </nav>
 
-        {/* Logout pinned to bottom */}
-        <button className="ml-logout" onClick={handleLogout}>
-            {/* /* add logout icon */}
-          <img src={LogOutIcon} className="ml-nav-icon" />
-          <span className="ml-nav-label">Logout</span>
-        </button>
+        <div className="ml-sidebar-footer">
+          {/* Logout pinned to bottom */}
+          <button className="ml-logout" onClick={handleLogout}>
+              {/* /* add logout icon */}
+            <img src={LogOutIcon} className="ml-nav-icon" />
+            <span className="ml-nav-label">Logout</span>
+          </button>
 
-        {/* Decorative wave at bottom */}
-        <div className="ml-sidebar-wave" aria-hidden="true" />
+        </div>
+
+
       </aside>
 
       {/* ── Main content area ── */}

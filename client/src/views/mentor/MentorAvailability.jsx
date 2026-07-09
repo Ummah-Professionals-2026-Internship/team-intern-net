@@ -357,193 +357,201 @@ export default function MentorAvailability() {
   };
 
   return (
-    <div className="mav-container">
+    <div className="mav-page">
+        <div className="mav-title-section">
+            <h1 className="mav-title"> Update Availability</h1>
+            <p className="mav-subtitle"> Select a date to add or edit your available meeting times.</p> 
+
+        </div>
       {/* Calendar Panel */}
-      <div className="mav-calendar-panel">
-        {loading && (
-            <div className="mav-loading">
-            <div className="mav-spinner" />
-            </div>
-        )}
-        <div className="mav-calendar-header">
-          <button 
-            className="mav-nav-btn" 
-            onClick={prevMonth} 
-            disabled={viewMonth === today.getMonth() && viewYear === today.getFullYear()}
-            aria-label="Previous month" >
-            &#8249;
-          </button>
-          <h2 className="mav-month-title">
-            {MONTHS[viewMonth].toUpperCase()} {viewYear}
-          </h2>
-          <button className="mav-nav-btn" onClick={nextMonth} aria-label="Next month">
-            &#8250;
-          </button>
-        </div>
-
-        <div className="mav-day-labels">
-          {DAYS.map((d) => <span key={d} className="mav-day-label">{d}</span>)}
-        </div>
-
-        <div className="mav-grid">
-          {/* Empty cells before first day */}
-          {Array.from({ length: firstDayOfWeek }).map((_, i) => (
-            <div key={`empty-${i}`} className="mav-cell mav-cell--empty" />
-          ))}
-
-          {calendarDays.map((day) => (
-            <button
-              key={day}
-              className={[
-                "mav-cell",
-                hasSlots(day) ? "mav-cell--available" : "",
-                isSelected(day) ? "mav-cell--selected" : "",
-                isSelected(day) && hasSlots(day) ? "mav-cell--selected-available" : "",
-                isToday(day) ? "mav-cell--today" : "",
-              ].join(" ")}
-              onClick={() => handleDayClick(day)}
-            >
-            <span className="mav-cell-number">{day}</span>
-            {/* {hasSlots(day) && <span className="mav-dot" />} */}
-            {hasSlots(day) && (
-                <div className="mav-slot-indicator">
-                    {availability[toDateKey(viewYear, viewMonth, day)]
-                    .slice(0, 5)
-                    .map((_, index) => (
-                        <span key={index} className="mav-dot" />
-                    ))}
+      <div className="mav-container">
+        <div className="mav-calendar-panel">
+            {loading && (
+                <div className="mav-loading">
+                    <div className="mav-spinner" />
                 </div>
             )}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Right Panel */}
-      {selectedDate && (
-        <>
-            <div className="mav-backdrop" onClick={handleCancel} />
-            <div className={`mav-side-panel ${selectedDate ? "mav-side-panel--active" : ""}`}>
-            {!selectedDate ? (
-            <div className="mav-empty-state">
-                <p>Select a date to manage availability</p>
+            <div className="mav-calendar-header">
+                <button 
+                    className="mav-nav-btn" 
+                    onClick={prevMonth} 
+                    disabled={viewMonth === today.getMonth() && viewYear === today.getFullYear()}
+                    aria-label="Previous month" >
+                    &#8249;
+                </button>
+                <h2 className="mav-month-title">
+                    {MONTHS[viewMonth].toUpperCase()} {viewYear}
+                </h2>
+                <button className="mav-nav-btn" onClick={nextMonth} aria-label="Next month">
+                    &#8250;
+                </button>
             </div>
-            ) : (
-            <>
-                <div className="mav-side-header">
-                <p className="mav-side-date">{selectedLabel}</p>
-                <h3 className="mav-side-title">Availability</h3>
-                </div>
 
-                <div className="mav-slots">
-                {selectedSlots.length === 0 && (
-                    <p className="mav-no-slots">No slots added yet.</p>
-                )}
-                {selectedSlots.map((slot) => (
-                <div key={slot.id} className="mav-slot-wrapper">
-                    <div className="mav-slot">
-                    <span className="mav-slot-time">
-                        {formatTime(slot.start)} – {formatTime(slot.end)}
-                    </span>
-                    {slot.is_booked ? null : (
-                        <button
-                        className="mav-slot-remove"
-                        onClick={() => setConfirmDeleteId(confirmDeleteId === slot.id ? null : slot.id)}
-                        aria-label="Remove slot"
-                        >
-                        <img src={TrashIcon} className="mav-trash-icon" />
-                        </button>
-                    )}
-                    </div>
+            <div className="mav-day-labels">
+                {DAYS.map((d) => <span key={d} className="mav-day-label">{d}</span>)}
+            </div>
 
-                    {/* Confirm row appears below the slot */}
-                    {confirmDeleteId === slot.id && (
-                    <div className="mav-confirm">
-                        <span className="mav-confirm-text">Delete this slot?</span>
-                        <div className="mav-confirm-actions">
-                        <button className="mav-confirm-no" onClick={() => setConfirmDeleteId(null)}>Cancel</button>
-                        <button className="mav-confirm-yes" onClick={() => removeSlot(slot.id)} disabled={deletingId === slot.id} >{deletingId === slot.id ? "Deleting..." : "Delete"}</button>
-                        </div>
-                    </div>
-                    )}
-                </div>
+            <div className="mav-grid">
+                {/* Empty cells before first day */}
+                {Array.from({ length: firstDayOfWeek }).map((_, i) => (
+                    <div key={`empty-${i}`} className="mav-cell mav-cell--empty" />
                 ))}
-                </div>
 
-                {/* Add time slot */}
-                {!isDateInPast(selectedDate) && (
-                    <div className="mav-add-slot">
-                    <div className="mav-time-inputs">
-                        <div className="mav-time-field">
-                        <label className="mav-time-label">Start</label>
-                        <input
-                            type="time"
-                            className="mav-time-input"
-                            value={newSlot.start}
-                            onChange={(e) => { setNewSlot(p => ({ ...p, start: e.target.value })); setSlotError(""); }}
-                        />
+                {calendarDays.map((day) => (
+                    <button
+                    key={day}
+                    className={[
+                        "mav-cell",
+                        hasSlots(day) ? "mav-cell--available" : "",
+                        isSelected(day) ? "mav-cell--selected" : "",
+                        isSelected(day) && hasSlots(day) ? "mav-cell--selected-available" : "",
+                        isToday(day) ? "mav-cell--today" : "",
+                    ].join(" ")}
+                    onClick={() => handleDayClick(day)}
+                    >
+                    <span className="mav-cell-number">{day}</span>
+                    {/* {hasSlots(day) && <span className="mav-dot" />} */}
+                    {hasSlots(day) && (
+                        <div className="mav-slot-indicator">
+                            {availability[toDateKey(viewYear, viewMonth, day)]
+                            .slice(0, 5)
+                            .map((_, index) => (
+                                <span key={index} className="mav-dot" />
+                            ))}
                         </div>
-                        <span className="mav-time-sep">–</span>
-                        <div className="mav-time-field">
-                        <label className="mav-time-label">End</label>
-                        <input
-                            type="time"
-                            className="mav-time-input"
-                            value={newSlot.end}
-                            onChange={(e) => { setNewSlot(p => ({ ...p, end: e.target.value })); setSlotError(""); }}
-                        />
-                        </div>
-                    </div>
-                    {slotError && <p className="mav-slot-error">{slotError}</p>}
-                    <button className="mav-btn-add" onClick={addSlot}>
-                        Add Time Slot
+                    )}
                     </button>
-                    </div>
-                )}
-
-
-                {saveSuccess && (<div className="mav-toast"> Availability saved successfully!</div> )}
-                {showDiscardConfirm && (
-                    <div className="mav-confirm-overlay">
-                        <div className="mav-discard-box">
-                        <h4>Unsaved Changes</h4>
-
-                        <p>
-                            You have unsaved availability changes. 
-                            Do you want to discard them?
-                        </p>
-
-                        <div className="mav-discard-actions">
-                            <button
-                            className="mav-discard-cancel"
-                            onClick={cancelDiscard}
-                            >
-                            Keep Editing
-                            </button>
-
-                            <button
-                            className="mav-discard-confirm"
-                            onClick={confirmDiscard}
-                            >
-                            Discard
-                            </button>
-                        </div>
-                        </div>
-                    </div>
-                )}
-                <div className="mav-side-footer">
-                <button className="mav-btn-cancel" onClick={handleCancel}>Cancel</button>
-                {!isDateInPast(selectedDate) && (
-                    <button className="mav-btn-save" onClick={handleSave} disabled={loading}> {loading ? "Saving..." : "Save"} </button>
-                )}
-                </div>
-            </>
-            )}
+                ))}
+            </div>
         </div>
 
-        </>
-        
-      )}
+        {/* Right Panel */}
+        {selectedDate && (
+            <>
+                <div className="mav-backdrop" onClick={handleCancel} />
+                <div className={`mav-side-panel ${selectedDate ? "mav-side-panel--active" : ""}`}>
+                {!selectedDate ? (
+                <div className="mav-empty-state">
+                    <p>Select a date to manage availability</p>
+                </div>
+                ) : (
+                <>
+                    <div className="mav-side-header">
+                    <p className="mav-side-date">{selectedLabel}</p>
+                    <h3 className="mav-side-title">Availability</h3>
+                    </div>
+
+                    <div className="mav-slots">
+                    {selectedSlots.length === 0 && (
+                        <p className="mav-no-slots">No slots added yet.</p>
+                    )}
+                    {selectedSlots.map((slot) => (
+                    <div key={slot.id} className="mav-slot-wrapper">
+                        <div className="mav-slot">
+                        <span className="mav-slot-time">
+                            {formatTime(slot.start)} – {formatTime(slot.end)}
+                        </span>
+                        {slot.is_booked ? null : (
+                            <button
+                            className="mav-slot-remove"
+                            onClick={() => setConfirmDeleteId(confirmDeleteId === slot.id ? null : slot.id)}
+                            aria-label="Remove slot"
+                            >
+                            <img src={TrashIcon} className="mav-trash-icon" />
+                            </button>
+                        )}
+                        </div>
+
+                        {/* Confirm row appears below the slot */}
+                        {confirmDeleteId === slot.id && (
+                        <div className="mav-confirm">
+                            <span className="mav-confirm-text">Delete this slot?</span>
+                            <div className="mav-confirm-actions">
+                            <button className="mav-confirm-no" onClick={() => setConfirmDeleteId(null)}>Cancel</button>
+                            <button className="mav-confirm-yes" onClick={() => removeSlot(slot.id)} disabled={deletingId === slot.id} >{deletingId === slot.id ? "Deleting..." : "Delete"}</button>
+                            </div>
+                        </div>
+                        )}
+                    </div>
+                    ))}
+                    </div>
+
+                    {/* Add time slot */}
+                    {!isDateInPast(selectedDate) && (
+                        <div className="mav-add-slot">
+                        <div className="mav-time-inputs">
+                            <div className="mav-time-field">
+                            <label className="mav-time-label">Start</label>
+                            <input
+                                type="time"
+                                className="mav-time-input"
+                                value={newSlot.start}
+                                onChange={(e) => { setNewSlot(p => ({ ...p, start: e.target.value })); setSlotError(""); }}
+                            />
+                            </div>
+                            <span className="mav-time-sep">–</span>
+                            <div className="mav-time-field">
+                            <label className="mav-time-label">End</label>
+                            <input
+                                type="time"
+                                className="mav-time-input"
+                                value={newSlot.end}
+                                onChange={(e) => { setNewSlot(p => ({ ...p, end: e.target.value })); setSlotError(""); }}
+                            />
+                            </div>
+                        </div>
+                        {slotError && <p className="mav-slot-error">{slotError}</p>}
+                        <button className="mav-btn-add" onClick={addSlot}>
+                            Add Time Slot
+                        </button>
+                        </div>
+                    )}
+
+
+                    {saveSuccess && (<div className="mav-toast"> Availability saved successfully!</div> )}
+                    {showDiscardConfirm && (
+                        <div className="mav-confirm-overlay">
+                            <div className="mav-discard-box">
+                            <h4>Unsaved Changes</h4>
+
+                            <p>
+                                You have unsaved availability changes. 
+                                Do you want to discard them?
+                            </p>
+
+                            <div className="mav-discard-actions">
+                                <button
+                                className="mav-discard-cancel"
+                                onClick={cancelDiscard}
+                                >
+                                Keep Editing
+                                </button>
+
+                                <button
+                                className="mav-discard-confirm"
+                                onClick={confirmDiscard}
+                                >
+                                Discard
+                                </button>
+                            </div>
+                            </div>
+                        </div>
+                    )}
+                    <div className="mav-side-footer">
+                    <button className="mav-btn-cancel" onClick={handleCancel}>Cancel</button>
+                    {!isDateInPast(selectedDate) && (
+                        <button className="mav-btn-save" onClick={handleSave} disabled={loading}> {loading ? "Saving..." : "Save"} </button>
+                    )}
+                    </div>
+                </>
+                )}
+            </div>
+
+            </>
+            
+        )}
+      </div>
+      
 
     </div>
   );
