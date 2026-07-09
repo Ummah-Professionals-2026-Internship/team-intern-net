@@ -262,6 +262,7 @@ export default function CareerPrep() {
                   type="text"
                   value={form.fullName}
                   onChange={handleChange}
+                  placeholder="e.g. John Doe"
                 />
               </Field>
 
@@ -272,6 +273,7 @@ export default function CareerPrep() {
                   type="email"
                   value={form.email}
                   onChange={handleChange}
+                  placeholder="name@domain.com"
                 />
               </Field>
 
@@ -282,6 +284,7 @@ export default function CareerPrep() {
                   type="tel"
                   value={form.phone}
                   onChange={handleChange}
+                  placeholder="(555) 000-0000"
                 />
               </Field>
 
@@ -291,7 +294,7 @@ export default function CareerPrep() {
                   value={form.academicLevel}
                   onChange={handleChange}
                 >
-                  <option value=""></option>
+                  <option value="">Select academic level...</option>
                   {ACADEMIC_LEVEL_OPTIONS.map((o) => (
                     <option key={o} value={o}>{o}</option>
                   ))}
@@ -311,12 +314,13 @@ export default function CareerPrep() {
                   type="text"
                   value={form.major}
                   onChange={handleChange}
+                  placeholder="e.g. Computer Science"
                 />
               </Field>
 
               <Field label="Industry:" error={errors.industry}>
                 <select name="industry" value={form.industry} onChange={handleChange}>
-                  <option value=""></option>
+                  <option value="">Select industry...</option>
                   {INDUSTRY_OPTIONS.map((o) => (
                     <option key={o} value={o}>{o}</option>
                   ))}
@@ -330,6 +334,7 @@ export default function CareerPrep() {
                   type="text"
                   value={form.desiredCareer}
                   onChange={handleChange}
+                  placeholder="e.g. Software Engineer"
                 />
               </Field>
             </div>
@@ -376,7 +381,7 @@ export default function CareerPrep() {
                 value={form.gender} 
                 onChange={handleChange}
               >
-                <option value=""></option>
+                <option value="">Select gender...</option>
                 {GENDER_OPTIONS.map(({ label, value }) => (
                   <option key={value} value={value}>
                     {label}
@@ -411,7 +416,7 @@ export default function CareerPrep() {
                   value={form.referralSource}
                   onChange={handleChange}
                 >
-                  <option value=""></option>
+                  <option value="">Select source...</option>
                   {REFERRAL_OPTIONS.map((o) => (
                     <option key={o} value={o}>{o}</option>
                   ))}
@@ -426,6 +431,7 @@ export default function CareerPrep() {
                 name="comments"
                 value={form.comments}
                 onChange={handleChange}
+                placeholder="Tell us about your career goals, specific topics you'd like to cover, or any questions you have..."
               />
             </div>
           </section>
