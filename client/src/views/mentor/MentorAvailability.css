@@ -35,14 +35,16 @@
 .mav-calendar-panel {
   flex: 1;
   background: #ffffff;
-  border-radius: 16px;
+  border-radius: 15px;
   border: 1px solid #e5e7eb;
   padding: 32px;
   box-sizing: border-box;
   min-width: 0;
-  overflow: hidden;
-  position: relative
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
 }
+
 
 
 .mav-loading {
@@ -69,6 +71,19 @@
   to { transform: rotate(360deg); }
 }
 
+.mav-calendar-panel::-webkit-scrollbar {
+  width: 6px;
+}
+
+.mav-calendar-panel::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.mav-calendar-panel::-webkit-scrollbar-thumb {
+  background: #c0d9e0 transparent;
+  border-radius: 999px;
+}
+
 /* ---------- Calendar Header ---------- */
 .mav-calendar-header {
   display: flex;
@@ -78,7 +93,7 @@
 }
 
 .mav-month-title {
-  font-size: 20px;
+  font-size: 24px;
   font-weight: 700;
   font-family: "Kollektif Bold", system-ui, -apple-system, sans-serif;
   color: #111827;
@@ -121,7 +136,7 @@
 
 .mav-day-label {
   text-align: center;
-  font-size: 12px;
+  font-size: 18px;
   font-family: "Kollektif Bold", system-ui, -apple-system, sans-serif;
   color: black;
   text-transform: uppercase;
@@ -176,6 +191,12 @@
   background: #025571;
 }
 
+.mav-cell--available {
+  background: #ecfdf5;
+  border-color: #16a34a;
+}
+
+
 .mav-cell--selected .mav-cell-number {
   color: #ffffff;
   font-weight: 700;
@@ -183,6 +204,25 @@
 
 .mav-cell--selected .mav-dot {
   background: #ffffff;
+  border: 1px solid #158025;
+  box-sizing: border-box;
+}
+
+.mav-cell--selected-available {
+  background: #15803D; /* dark green */
+  border-color: #15803D;
+}
+.mav-cell--selected-available .mav-dot{
+    background: white;
+    border-color: white;
+}
+
+.mav-cell--available .mav-cell-number {
+  color: #166534;
+}
+
+.mav-cell--selected-available .mav-cell-number {
+  color: white;
 }
 
 .mav-cell-number {
@@ -196,23 +236,40 @@
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background: #16a34a;
+  background: #40AE50;
   flex-shrink: 0;
+}
+
+.mav-slot-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin-top: 6px;
 }
 
 /* ---------- Right Side Panel ---------- */
 .mav-side-panel {
-  width: 300px;
+  width: 380px;
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100vh;
   flex-shrink: 0;
   background: #ffffff;
-  border-radius: 16px;
-  border: 1px solid #e5e7eb;
+  border-radius: 15px 0 0 15px;
+  border: 1px solid rgba(0, 0, 0, 0.25);
   padding: 24px;
+  background: #FFF;
   box-sizing: border-box;
   display: flex;
+  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
   flex-direction: column;
   gap: 20px;
+  z-index: 1000;
+  animation: slideInRight .25s ease;
 }
+
 
 .mav-empty-state {
   flex: 1;
@@ -224,29 +281,46 @@
   text-align: center;
 }
 
+.mav-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.25);
+    z-index: 999;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+
 /* ---------- Side Panel Header ---------- */
 .mav-side-header {
   font-family: "Kollektif", system-ui, -apple-system, sans-serif;
-
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 50px;
 }
 
 .mav-side-date {
   margin: 0;
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 24px;
+  text-align: center;
   color: #111827;
-  font-family: "Kollektif", system-ui, -apple-system, sans-serif;
-
+  font-family: "Kollektif Bold", system-ui, -apple-system, sans-serif;
+  line-height: normal;
 }
 
 .mav-side-title {
   margin: 0;
-  font-size: 13px;
-  font-weight: 500;
-  color: #6b7280;
+  font-size: 20px;
+  font-family: "Kollektif Bold", system-ui, -apple-system, sans-serif;
+  color: #111827;
 }
 
 /* ---------- Slots list ---------- */
@@ -274,9 +348,8 @@
 }
 
 .mav-slot-time {
-  font-size: 14px;
+  font-size: 16px;
   color: #111827;
-  font-weight: 500;
 }
 
 .mav-slot-remove {
@@ -510,4 +583,66 @@
 @keyframes mav-fade-in {
   from { opacity: 0; transform: translateY(-4px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+
+.mav-confirm-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.25);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  z-index: 20;
+}
+
+.mav-discard-box {
+  width: 280px;
+  background: white;
+  font-family: "Kollektif", system-ui, -apple-system, sans-serif;
+  border-radius: 12px;
+  padding: 20px;
+
+  box-shadow: 0 8px 30px rgba(0,0,0,.2);
+}
+
+.mav-discard-box h4 {
+  margin: 0 0 10px;
+  font-family: "Kollektif Bold", sans-serif;
+}
+
+.mav-discard-box p {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.mav-discard-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.mav-discard-cancel,
+.mav-discard-confirm {
+  flex: 1;
+  padding: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.mav-discard-cancel {
+  background: white;
+  color: black;
+  font-family: "Kollektif", system-ui, -apple-system, sans-serif;
+  border: 1px solid #d1d5db;
+}
+
+.mav-discard-confirm {
+  background: #DA1D37;
+  color: white;
+  border: none;
+  font-family: "Kollektif", system-ui, -apple-system, sans-serif;
+
 }

@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 import "./MentorAvailability.css";
+import TrashIcon from "../../assets/icons/trash.svg";
 
 const DAYS = ["Sun", "Mon", "Tues", "Wed", "Thurs", "Fri", "Sat"];
 const MONTHS = [
@@ -45,6 +46,7 @@ export default function MentorAvailability() {
   const [loading, setLoading] = useState(false);
   const [confirmDeleteId, setConfirmDeleteId] = useState(null);
   const [deletingId, setDeletingId] = useState(null);
+  const [showDiscardConfirm, setShowDiscardConfirm] = useState(false);
 
   // Slot being added
   const [newSlot, setNewSlot] = useState({ start: "", end: "" });
@@ -130,6 +132,35 @@ export default function MentorAvailability() {
     const key = toDateKey(viewYear, viewMonth, day);
     return availability[key]?.length > 0;
   };
+  
+  const hasUnsavedChanges = () => {
+    if (!selectedDate) return false;
+    return (availability[selectedDate] || []).some(
+        (slot) => String(slot.id).startsWith("local_")
+    );
+
+  };
+
+  const discardUnsavedSlots = () => {
+    
+    if (!selectedDate) return;
+    setAvailability((prev) => {
+        const savedSlots = (prev[selectedDate] || []).filter(
+        (slot) => !String(slot.id).startsWith("local_")
+        );
+
+        const next = { ...prev };
+
+        if (savedSlots.length === 0) {
+        delete next[selectedDate];
+        } else {
+        next[selectedDate] = savedSlots;
+        }
+
+        return next;
+    });
+  };
+
 
   const handleDayClick = (day) => {
 
@@ -205,11 +236,11 @@ export default function MentorAvailability() {
 
     if (String(id).startsWith("local_")) {
         setAvailability((prev) => {
-        const updated = (prev[selectedDate] || []).filter((s) => s.id !== id);
-        const next = { ...prev };
-        if (updated.length === 0) delete next[selectedDate];
-        else next[selectedDate] = updated;
-        return next;
+            const updated = (prev[selectedDate] || []).filter((s) => s.id !== id);
+            const next = { ...prev };
+            if (updated.length === 0) delete next[selectedDate];
+            else next[selectedDate] = updated;
+            return next;
         });
         setConfirmDeleteId(null);
         return;
@@ -235,6 +266,7 @@ export default function MentorAvailability() {
         else next[selectedDate] = updated;
         return next;
         });
+        setSlotError("");
         setSaveSuccess(true);
         setTimeout(() => setSaveSuccess(false), 3000);
     } catch (err) {
@@ -271,6 +303,7 @@ export default function MentorAvailability() {
         if (!response.ok) {
             setSlotError(data.detail || "Failed to save availability.");
         } else {
+            setSlotError("");
             setAvailability((prev) => ({
                 ...prev,
                 [selectedDate]: data.slots.map((slot) => ({
@@ -292,11 +325,35 @@ export default function MentorAvailability() {
     }
 
 };
+    const confirmDiscard = () => {
+        discardUnsavedSlots();
+        setShowDiscardConfirm(false);
+        closePanel();
+    };
+
+
+    const cancelDiscard = () => {
+        setShowDiscardConfirm(false);
+    };
+
+    const closePanel = () => {
+        setSelectedDate(null);
+        setNewSlot({ start: "", end: "" });
+        setSlotError("");
+        setConfirmDeleteId(null);
+    };
 
   const handleCancel = () => {
-    setSelectedDate(null);
-    setNewSlot({ start: "", end: "" });
-    setSlotError("");
+    if (hasUnsavedChanges()) {
+        setShowDiscardConfirm(true);
+        return;
+    }
+
+    closePanel();
+
+    // setSelectedDate(null);
+    // setNewSlot({ start: "", end: "" });
+    // setSlotError("");
   };
 
   return (
@@ -339,13 +396,24 @@ export default function MentorAvailability() {
               key={day}
               className={[
                 "mav-cell",
+                hasSlots(day) ? "mav-cell--available" : "",
                 isSelected(day) ? "mav-cell--selected" : "",
+                isSelected(day) && hasSlots(day) ? "mav-cell--selected-available" : "",
                 isToday(day) ? "mav-cell--today" : "",
               ].join(" ")}
               onClick={() => handleDayClick(day)}
             >
-              <span className="mav-cell-number">{day}</span>
-              {hasSlots(day) && <span className="mav-dot" />}
+            <span className="mav-cell-number">{day}</span>
+            {/* {hasSlots(day) && <span className="mav-dot" />} */}
+            {hasSlots(day) && (
+                <div className="mav-slot-indicator">
+                    {availability[toDateKey(viewYear, viewMonth, day)]
+                    .slice(0, 5)
+                    .map((_, index) => (
+                        <span key={index} className="mav-dot" />
+                    ))}
+                </div>
+            )}
             </button>
           ))}
         </div>
@@ -353,105 +421,128 @@ export default function MentorAvailability() {
 
       {/* Right Panel */}
       {selectedDate && (
-              <div className={`mav-side-panel ${selectedDate ? "mav-side-panel--active" : ""}`}>
-        {!selectedDate ? (
-          <div className="mav-empty-state">
-            <p>Select a date to manage availability</p>
-          </div>
-        ) : (
-          <>
-            <div className="mav-side-header">
-              <p className="mav-side-date">{selectedLabel}</p>
-              <h3 className="mav-side-title">Availability</h3>
+        <>
+            <div className="mav-backdrop" onClick={handleCancel} />
+            <div className={`mav-side-panel ${selectedDate ? "mav-side-panel--active" : ""}`}>
+            {!selectedDate ? (
+            <div className="mav-empty-state">
+                <p>Select a date to manage availability</p>
             </div>
+            ) : (
+            <>
+                <div className="mav-side-header">
+                <p className="mav-side-date">{selectedLabel}</p>
+                <h3 className="mav-side-title">Availability</h3>
+                </div>
 
-            <div className="mav-slots">
-              {selectedSlots.length === 0 && (
-                <p className="mav-no-slots">No slots added yet.</p>
-              )}
-            {selectedSlots.map((slot) => (
-            <div key={slot.id} className="mav-slot-wrapper">
-                <div className="mav-slot">
-                <span className="mav-slot-time">
-                    {formatTime(slot.start)} – {formatTime(slot.end)}
-                </span>
-                {slot.is_booked ? null : (
-                    <button
-                    className="mav-slot-remove"
-                    onClick={() => setConfirmDeleteId(confirmDeleteId === slot.id ? null : slot.id)}
-                    aria-label="Remove slot"
-                    >
-                    <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="13" cy="13" r="13" fill="white"/>
-                        <circle cx="13" cy="13" r="12.5" stroke="#DA1D37" strokeOpacity="0.34"/>
-                        <path d="M20.5623 6.8125L5.43726 6.81251" stroke="#FF383C" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                        <path d="M10.9375 10.9375V16.4375" stroke="#FF383C" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                        <path d="M15.0625 10.9375V16.4375" stroke="#FF383C" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                        <path d="M19.1875 6.8125V19.875C19.1875 20.0573 19.1151 20.2322 18.9861 20.3611C18.8572 20.4901 18.6823 20.5625 18.5 20.5625H7.5C7.31766 20.5625 7.1428 20.4901 7.01386 20.3611C6.88493 20.2322 6.8125 20.0573 6.8125 19.875V6.8125" stroke="#FF383C" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                        <path d="M16.4375 6.8125V5.4375C16.4375 5.07283 16.2926 4.46523C15.7769 4.20737 15.4272 4.0625 15.0625 4.0625H10.9375C10.5728 4.0625 10.2231 4.20737 9.96523 4.46523C9.70737 4.72309 9.5625 5.07283 9.5625 5.4375V6.8125" stroke="#FF383C" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
+                <div className="mav-slots">
+                {selectedSlots.length === 0 && (
+                    <p className="mav-no-slots">No slots added yet.</p>
+                )}
+                {selectedSlots.map((slot) => (
+                <div key={slot.id} className="mav-slot-wrapper">
+                    <div className="mav-slot">
+                    <span className="mav-slot-time">
+                        {formatTime(slot.start)} – {formatTime(slot.end)}
+                    </span>
+                    {slot.is_booked ? null : (
+                        <button
+                        className="mav-slot-remove"
+                        onClick={() => setConfirmDeleteId(confirmDeleteId === slot.id ? null : slot.id)}
+                        aria-label="Remove slot"
+                        >
+                        <img src={TrashIcon} className="mav-trash-icon" />
+                        </button>
+                    )}
+                    </div>
+
+                    {/* Confirm row appears below the slot */}
+                    {confirmDeleteId === slot.id && (
+                    <div className="mav-confirm">
+                        <span className="mav-confirm-text">Delete this slot?</span>
+                        <div className="mav-confirm-actions">
+                        <button className="mav-confirm-no" onClick={() => setConfirmDeleteId(null)}>Cancel</button>
+                        <button className="mav-confirm-yes" onClick={() => removeSlot(slot.id)} disabled={deletingId === slot.id} >{deletingId === slot.id ? "Deleting..." : "Delete"}</button>
+                        </div>
+                    </div>
+                    )}
+                </div>
+                ))}
+                </div>
+
+                {/* Add time slot */}
+                {!isDateInPast(selectedDate) && (
+                    <div className="mav-add-slot">
+                    <div className="mav-time-inputs">
+                        <div className="mav-time-field">
+                        <label className="mav-time-label">Start</label>
+                        <input
+                            type="time"
+                            className="mav-time-input"
+                            value={newSlot.start}
+                            onChange={(e) => { setNewSlot(p => ({ ...p, start: e.target.value })); setSlotError(""); }}
+                        />
+                        </div>
+                        <span className="mav-time-sep">–</span>
+                        <div className="mav-time-field">
+                        <label className="mav-time-label">End</label>
+                        <input
+                            type="time"
+                            className="mav-time-input"
+                            value={newSlot.end}
+                            onChange={(e) => { setNewSlot(p => ({ ...p, end: e.target.value })); setSlotError(""); }}
+                        />
+                        </div>
+                    </div>
+                    {slotError && <p className="mav-slot-error">{slotError}</p>}
+                    <button className="mav-btn-add" onClick={addSlot}>
+                        Add Time Slot
                     </button>
+                    </div>
+                )}
+
+
+                {saveSuccess && (<div className="mav-toast"> Availability saved successfully!</div> )}
+                {showDiscardConfirm && (
+                    <div className="mav-confirm-overlay">
+                        <div className="mav-discard-box">
+                        <h4>Unsaved Changes</h4>
+
+                        <p>
+                            You have unsaved availability changes. 
+                            Do you want to discard them?
+                        </p>
+
+                        <div className="mav-discard-actions">
+                            <button
+                            className="mav-discard-cancel"
+                            onClick={cancelDiscard}
+                            >
+                            Keep Editing
+                            </button>
+
+                            <button
+                            className="mav-discard-confirm"
+                            onClick={confirmDiscard}
+                            >
+                            Discard
+                            </button>
+                        </div>
+                        </div>
+                    </div>
+                )}
+                <div className="mav-side-footer">
+                <button className="mav-btn-cancel" onClick={handleCancel}>Cancel</button>
+                {!isDateInPast(selectedDate) && (
+                    <button className="mav-btn-save" onClick={handleSave} disabled={loading}> {loading ? "Saving..." : "Save"} </button>
                 )}
                 </div>
-
-                {/* Confirm row appears below the slot */}
-                {confirmDeleteId === slot.id && (
-                <div className="mav-confirm">
-                    <span className="mav-confirm-text">Delete this slot?</span>
-                    <div className="mav-confirm-actions">
-                    <button className="mav-confirm-no" onClick={() => setConfirmDeleteId(null)}>Cancel</button>
-                    <button className="mav-confirm-yes" onClick={() => removeSlot(slot.id)} disabled={deletingId === slot.id} >{deletingId === slot.id ? "Deleting..." : "Delete"}</button>
-                    </div>
-                </div>
-                )}
-            </div>
-            ))}
-            </div>
-
-            {/* Add time slot */}
-            {!isDateInPast(selectedDate) && (
-                <div className="mav-add-slot">
-                <div className="mav-time-inputs">
-                    <div className="mav-time-field">
-                    <label className="mav-time-label">Start</label>
-                    <input
-                        type="time"
-                        className="mav-time-input"
-                        value={newSlot.start}
-                        onChange={(e) => { setNewSlot(p => ({ ...p, start: e.target.value })); setSlotError(""); }}
-                    />
-                    </div>
-                    <span className="mav-time-sep">–</span>
-                    <div className="mav-time-field">
-                    <label className="mav-time-label">End</label>
-                    <input
-                        type="time"
-                        className="mav-time-input"
-                        value={newSlot.end}
-                        onChange={(e) => { setNewSlot(p => ({ ...p, end: e.target.value })); setSlotError(""); }}
-                    />
-                    </div>
-                </div>
-                {slotError && <p className="mav-slot-error">{slotError}</p>}
-                <button className="mav-btn-add" onClick={addSlot}>
-                    Add Time Slot
-                </button>
-                </div>
+            </>
             )}
+        </div>
 
-
-            {saveSuccess && (<div className="mav-toast"> Availability saved successfully!</div> )}
-            
-            <div className="mav-side-footer">
-              <button className="mav-btn-cancel" onClick={handleCancel}>Cancel</button>
-              {!isDateInPast(selectedDate) && (
-                <button className="mav-btn-save" onClick={handleSave} disabled={loading}> {loading ? "Saving..." : "Save"} </button>
-              )}
-            </div>
-          </>
-        )}
-      </div>
-
+        </>
+        
       )}
 
     </div>

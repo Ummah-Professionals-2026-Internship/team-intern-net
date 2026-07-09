@@ -37,7 +37,9 @@
   flex-direction: column;
   background: linear-gradient(0deg, #8ACBDB 0%, #007CA6 38%, #00212C 100%);
   position: relative;
+  align-items: flex-start;
   overflow: hidden;
+  gap: 40px;
   box-sizing: border-box;
 }
 
@@ -45,34 +47,33 @@
 .ml-brand {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 0 24px 28px;
+  justify-content: center;
+  width: 100%;
+  /* background-size: contain;
+  background-position: center; */
+  padding: 20px 0;
+  /* background-repeat: no-repeat; */
+}
+.ml-logo{
+  width: 193px;
+  height: auto;
+  object-fit: contain;
 }
 
-.ml-brand-icon {
-  width: 220px;
-  height: 63px;
-  display: flex;
-  aspect-ratio: 193/63;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  background-repeat: no-repeat;
-}
 
 /* ── Nav ── */
 .ml-nav {
   display: flex;
   flex-direction: column;
   flex: 1;
-  gap: 2px;
+  gap: 10px;
   padding: 0 16px;
 }
 
 .ml-nav-item {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   padding: 11px 16px;
   border-radius: 10px;
   text-decoration: none;
@@ -101,12 +102,8 @@
 }
 
 .ml-nav-icon {
-  font-size: 16px;
-  flex-shrink: 0;
-  /* Swap these with your SVG icons:
-     replace the emoji span with:
-     <img src={icon} alt="" className="ml-nav-icon" />
-     or an SVG component */
+  width: 25px;
+  height: 25px;
 }
 
 .ml-nav-label {
@@ -117,18 +114,19 @@
 .ml-logout {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   padding: 11px 16px;
   margin: 8px 16px 16px;
   border-radius: 10px;
   border: none;
   background: transparent;
-  color: #ceeaf3;
+  color: #FFFF;
   font-size: 25px;
   font-family: 'Kollektif', system-ui, -apple-system, sans-serif;
+  font-weight: 400;
   cursor: pointer;
   transition: background 0.15s, color 0.15s;
-  text-align: left;
+  /* text-align: left; */
   position: relative;
   z-index: 1;
 }
@@ -154,7 +152,10 @@
 .ml-main {
   flex: 1;
   overflow-y: auto;
-  background: #f3f8fa;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
   padding: 36px 40px;
   box-sizing: border-box;
 }

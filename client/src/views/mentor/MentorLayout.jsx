@@ -1,16 +1,25 @@
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import "./MentorLayout.css";
 import umLogo from "../../assets/images/um-text-logo.png";
+import bgImage from "../../assets/images/mentordash-bg.png"
+
+import DashIcon from "../../assets/icons/home.svg";
+import ReqIcon from "../../assets/icons/requests.svg";
+import MeetingIcon from "../../assets/icons/meeting.svg";
+import ProfileIcon from "../../assets/icons/person.svg";
+import ClockIcon from "../../assets/icons/clock.svg";
+import SettingIcon from "../../assets/icons/settings.svg";
+import LogOutIcon from "../../assets/icons/signout.svg";
 
 
 {/* change icons*/}
 const NAV_ITEMS = [
-  { label: "Dashboard", to: "/mentor/", icon: "🏠" },
-  { label: "Requests",  to: "/mentor/requests",  icon: "📋" },
-  { label: "Meetings",  to: "/mentor/meetings",   icon: "📅" },
-  { label: "Availability", to: "/mentor/availability", icon: "🕐" },
-  { label: "Profile",   to: "/mentor/profile",    icon: "👤" },
-  { label: "Settings",  to: "/mentor/settings",   icon: "⚙️" },
+  { label: "Dashboard", to: "/mentor/", icon: DashIcon},
+  { label: "Requests",  to: "/mentor/requests",  icon: ReqIcon },
+  { label: "Meetings",  to: "/mentor/meetings",   icon: MeetingIcon},
+  { label: "Availability", to: "/mentor/availability", icon: ClockIcon},
+  { label: "Profile",   to: "/mentor/profile",    icon: ProfileIcon },
+  { label: "Settings",  to: "/mentor/settings",   icon: SettingIcon },
 ];
 
 export default function MentorLayout() {
@@ -26,13 +35,13 @@ export default function MentorLayout() {
       {/* ── Sidebar ── */}
       <aside className="ml-sidebar">
         {/* Logo / brand */}
-        <div className="ml-brand">
-          <div className="ml-brand-icon" style={{ backgroundImage: `url(${umLogo})` }} />
+        <div className="ml-brand" >
+          <img src={umLogo} alt="UM Logo" className="ml-logo" />
         </div>
 
         {/* Nav links */}
         <nav className="ml-nav">
-          {NAV_ITEMS.map(({ label, to }) => (
+          {NAV_ITEMS.map(({ label, to, icon}) => (
             <NavLink
               key={to}
               to={to}
@@ -41,7 +50,7 @@ export default function MentorLayout() {
                 `ml-nav-item${isActive ? " ml-nav-item--active" : ""}`
               }
             >
-              {/* <span className="ml-nav-icon">{icon}</span> */}
+              <img src={icon} alt="" className="ml-nav-icon"/>
               <span className="ml-nav-label">{label}</span>
             </NavLink>
           ))}
@@ -50,7 +59,7 @@ export default function MentorLayout() {
         {/* Logout pinned to bottom */}
         <button className="ml-logout" onClick={handleLogout}>
             {/* /* add logout icon */}
-          {/* <span className="ml-nav-icon">↩</span> */}
+          <img src={LogOutIcon} className="ml-nav-icon" />
           <span className="ml-nav-label">Logout</span>
         </button>
 
@@ -59,8 +68,9 @@ export default function MentorLayout() {
       </aside>
 
       {/* ── Main content area ── */}
-      <main className="ml-main">
+      <main className="ml-main" style={{backgroundImage: `url(${bgImage})`}}>
         <Outlet />
+
       </main>
     </div>
   );
