@@ -6,7 +6,7 @@ import ProtectedRoute from './routes/ProtectedRoute';
 
 import SignIn from './views/onboarding/SignIn';
 import MentorApplicationForm from './views/mentorSignup/MentorApplicationForm';
-
+import AvailabilityView from './views/availability/AvailabilityView';
 
 // Moved ProtectedRoute to routes folder.
 //
@@ -28,6 +28,11 @@ export const router = createBrowserRouter([
     {
         path: '/prep',
         element: <MentorApplicationForm />,
+    },
+    // Temporary test route
+    {
+        path: '/availability/:mentorId',
+        element: <AvailabilityView mentorId={7} />,
     },
 
     {

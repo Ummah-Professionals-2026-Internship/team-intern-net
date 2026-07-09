@@ -1,3 +1,4 @@
+from app.core.calendar import create_meet_event
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
@@ -12,6 +13,7 @@ from app.schemas.meeting import MeetingCreate, MeetingResponse
 from app.core.email import send_email
 from app.schemas.availability_slot import AvailabilitySlotCreate, AvailabilitySlotBulkCreate, AvailabilitySlotBulkResponse
 from app.models.mentor import Mentor
+from app.models.user import User
 
 router = APIRouter()
 
@@ -97,5 +99,48 @@ async def book_meeting(booking: MeetingCreate, student_id: int, db: AsyncSession
 
     await db.commit()
     await db.refresh(meeting)
+    await db.refresh(slot)
 
+    # Generate Google Meet link
+    student_user_result = await db.execute(select(User).where(User.id == student_id))
+    student_user = student_user_result.scalar_one_or_none()
+
+    mentor_user_result = await db.execute(select(User).where(User.id == assignment.mentor_id))
+    mentor_user = mentor_user_result.scalar_one_or_none()
+
+    attendees = []
+    if student_user:
+        attendees.append(student_user.email)
+    if mentor_user:
+        attendees.append(mentor_user.email)
+
+    meet_link = await create_meet_event(
+    title="Career Prep Meeting",
+    start_datetime=slot.start_datetime,
+    end_datetime=slot.end_datetime
+)
+
+
+    # Store meet link in meeting record
+    meeting.meeting_url = meet_link
+    await db.commit()
+    await db.refresh(meeting)
+
+    meeting_time = slot.start_datetime.strftime("%B %d, %Y at %I:%M %p")
+
+    if student_user:
+        await send_email(
+            subject="Meeting Scheduled!",
+            recipient=student_user.email,
+            body="<h2>Hi " + student_user.full_name + ",</h2><p>Your meeting has been scheduled for <strong>" + meeting_time + "</strong>.</p><p><strong>Join here:</strong> <a href='" + meet_link + "'>" + meet_link + "</a></p>"
+        )
+
+    if mentor_user:
+        await send_email(
+            subject="New Meeting Scheduled",
+            recipient=mentor_user.email,
+            body="<h2>Hi " + mentor_user.full_name + ",</h2><p>A student has booked a meeting with you on <strong>" + meeting_time + "</strong>.</p><p><strong>Join here:</strong> <a href='" + meet_link + "'>" + meet_link + "</a></p>"
+        )
+
+    meeting.slot = slot
     return meeting

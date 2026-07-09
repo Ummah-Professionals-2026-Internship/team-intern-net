@@ -1,0 +1,96 @@
+.av-container {
+  max-width: 640px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  font-family: inherit;
+}
+
+.av-title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.av-subtitle {
+  color: #666;
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+}
+
+.av-state {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+}
+
+.av-error {
+  color: #c0392b;
+}
+
+.av-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.75rem;
+}
+
+.av-slot {
+  border: 1.5px solid #ddd;
+  border-radius: 10px;
+  padding: 0.85rem 1rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  background: #fff;
+}
+
+.av-slot:hover {
+  border-color: #3b82f6;
+  background: #eff6ff;
+}
+
+.av-slot--selected {
+  border-color: #2563eb;
+  background: #dbeafe;
+}
+
+.av-slot-date {
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.av-slot-duration {
+  font-size: 0.8rem;
+  color: #666;
+  margin-top: 0.2rem;
+}
+
+.av-confirm {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background: #f0fdf4;
+  border: 1px solid #86efac;
+  border-radius: 10px;
+}
+
+.av-btn {
+  margin-top: 0.5rem;
+  padding: 0.5rem 1.25rem;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.av-btn:hover {
+  background: #1d4ed8;
+}
+
+.av-input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 16px;
+}
