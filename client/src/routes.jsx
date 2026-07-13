@@ -7,6 +7,8 @@ import ProtectedRoute from './routes/ProtectedRoute';
 import SignIn from './views/onboarding/SignIn';
 import MentorApplicationForm from './views/mentorSignup/MentorApplicationForm';
 import AvailabilityView from './views/availability/AvailabilityView';
+import StudentLayout from './views/student/StudentLayout';
+
 
 // Moved ProtectedRoute to routes folder.
 //
@@ -41,6 +43,14 @@ export const router = createBrowserRouter([
             { path: '/dashboard', element: <App /> },
         ],
     },
+
+    {
+  path: '/student',
+  element: <StudentLayout />,
+  children: [
+    { path: 'availability', element: <AvailabilityView /> },
+  ],
+},
 
 
     // 2. Main Application Routes
