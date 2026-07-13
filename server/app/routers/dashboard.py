@@ -12,7 +12,7 @@ print("DASHBOARD ROUTER LOADED")
 async def student_dashboard(user=Depends(get_current_user)):
 
     if not user:
-        raise HTTPException(status_code=401, detail="Unauthorized")
+        raise HTTPException(status_code=401, detail="Unauthorized") #If 
 
     if user["role"] != RoleEnum.student.value:
         raise HTTPException(status_code=403, detail="Forbidden")

@@ -6,13 +6,15 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
 from .enums import ServiceTypeEnum, GenderEnum
+from .mentor_tag import MentorTag #Importing student tags for tag logic
 
 
 if TYPE_CHECKING:
     from .user import User
     from .availability_slot import AvailabilitySlot
     from .mentor_assignment import MentorAssignment
- 
+    from .mentor_tag import MentorTag #Type checking the import
+
 class Mentor(Base):
     __tablename__ = "mentors"
 
@@ -40,3 +42,4 @@ class Mentor(Base):
     user        : Mapped["User"]                   = relationship(back_populates="mentor")
     slots       : Mapped[List["AvailabilitySlot"]] = relationship(back_populates="mentor", cascade="all, delete-orphan")
     assignments : Mapped[List["MentorAssignment"]] = relationship(back_populates="mentor")
+    tag_links   : Mapped[List["MentorTag"]] = relationship(back_populates="mentor", cascade="all, delete-orphan") #More about tags
