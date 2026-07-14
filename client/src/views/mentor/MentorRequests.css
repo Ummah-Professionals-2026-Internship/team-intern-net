@@ -1,0 +1,457 @@
+@font-face {
+  font-family: "Kollektif";
+  src: url("../../fonts/kollektif-webfont/Kollektif.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Kollektif Bold";
+  src: url("../../fonts/kollektif-webfont/Kollektif-Bold.woff") format("woff");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+
+/* ============================================================
+   MentorRequests.css
+   All selectors namespaced with .mrq- to avoid global bleed
+   ============================================================ */
+
+/* ---------- Page ---------- */
+.mrq-page {
+  padding: 32px 40px;
+  box-sizing: border-box;
+  font-family: 'Kollektif', system-ui, -apple-system, sans-serif;
+  max-width: 1100px;
+}
+
+.mrq-header {
+  margin-bottom: 24px;
+}
+
+.mrq-detail-header {
+  margin-bottom: 24px;
+}
+
+.mrq-title {
+  margin: 0 0 6px;
+  font-size: 26px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.mrq-subtitle {
+  margin: 0;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+/* ---------- Back button ---------- */
+.mrq-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  color: #025571;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 20px;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.mrq-back:hover {
+  text-decoration: underline;
+}
+
+/* ---------- Card (list page) ---------- */
+.mrq-card {
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
+  overflow: hidden;
+}
+
+/* ---------- States ---------- */
+.mrq-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 32px;
+  color: #9ca3af;
+  font-size: 14px;
+  gap: 12px;
+}
+
+.mrq-state--error {
+  color: #dc2626;
+}
+
+/* ---------- Spinner ---------- */
+.mrq-spinner {
+  width: 28px;
+  height: 28px;
+  border: 3px solid #e5e7eb;
+  border-top-color: #025571;
+  border-radius: 50%;
+  animation: mrq-spin 0.7s linear infinite;
+}
+
+@keyframes mrq-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ---------- Table ---------- */
+.mrq-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.mrq-th {
+  padding: 14px 20px;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 600;
+  color: #6b7280;
+  border-bottom: 1px solid #f3f4f6;
+  background: #f9fafb;
+}
+
+.mrq-th--right {
+  text-align: right;
+}
+
+.mrq-row {
+  transition: background 0.12s;
+}
+
+.mrq-row:hover {
+  background: #f9fafb;
+}
+
+.mrq-row:not(:last-child) {
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.mrq-td {
+  padding: 16px 20px;
+  font-size: 14px;
+  color: #374151;
+  vertical-align: middle;
+}
+
+.mrq-td--name {
+  font-weight: 600;
+  color: #111827;
+}
+
+.mrq-td--action {
+  text-align: right;
+}
+
+/* ---------- Status badge ---------- */
+.mrq-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 100px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.mrq-badge--pending {
+  background: #fef9c3;
+  color: #854d0e;
+}
+
+.mrq-badge--active {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.mrq-badge--declined {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.mrq-badge--completed {
+  background: #e0f2fe;
+  color: #075985;
+}
+
+.mrq-badge--cancelled {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+/* ---------- View button ---------- */
+.mrq-btn-view {
+  padding: 8px 18px;
+  background: #025571;
+  color: #ffffff;
+  border: none;
+  border-radius: 100px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.mrq-btn-view:hover {
+  background: #024a62;
+}
+
+/* ---------- Detail page sections ---------- */
+.mrq-section {
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
+  padding: 24px 28px;
+  margin-bottom: 16px;
+}
+
+.mrq-section-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.mrq-section-title h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.mrq-section-icon {
+  font-size: 20px;
+}
+
+/* ---------- Info grid ---------- */
+.mrq-info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px 40px;
+}
+
+.mrq-info-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.mrq-info-label {
+  font-size: 12px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.mrq-info-value {
+  font-size: 15px;
+  font-weight: 600;
+  color: #111827;
+}
+
+/* ---------- Comments ---------- */
+.mrq-comments {
+  background: #f0f9ff;
+  border-radius: 10px;
+  padding: 16px 20px;
+  font-size: 14px;
+  color: #374151;
+  line-height: 1.6;
+}
+
+.mrq-empty {
+  color: #9ca3af;
+  font-style: italic;
+}
+
+/* ---------- Resume ---------- */
+.mrq-resume {
+  display: flex;
+  justify-content: center;
+  padding: 8px 0;
+}
+
+.mrq-resume-link {
+  background: #f0f9ff;
+  border: none;
+  color: #025571;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 14px 80px;
+  border-radius: 10px;
+  cursor: not-allowed;
+  opacity: 0.6;
+  font-family: system-ui, -apple-system, sans-serif;
+  width: 100%;
+}
+
+/* ---------- Action buttons ---------- */
+.mrq-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 8px;
+  padding-bottom: 8px;
+}
+
+.mrq-btn-decline {
+  padding: 12px 28px;
+  background: #ffffff;
+  color: #dc2626;
+  border: 1.5px solid #dc2626;
+  border-radius: 100px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: not-allowed;
+  opacity: 0.5;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.mrq-btn-accept {
+  padding: 12px 28px;
+  background: #16a34a;
+  color: #ffffff;
+  border: none;
+  border-radius: 100px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.mrq-btn-accept:hover:not(:disabled) {
+  background: #15803d;
+}
+
+.mrq-btn-accept:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ---------- Modal ---------- */
+.mrq-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.mrq-modal {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 36px 40px;
+  width: 100%;
+  max-width: 440px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+}
+
+.mrq-modal-icon {
+  font-size: 36px;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  border: 2px solid #025571;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mrq-modal-title {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.mrq-modal-subtitle {
+  margin: 0;
+  font-size: 14px;
+  color: #6b7280;
+  text-align: center;
+}
+
+.mrq-modal-details {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mrq-modal-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+}
+
+.mrq-modal-label {
+  color: #6b7280;
+}
+
+.mrq-modal-value {
+  font-weight: 600;
+  color: #111827;
+}
+
+.mrq-modal-notice {
+  width: 100%;
+  background: #f0f9ff;
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 13px;
+  color: #0369a1;
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  text-align: center;
+  justify-content: center;
+}
+
+.mrq-modal-error {
+  margin: 0;
+  font-size: 13px;
+  color: #dc2626;
+}
+
+.mrq-modal-btns {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+}
+
+.mrq-btn-cancel {
+  flex: 1;
+  padding: 11px;
+  background: #ffffff;
+  color: #374151;
+  border: 1.5px solid #d1d5db;
+  border-radius: 100px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.mrq-btn-cancel:hover {
+  background: #f3f4f6;
+}
+
+

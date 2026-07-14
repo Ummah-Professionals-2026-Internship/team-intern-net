@@ -15,8 +15,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.database import get_db
 from app.schemas import LoginRequest, TokenResponse, LoggedInUser # ignore For demo purpose
 from app.models.enums import RoleEnum # Ignore for demo purpose
-
-
+from app.routers import mentor_assignments
 
 app = FastAPI()
 
@@ -40,6 +39,7 @@ app.include_router(test.router)
 app.include_router(intake.router)
 app.include_router(mentors.router)
 app.include_router(availability.router)
+app.include_router(mentor_assignments.router)
 
 
 @app.get("/")

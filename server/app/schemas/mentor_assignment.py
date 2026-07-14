@@ -4,7 +4,7 @@ from pydantic import BaseModel
 from app.models.enums import AssignmentStatusEnum
 from app.schemas.mentor import MentorResponse
 from app.schemas.student import StudentResponse
-
+from app.schemas.student_intake_form import IntakeFormResponse
 
 # Admin creates assignment
 
@@ -31,5 +31,17 @@ class AssignmentResponse(BaseModel):
     # Nested
     mentor      : MentorResponse
     student     : StudentResponse
+
+    model_config = {"from_attributes": True}
+
+
+
+class AssignmentWithIntakeResponse(BaseModel):
+    id           : int
+    status       : AssignmentStatusEnum
+    assigned_at  : datetime
+    completed_at : Optional[datetime] = None
+    student      : StudentResponse
+    intake_form  : IntakeFormResponse
 
     model_config = {"from_attributes": True}
