@@ -22,7 +22,7 @@
 
 /* ---------- Page ---------- */
 .mrq-page {
-  padding: 32px 40px;
+  padding: 0px 32px 40px;
   box-sizing: border-box;
   font-family: 'Kollektif', system-ui, -apple-system, sans-serif;
   max-width: 1100px;
@@ -38,15 +38,16 @@
 
 .mrq-title {
   margin: 0 0 6px;
-  font-size: 26px;
+  font-size: 35px;
+  font-family: 'Kollektif Bold', system-ui, -apple-system, sans-serif;
   font-weight: 700;
   color: #111827;
 }
 
 .mrq-subtitle {
   margin: 0;
-  font-size: 14px;
-  color: #6b7280;
+  font-size: 16px;
+  color: #111827;
 }
 
 /* ---------- Back button ---------- */
@@ -62,7 +63,7 @@
   cursor: pointer;
   padding: 0;
   margin-bottom: 20px;
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family: 'Kollektif', system-ui, -apple-system, sans-serif;
 }
 
 .mrq-back:hover {
@@ -200,7 +201,7 @@
   font-weight: 600;
   cursor: pointer;
   transition: background 0.15s;
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family: "Kollektif", system-ui, -apple-system, sans-serif;
 }
 
 .mrq-btn-view:hover {
@@ -214,6 +215,7 @@
   border: 1px solid #e5e7eb;
   padding: 24px 28px;
   margin-bottom: 16px;
+  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
 }
 
 .mrq-section-title {
@@ -221,11 +223,14 @@
   align-items: center;
   gap: 12px;
   margin-bottom: 20px;
+   padding-bottom: 12px;
+  border-bottom: 1px solid #e5e7eb;
 }
 
 .mrq-section-title h2 {
+  font-family: "Kollektif Bold", system-ui, -apple-system, sans-serif;
   margin: 0;
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 700;
   color: #111827;
 }
@@ -244,18 +249,18 @@
 .mrq-info-field {
   display: flex;
   flex-direction: column;
-  gap: 4px;
 }
 
 .mrq-info-label {
-  font-size: 12px;
+  font-family: 'Kollektif Bold', system-ui, -apple-system, sans-serif;
+  font-size: 14px;
   color: #6b7280;
-  font-weight: 500;
+    font-weight: 700;
+
 }
 
 .mrq-info-value {
-  font-size: 15px;
-  font-weight: 600;
+  font-size: 18px;
   color: #111827;
 }
 
@@ -264,8 +269,8 @@
   background: #f0f9ff;
   border-radius: 10px;
   padding: 16px 20px;
-  font-size: 14px;
-  color: #374151;
+  font-size: 18px;
+  color: #111827;
   line-height: 1.6;
 }
 
@@ -291,7 +296,7 @@
   border-radius: 10px;
   cursor: not-allowed;
   opacity: 0.6;
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family: 'Kollektif', system-ui, -apple-system, sans-serif;
   width: 100%;
 }
 
@@ -314,12 +319,12 @@
   font-weight: 600;
   cursor: not-allowed;
   opacity: 0.5;
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family:  'Kollektif', system-ui, -apple-system, sans-serif;
 }
 
 .mrq-btn-accept {
   padding: 12px 28px;
-  background: #16a34a;
+  background: #40AE50;
   color: #ffffff;
   border: none;
   border-radius: 100px;
@@ -327,7 +332,7 @@
   font-weight: 600;
   cursor: pointer;
   transition: background 0.15s;
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family: 'Kollektif', system-ui, -apple-system, sans-serif;
 }
 
 .mrq-btn-accept:hover:not(:disabled) {
@@ -352,6 +357,7 @@
 
 .mrq-modal {
   background: #ffffff;
+  font-family: 'Kollektif', system-ui, -apple-system, sans-serif;
   border-radius: 20px;
   padding: 36px 40px;
   width: 100%;
@@ -377,12 +383,14 @@
 .mrq-modal-title {
   margin: 0;
   font-size: 22px;
+  font-family: 'Kollektif Bold', system-ui, -apple-system, sans-serif;
   font-weight: 700;
   color: #111827;
 }
 
 .mrq-modal-subtitle {
   margin: 0;
+  font-family: 'Kollektif', system-ui, -apple-system, sans-serif;
   font-size: 14px;
   color: #6b7280;
   text-align: center;
@@ -418,10 +426,11 @@
   font-size: 13px;
   color: #0369a1;
   display: flex;
-  gap: 8px;
+  gap: 3px;
   align-items: flex-start;
   text-align: center;
   justify-content: center;
+  line-height: 1.5;
 }
 
 .mrq-modal-error {
@@ -434,6 +443,8 @@
   display: flex;
   gap: 12px;
   width: 100%;
+  flex-direction: column;
+  flex-wrap: wrap;
 }
 
 .mrq-btn-cancel {
@@ -444,14 +455,101 @@
   border: 1.5px solid #d1d5db;
   border-radius: 100px;
   font-size: 14px;
-  font-weight: 600;
   cursor: pointer;
   transition: background 0.15s;
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family: 'Kollektif', system-ui, -apple-system, sans-serif;
 }
 
 .mrq-btn-cancel:hover {
   background: #f3f4f6;
 }
 
+.mrq-modal-notice--warning {
+  background: #fef2f2;
+  color: #991b1b;
+}
 
+.mrq-btn-decline-confirm {
+  flex: 1;
+  padding: 11px;
+  background: #dc2626;
+  color: #ffffff;
+  border: none;
+  border-radius: 100px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.mrq-btn-decline-confirm:hover:not(:disabled) {
+  background: #b91c1c;
+}
+
+.mrq-btn-decline-confirm:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.mrq-btn-decline {
+  cursor: pointer; /* remove not-allowed and opacity from before */
+  opacity: 1;
+}
+
+
+
+.mrq-success-card {
+  background: #ffffff;
+  border-radius: 20px;
+  border: 1px solid #e5e7eb;
+  padding: 64px 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  text-align: center;
+  max-width: 480px;
+  margin: 40px auto;
+}
+
+.mrq-success-icon {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  font-size: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.mrq-success-icon--green {
+  background: #16a34a;
+}
+
+.mrq-success-icon--red {
+  background: #dc2626;
+}
+
+.mrq-success-title {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.mrq-success-body {
+  margin: 0;
+  font-size: 14px;
+  color: #6b7280;
+  line-height: 1.6;
+  max-width: 360px;
+}
+
+.mrq-success-btns {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}

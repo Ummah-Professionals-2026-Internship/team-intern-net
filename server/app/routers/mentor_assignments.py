@@ -7,10 +7,10 @@ from app.db.database import get_db
 from app.models.mentor_assignment import MentorAssignment
 from app.models.student import Student
 from app.models.user import User
-from app.models.enums import AssignmentStatusEnum
+from app.models.enums import AssignmentStatusEnum, IntakeFormStatusEnum
 from app.schemas.mentor_assignment import AssignmentWithIntakeResponse
 from app.models.mentor import Mentor
-
+from app.models.student_intake_form import StudentIntakeForm
 
 
 router = APIRouter()
@@ -82,6 +82,15 @@ async def decline_request(
         raise HTTPException(status_code=400, detail="Assignment is not pending")
 
     assignment.status = AssignmentStatusEnum.declined
+
+        # Put intake form back to submitted so admin can reassign
+    intake_result = await db.execute(
+        select(StudentIntakeForm).where(StudentIntakeForm.id == assignment.intake_form_id)
+    )
+    intake_form = intake_result.scalar_one_or_none()
+    if intake_form:
+        intake_form.status = IntakeFormStatusEnum.submitted
+
     await db.commit()
     await db.refresh(assignment)
     return {"message": "Assignment declined", "status": assignment.status}

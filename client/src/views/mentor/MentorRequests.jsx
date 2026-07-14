@@ -73,6 +73,7 @@ export default function MentorRequests() {
               <tr>
                 <th className="mrq-th">Applicant</th>
                 <th className="mrq-th">Service Requested</th>
+                <th className="mrq-th">Desired Career</th>
                 <th className="mrq-th">Status</th>
                 <th className="mrq-th">Date Assigned</th>
                 <th className="mrq-th mrq-th--right">Action</th>
@@ -83,10 +84,12 @@ export default function MentorRequests() {
                 const badge  = STATUS_LABELS[req.status] || { label: req.status, className: "" };
                 const name   = req.student?.user?.full_name || "—";
                 const service = SERVICE_LABELS[req.intake_form?.service_type] || req.intake_form?.service_type || "—";
+                const career = req.intake_form?.desired_career || "—";
                 return (
                   <tr key={req.id} className="mrq-row">
                     <td className="mrq-td mrq-td--name">{name}</td>
                     <td className="mrq-td">{service}</td>
+                    <td className="mrq-td">{career}</td>
                     <td className="mrq-td">
                       <span className={`mrq-badge ${badge.className}`}>{badge.label}</span>
                     </td>
