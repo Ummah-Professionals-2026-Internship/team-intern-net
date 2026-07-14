@@ -1,0 +1,403 @@
+@font-face {
+  font-family: "Kollektif";
+  src: url("../../fonts/kollektif-webfont/Kollektif.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Kollektif Bold";
+  src: url("../../fonts/kollektif-webfont/Kollektif-Bold.woff") format("woff");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+.sd-page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  height: 100%;
+  box-sizing: border-box;
+  font-family: "Kollektif", system-ui, sans-serif;
+}
+
+/* Header */
+.sd-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sd-welcome {
+  font-family: "Kollektif Bold", system-ui, sans-serif;
+  font-size: 28px;
+  margin: 0;
+  color: #000;
+}
+
+.sd-user-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 999px;
+  padding: 8px 16px;
+  font-size: 14px;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+}
+
+/* Progress */
+.sd-progress {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px 32px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  gap: 0;
+}
+
+.sd-step-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  flex: 1;
+}
+
+.sd-step-circle {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  z-index: 1;
+  border: 3px solid #e5e7eb;
+}
+
+.sd-step--done {
+  background: #16a34a;
+  border-color: #16a34a;
+  color: white;
+  font-size: 20px;
+}
+
+.sd-step--active {
+  background: #fff;
+  border-color: #025571;
+  color: #025571;
+}
+
+.sd-step-label {
+  font-size: 12px;
+  margin-top: 8px;
+  color: #6b7280;
+  text-align: center;
+}
+
+.sd-step-label--active {
+  color: #025571;
+  font-family: "Kollektif Bold", system-ui, sans-serif;
+}
+
+.sd-step-line {
+  position: absolute;
+  top: 22px;
+  left: 50%;
+  width: 100%;
+  height: 3px;
+  background: #e5e7eb;
+  z-index: 0;
+}
+
+.sd-step-line--done { background: #16a34a; }
+
+/* Body */
+.sd-body {
+  display: flex;
+  gap: 20px;
+  flex: 1;
+  min-height: 0;
+}
+
+/* Mentor Card */
+.sd-mentor-card {
+  width: 260px;
+  flex-shrink: 0;
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.sd-mentor-label {
+  align-self: flex-start;
+  font-size: 13px;
+  color: #6b7280;
+  margin: 0;
+}
+
+.sd-mentor-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  margin: 8px 0;
+}
+
+.sd-mentor-name {
+  font-family: "Kollektif Bold", system-ui, sans-serif;
+  font-size: 18px;
+  color: #025571;
+  margin: 0;
+  text-align: center;
+}
+
+.sd-mentor-detail {
+  font-size: 13px;
+  color: #374151;
+  margin: 0;
+  text-align: center;
+}
+
+.sd-view-profile {
+  margin-top: 12px;
+  padding: 8px 24px;
+  background: #025571;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-family: "Kollektif", system-ui, sans-serif;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.sd-view-profile:hover { background: #024a62; }
+
+/* Calendar Card */
+.sd-calendar-card {
+  flex: 1;
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+.sd-cal-title {
+  font-family: "Kollektif Bold", system-ui, sans-serif;
+  font-size: 18px;
+  margin: 0;
+  color: #111827;
+}
+
+.sd-cal-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #eff6ff;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 13px;
+  color: #025571;
+}
+
+.sd-cal-tz {
+  font-size: 11px;
+  color: #9ca3af;
+  margin: 0;
+  text-align: center;
+}
+
+/* Calendar */
+.sd-calendar { position: relative; }
+
+.sd-loading {
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.sd-spinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid #e5e7eb;
+  border-top-color: #025571;
+  border-radius: 50%;
+  animation: sd-spin 0.7s linear infinite;
+}
+
+@keyframes sd-spin { to { transform: rotate(360deg); } }
+
+.sd-cal-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.sd-month-title {
+  font-family: "Kollektif Bold", system-ui, sans-serif;
+  font-size: 16px;
+  color: #111827;
+  letter-spacing: 0.04em;
+}
+
+.sd-nav-btn {
+  width: 28px;
+  height: 28px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  background: #fff;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+}
+
+.sd-nav-btn:hover { background: #f3f4f6; }
+.sd-nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+.sd-day-labels {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  margin-bottom: 4px;
+}
+
+.sd-day-label {
+  text-align: center;
+  font-size: 11px;
+  font-family: "Kollektif Bold", system-ui, sans-serif;
+  color: #6b7280;
+  text-transform: uppercase;
+  padding: 4px 0;
+}
+
+.sd-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
+
+.sd-cell {
+  height: 52px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.15s;
+  gap: 2px;
+  padding: 0;
+  font-family: "Kollektif", system-ui, sans-serif;
+}
+
+.sd-cell:hover:not(.sd-cell--selected) { background: #f0f9ff; }
+.sd-cell--empty { pointer-events: none; }
+
+.sd-cell--today .sd-cell-num {
+  color: #007CA6;
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.sd-cell--available { background: #ecfdf5; border-color: #16a34a; }
+.sd-cell--available .sd-cell-num { color: #166534; }
+.sd-cell--selected { background: #025571; border-color: #025571; }
+.sd-cell--selected .sd-cell-num { color: #fff; }
+.sd-cell--selected-available { background: #15803D; border-color: #15803D; }
+.sd-cell--selected-available .sd-cell-num { color: #fff; }
+
+.sd-cell-num { font-size: 13px; line-height: 1; }
+
+.sd-dot-row { display: flex; gap: 3px; }
+.sd-dot { width: 4px; height: 4px; border-radius: 50%; background: #40AE50; }
+.sd-cell--selected .sd-dot { background: #fff; }
+
+/* Slots section */
+.sd-slots-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.sd-slots-date {
+  font-family: "Kollektif Bold", system-ui, sans-serif;
+  font-size: 14px;
+  color: #111827;
+  margin: 0;
+}
+
+.sd-no-slots { font-size: 13px; color: #9ca3af; margin: 0; }
+
+.sd-slot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f9fafb;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 10px 14px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.sd-slot:hover { border-color: #025571; background: #f0f9ff; }
+.sd-slot--selected { border-color: #025571; background: #e0f2fe; }
+.sd-slot-time { font-size: 14px; color: #111827; }
+.sd-slot-check { color: #025571; font-weight: 700; }
+
+.sd-error { font-size: 12px; color: #dc2626; margin: 0; }
+
+.sd-toast {
+  background: #16a34a;
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.sd-confirm-btn {
+  padding: 12px;
+  background: #025571;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: "Kollektif", system-ui, sans-serif;
+  transition: background 0.15s;
+  margin-top: 4px;
+}
+
+.sd-confirm-btn:hover { background: #024a62; }
+.sd-confirm-btn:disabled { opacity: 0.5; cursor: not-allowed; }

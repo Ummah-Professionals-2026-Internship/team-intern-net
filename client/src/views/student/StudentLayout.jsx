@@ -4,11 +4,11 @@ import umLogo from "../../assets/images/um-small-logo.png";
 import bgImage from "../../assets/images/mentor-app-bg.png";
 
 const NAV_ITEMS = [
-  { label: "Dashboard", to: "/student/" },
-  { label: "My Mentor", to: "/student/mentor" },
-  { label: "Availability", to: "/student/availability" },
-  { label: "Meetings", to: "/student/meetings" },
-  { label: "Profile", to: "/student/profile" },
+  { label: "Dashboard", to: "/student/", icon: "🏠" },
+  { label: "Career Form", to: "/student/career-form", icon: "📋" },
+  { label: "Meetings", to: "/student/meetings", icon: "📅" },
+  { label: "Profile", to: "/student/profile", icon: "👤" },
+  { label: "Settings", to: "/student/settings", icon: "⚙️" },
 ];
 
 export default function StudentLayout() {

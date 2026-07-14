@@ -8,7 +8,7 @@ import SignIn from './views/onboarding/SignIn';
 import MentorApplicationForm from './views/mentorSignup/MentorApplicationForm';
 import AvailabilityView from './views/availability/AvailabilityView';
 import StudentLayout from './views/student/StudentLayout';
-
+import StudentDashboard from './views/student/StudentDashboard';
 
 // Moved ProtectedRoute to routes folder.
 //
@@ -49,7 +49,13 @@ export const router = createBrowserRouter([
   element: <StudentLayout />,
   children: [
     { path: 'availability', element: <AvailabilityView /> },
+    { path: '', element: <StudentDashboard /> },
+    { path: 'availability', element: <AvailabilityView /> },
+
   ],
+
+  
+
 },
 
 
