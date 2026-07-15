@@ -57,6 +57,17 @@ async def accept_request(
         raise HTTPException(status_code=400, detail="Assignment is not pending")
 
     assignment.status = AssignmentStatusEnum.active
+
+    
+    # Mark mentor as unavailable
+    mentor_result = await db.execute(
+        select(Mentor).where(Mentor.user_id == mentor_id)
+    )
+    mentor = mentor_result.scalar_one_or_none()
+    if mentor:
+        mentor.is_available = False
+
+
     await db.commit()
     await db.refresh(assignment)
     return {"message": "Assignment accepted", "status": assignment.status}
@@ -83,13 +94,21 @@ async def decline_request(
 
     assignment.status = AssignmentStatusEnum.declined
 
-        # Put intake form back to submitted so admin can reassign
+    # Put intake form back to submitted so admin can reassign
     intake_result = await db.execute(
         select(StudentIntakeForm).where(StudentIntakeForm.id == assignment.intake_form_id)
     )
     intake_form = intake_result.scalar_one_or_none()
     if intake_form:
         intake_form.status = IntakeFormStatusEnum.submitted
+
+    # Mark mentor as available again
+    mentor_result = await db.execute(
+        select(Mentor).where(Mentor.user_id == mentor_id)
+    )
+    mentor = mentor_result.scalar_one_or_none()
+    if mentor:
+        mentor.is_available = True
 
     await db.commit()
     await db.refresh(assignment)
