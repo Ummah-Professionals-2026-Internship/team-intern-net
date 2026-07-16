@@ -54,7 +54,7 @@ export default function MentorDashboard() {
 
   // Mentor name placeholder — replace with auth context later
   const mentorName = "Mentor";
-
+  const currentMentee = requests.find((req) => req.status === "active");
   return (
     <div className="mdb-page">
       {/* Welcome */}
@@ -72,7 +72,7 @@ export default function MentorDashboard() {
           value={loading ? "—" : activeCount}
           label="Current Mentee"
           action="View"
-          onAction={() => navigate("/mentor/requests")}
+          onAction={() => currentMentee?.id ? navigate(`/mentor/requests/${currentMentee.id}`) : navigate("/mentor/requests")}
         />
         <StatCard
           label="Availability"
