@@ -34,7 +34,7 @@ const STEPS = [
 ];
 
 const MOCK_MENTOR = {
-  name: "Muhammad Bin Aamir",
+  name: "Siraj",
   title: "Software Engineer",
   company: "Google",
   degree: "B.S. Computer Science",
@@ -159,7 +159,7 @@ export default function StudentDashboard() {
         <h1 className="sd-welcome">Welcome Back, Applicant!</h1>
         <div className="sd-user-badge">
           <span className="sd-user-icon">👤</span>
-          <span className="sd-user-name">Sara Ali</span>
+          <span className="sd-user-name">Muhammad</span>
           <span className="sd-chevron">∨</span>
         </div>
       </div>
