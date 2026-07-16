@@ -1,3 +1,5 @@
+#Runs the actual app
+
 import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -5,6 +7,10 @@ from pydantic import BaseModel # Automatically validates data coming in and form
 from typing import List # May be removed if not needed
 
 from app.routers import test
+from app.routers import dashboard
+from app.routers import matching
+from app.routers import auth
+
 from app.routers import intake
 from app.routers import mentors
 from app.routers import availability
@@ -15,6 +21,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.database import get_db
 from app.schemas import LoginRequest, TokenResponse, LoggedInUser # ignore For demo purpose
 from app.models.enums import RoleEnum # Ignore for demo purpose
+
+from app.matching import rank_mentors #Matching algorithm
+
 from app.routers import mentor_assignments
 
 app = FastAPI()
@@ -36,6 +45,11 @@ app.add_middleware(
 )
 
 app.include_router(test.router)
+
+app.include_router(dashboard.router)
+app.include_router(auth.router)
+app.include_router(matching.router)
+
 app.include_router(intake.router)
 app.include_router(mentors.router)
 app.include_router(availability.router)
@@ -58,7 +72,7 @@ async def db_check(db: AsyncSession = Depends(get_db)):
     return {"db_status": result.scalar()}
 
 
-# For demo prupose ignore 
+# For demo purposes, please ignore 
 @app.post("/demo_login", response_model=TokenResponse)
 def login(loginModel: LoginRequest):
     return TokenResponse(
