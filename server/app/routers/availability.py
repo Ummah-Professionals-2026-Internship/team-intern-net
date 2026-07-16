@@ -1,4 +1,3 @@
-from app.core.calendar import create_meet_event
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
@@ -114,11 +113,10 @@ async def book_meeting(booking: MeetingCreate, student_id: int, db: AsyncSession
     if mentor_user:
         attendees.append(mentor_user.email)
 
-    meet_link = await create_meet_event(
-    title="Career Prep Meeting",
-    start_datetime=slot.start_datetime,
-    end_datetime=slot.end_datetime
-)
+    # Get mentor's stored meeting link
+    mentor_result = await db.execute(select(Mentor).where(Mentor.user_id == assignment.mentor_id))
+    mentor = mentor_result.scalar_one_or_none()
+    meet_link = mentor.meeting_url if mentor and mentor.meeting_url else "No meeting link provided yet - mentor will send it separately"
 
 
     # Store meet link in meeting record
