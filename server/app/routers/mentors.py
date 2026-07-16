@@ -1,3 +1,4 @@
+#Mentor Application API Routing file
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
@@ -80,3 +81,4 @@ async def get_mentor_applications(db: AsyncSession = Depends(get_db)):
         )
     )
     return result.scalars().all()
+

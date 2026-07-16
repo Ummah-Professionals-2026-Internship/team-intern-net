@@ -4,12 +4,13 @@ from sqlalchemy import  DateTime, func, Text, ForeignKey, Enum as SAEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.db.base import Base
 from .enums import EducationLevelEnum, AcademicStandingEnum
+from .student_tag import StudentTag #Importing student tags for tag logic
 
 if TYPE_CHECKING:
     from .user import User
     from .student_intake_form import StudentIntakeForm
     from .mentor_assignment import MentorAssignment 
-
+    from .student_tag import StudentTag #Type checking the import
 
 class Student(Base):
     __tablename__ = "students"
@@ -27,6 +28,7 @@ class Student(Base):
     user         : Mapped["User"]                    = relationship(back_populates="student")
     intake_forms : Mapped[List["StudentIntakeForm"]] = relationship(back_populates="student")
     assignments  : Mapped[List["MentorAssignment"]]  = relationship(back_populates="student")
+    tag_links    : Mapped[List["StudentTag"]] = relationship(back_populates="student",cascade="all, delete-orphan") #More tag stuff
 
 # created_at: Mapped[datetime] = mapped_column(
 #     DateTime(timezone=True),
