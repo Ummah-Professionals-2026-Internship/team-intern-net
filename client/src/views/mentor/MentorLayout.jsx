@@ -1,7 +1,7 @@
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import "./MentorLayout.css";
 import umLogo from "../../assets/images/um-text-logo.png";
-import bgImage from "../../assets/images/mentordash-bg.png"
+import bgImage from "../../assets/images/bg-reverse.png"
 
 import DashIcon from "../../assets/icons/home.svg";
 import ReqIcon from "../../assets/icons/requests.svg";
@@ -69,8 +69,9 @@ export default function MentorLayout() {
 
       </aside>
 
-      {/* ── Main content area ── */}
-      <main className="ml-main" style={{backgroundImage: `url(${bgImage})`}}>
+      {/* ── Main content area ── style={{backgroundImage: `url(${bgImage})`}} */}
+      <main className="ml-main" >
+        <img src={bgImage} alt="" className="ml-main-bgImage"/>
         <Outlet />
 
       </main>

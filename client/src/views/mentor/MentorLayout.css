@@ -157,14 +157,27 @@
 
 /* ── Main content ── */
 .ml-main {
+  position: relative;
   flex: 1;
   overflow-y: auto;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
   padding: 36px 40px;
   box-sizing: border-box;
+
+}
+
+.ml-main-bgImage{
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.ml-main > *:not(.ml-main-bgImage) {
+  position: relative;
+  z-index: 1;
 }
 
 /* Chrome/Safari scrollbar */

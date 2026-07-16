@@ -13,6 +13,9 @@ import MentorRequests from './views/mentor/MentorRequests';
 import MentorDashboard from './views/mentor/MentorDashboard';
 import MentorMeetings from './views/mentor/MentorMeetings';
 import MentorRequestDetail from './views/mentor/MentorRequestDetail';
+import MentorSettings from './views/mentor/MentorSettings';
+import MentorProfile from './views/mentor/MentorProfile';
+
 
 export const router = createBrowserRouter([
     // 1. Auth Routes
@@ -44,8 +47,8 @@ export const router = createBrowserRouter([
             { path: "requests",  element: <MentorRequests /> },
             { path: "requests/:id", element: <MentorRequestDetail /> },
             { path: "meetings",  element: <MentorMeetings /> },
-            // { path: "profile",   element: <MentorProfile /> },
-            // { path: "settings",  element: <MentorSettings /> },
+            { path: "profile",   element: <MentorProfile /> },
+            { path: "settings",  element: <MentorSettings /> },
         ]
     }
 
