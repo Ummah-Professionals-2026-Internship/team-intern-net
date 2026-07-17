@@ -93,24 +93,23 @@ async def submit_intake(form: IntakeFormCreate, db: AsyncSession = Depends(get_d
         await send_email(
             recipient=form.email,
             subject="We received your Career Prep request!",
-            body=f"""Hi {form.full_name} Thank you for submitting your Career Prep request. 
-            Our team will review your information and match you with a mentor soon. 
-            Service Requested: {form.service_type.value}. We'll be in touch with next steps """
+            body=f""" <p> Assalamu Alaikum, {form.full_name} </p> 
+            <p> Thank you for submitting your Career Prep request. Our team will review your information and match you with a mentor soon. </p>
+            <p> Service Requested: {form.service_type.value}. We'll be in touch with next steps. </p> 
+            <p>Jazakum Allahu Khayran,<br>The Ummah Professionals Team</p>"""
         )
         await send_email(
             recipient=form.email,
             subject="Welcome - Your Account Has Been Created",
-            body=f""" 
-                Hi {form.full_name},
+            body=f""" <p> Assalamu Alaikum, {form.full_name} </p>
+                <p> Your account has been created. Here are your login credentials: </p>
+                <p>Email: {form.email} </p>
+                <p>Password: {temp_password}</p>
+                <p>Please log in and change your password after your first login.</p>
+                <p>Jazakum Allahu Khayran,<br>The Ummah Professionals Team</p>"""
 
-                Your account has been created. Here are your login credentials:
-
-                Email: {form.email}
-                Password: {temp_password}
-
-                Please log in and change your password after your first login.
-
-            """ )
+        )
+        
     except Exception as e:
         logger.error(f"Failed to send email to {form.email} : {e}")
         pass
