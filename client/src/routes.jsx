@@ -1,46 +1,51 @@
-// src/routes.jsx
 import { createBrowserRouter, Navigate } from 'react-router-dom';
-// import { useAuth } from './context/AuthContext';
-import App from './App';
-import ProtectedRoute from './routes/ProtectedRoute';
-
 import SignIn from './views/onboarding/SignIn';
 import MentorApplicationForm from './views/mentorSignup/MentorApplicationForm';
-
-
-// Moved ProtectedRoute to routes folder.
-//
-// const ProtectedRoute = () => {
-//   const { user } = useAuth();
-//   return user ? <Outlet /> : <Navigate to="/signin" replace />;
-// };
+import RoleGuard from './routes/RoleGuard';
+import AdminDashboard from './views/admin/AdminDash';
+import StudentDashboard from './views/student/StudentDash';
+import MentorDashboard from './views/mentor/MentorDash';
+import PublicRoute from './routes/PublicRoute';
 
 export const router = createBrowserRouter([
-    // 1. Auth Routes
-    {
-        path: '/',
-        element: <Navigate to="/signin" replace />,
-    },
-    {
-        path: '/signin',
-        element: <SignIn />,
-    },
-    {
-        path: '/prep',
-        element: <MentorApplicationForm />,
-    },
+  // Public routes
+  {
+    path: '/',
+    element: <Navigate to="/signin" replace />,
+  },
+  {
+    element: <PublicRoute />,
+    children: [
+        { path: '/signin', element: <SignIn /> },
+    ],
+    
+  },
+  {
+    path: '/apply/mentor',
+    element: <MentorApplicationForm />,
+  },
 
-    {
-        element: <ProtectedRoute />,
-        children: [
-            { path: '/dashboard', element: <App /> },
-        ],
-    },
+  // Admin routes
+  {
+    element: <RoleGuard role="admin" />,
+    children: [
+      { path: '/admin/dashboard', element: <AdminDashboard /> },
+    ],
+  },
 
+  // Mentor routes
+  {
+    element: <RoleGuard role="mentor" />,
+    children: [
+      { path: '/mentor/dashboard', element: <MentorDashboard /> },
+    ],
+  },
 
-    // 2. Main Application Routes
-    // {
-
-    // }
-    // ...
+  // Student routes
+  {
+    element: <RoleGuard role="student" />,
+    children: [
+      { path: '/student/dashboard', element: <StudentDashboard /> },
+    ],
+  },
 ]);

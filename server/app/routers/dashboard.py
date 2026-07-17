@@ -2,6 +2,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from app.models.enums import RoleEnum
 from app.core.deps import get_current_user
+from app.core.deps import require_admin, require_mentor, require_student
 
 router = APIRouter()
 print("DASHBOARD ROUTER LOADED")
@@ -9,7 +10,7 @@ print("DASHBOARD ROUTER LOADED")
 
 #Student dashboard get:
 @router.get("/student")
-async def student_dashboard(user=Depends(get_current_user)):
+async def student_dashboard(user=Depends(require_student)):
 
     if not user:
         raise HTTPException(status_code=401, detail="Unauthorized") #If 
@@ -22,7 +23,7 @@ async def student_dashboard(user=Depends(get_current_user)):
 
 #Mentor dashboard get:
 @router.get("/mentor")
-async def mentor_dashboard(user=Depends(get_current_user)):
+async def mentor_dashboard(user=Depends(require_mentor)):
 
     if not user:
         raise HTTPException(status_code=401, detail="Unauthorized")
@@ -35,7 +36,7 @@ async def mentor_dashboard(user=Depends(get_current_user)):
 
 #Admin dashboard get: 
 @router.get("/admin")
-async def admin_dashboard(user=Depends(get_current_user)):
+async def admin_dashboard(user=Depends(require_admin)):
 
     if not user:
         raise HTTPException(status_code=401, detail="Unauthorized")
