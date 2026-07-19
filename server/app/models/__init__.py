@@ -19,6 +19,10 @@ from .mentor_assignment import MentorAssignment
 from .availability_slot import AvailabilitySlot
 from .meeting import Meeting
 from .refresh_token import RefreshToken
+from .tag import Tag
+from .student_tag import StudentTag
+from .mentor_tag import MentorTag
+from .mentor_recommendation import (MentorRecommendation,RecommendationStatus,)
 
 __all__ = [
     "Base",
@@ -40,4 +44,9 @@ __all__ = [
     "AvailabilitySlot",
     "Meeting",
     "RefreshToken",
+    "Tag",
+    "StudentTag",
+    "MentorTag",
+    "MentorRecommendation",
+    "RecommendationStatus",
 ]
