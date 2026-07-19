@@ -121,7 +121,7 @@ export default function StudentDashboard() {
       setBookingError("Please select a time slot first.");
       return;
     }
-    setBooking(true);
+   setBooking(true);
     setBookingError("");
     try {
       const res = await fetch(`http://localhost:8000/meetings?student_id=${STUDENT_ID}`, {
@@ -156,7 +156,7 @@ export default function StudentDashboard() {
 
       {/* Header */}
       <div className="sd-header">
-        <h1 className="sd-welcome">Welcome Back, Applicant!</h1>
+        <h1 className="sd-welcome">Welcome Back, Muhammad!</h1>
         <div className="sd-user-badge">
           <span className="sd-user-icon">👤</span>
           <span className="sd-user-name">Muhammad</span>

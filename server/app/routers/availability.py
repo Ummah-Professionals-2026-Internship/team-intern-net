@@ -13,6 +13,7 @@ from app.core.email import send_email
 from app.schemas.availability_slot import AvailabilitySlotCreate, AvailabilitySlotBulkCreate, AvailabilitySlotBulkResponse
 from app.models.mentor import Mentor
 from app.models.user import User
+from app.core.deps import get_current_user
 
 router = APIRouter()
 
