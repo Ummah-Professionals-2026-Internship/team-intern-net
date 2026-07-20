@@ -1,46 +1,58 @@
-// src/routes.jsx
-import { createBrowserRouter, Navigate } from 'react-router-dom';
-// import { useAuth } from './context/AuthContext';
-import App from './App';
-import ProtectedRoute from './routes/ProtectedRoute';
-
+import { createBrowserRouter } from 'react-router-dom';
 import SignIn from './views/onboarding/SignIn';
 import MentorApplicationForm from './views/mentorSignup/MentorApplicationForm';
-
-
-// Moved ProtectedRoute to routes folder.
-//
-// const ProtectedRoute = () => {
-//   const { user } = useAuth();
-//   return user ? <Outlet /> : <Navigate to="/signin" replace />;
-// };
+import RoleGuard from './routes/RoleGuard';
+import AdminDashboard from './views/admin/AdminDash';
+import StudentDashboard from './views/student/StudentDash';
+import MentorDashboard from './views/mentor/MentorDash';
+import PublicRoute from './routes/PublicRoute';
+import LandingPage from './views/landingpage/landingPage';
 
 export const router = createBrowserRouter([
-    // 1. Auth Routes
-    {
-        path: '/',
-        element: <Navigate to="/signin" replace />,
-    },
-    {
-        path: '/signin',
-        element: <SignIn />,
-    },
-    {
-        path: '/prep',
-        element: <MentorApplicationForm />,
-    },
+  // Public routes
+  {
+    path: '/',
+    element: <LandingPage />,
+  },
+  {
+    path: '/siging',
+    element: <SignIn />,
+  },
+  
+  {
+    element: <PublicRoute />,
+    children: [
+        { path: '/signin', element: <SignIn /> },
+    ],
+    
+  },
 
-    {
-        element: <ProtectedRoute />,
-        children: [
-            { path: '/dashboard', element: <App /> },
-        ],
-    },
+  {
+    path: '/apply/mentor',
+    element: <MentorApplicationForm />,
+  },
 
+  // Admin routes
+  {
+    element: <RoleGuard role="admin" />,
+    children: [
+      { path: '/admin/dashboard', element: <AdminDashboard /> },
+    ],
+  },
 
-    // 2. Main Application Routes
-    // {
+  // Mentor routes
+  {
+    element: <RoleGuard role="mentor" />,
+    children: [
+      { path: '/mentor/dashboard', element: <MentorDashboard /> },
+    ],
+  },
 
-    // }
-    // ...
+  // Student routes
+  {
+    element: <RoleGuard role="student" />,
+    children: [
+      { path: '/student/dashboard', element: <StudentDashboard /> },
+    ],
+  },
 ]);

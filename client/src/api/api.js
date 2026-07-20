@@ -2,7 +2,11 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: "https://localhost:8000"
+    baseURL: "http://localhost:8000",
+    headers: {
+    'Content-Type': 'application/json'
+  }
+
 });
 
 let _getToken = () => null;
@@ -18,11 +22,16 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (res) => res,
   (err) => {
-    if (err.response?.status === 401) {
+    const isLoginRoute = err.config?.url?.includes('/auth/login');
+    if (err.response?.status === 401 && !isLoginRoute) {
       sessionStorage.removeItem('role');
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
       window.location.href = '/signin';
     }
+    
     return Promise.reject(err);
+
   }
 );
 

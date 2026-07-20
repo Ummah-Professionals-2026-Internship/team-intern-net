@@ -18,7 +18,6 @@ class MentorProfileUpdate(BaseModel):
     state: Optional[str] = None
     service_types: Optional[List[ServiceTypeEnum]] = None
     is_available: Optional[bool] = None
-    max_monthly_sessions: Optional[int] = None
 
     @field_validator("service_types")
     @classmethod
