@@ -18,12 +18,12 @@
 
   --input-height: clamp(38px, 4.2vw, 44px);
   --border-radius-sm: clamp(6px, 0.8vw, 8px);
-  --border-radius-lg: clamp(12px, 1.5vw, 20px);
+  --border-radius-lg: 20px;
 
   --space-xs: clamp(6px, 1vw, 8px);
   --space-sm: clamp(10px, 1.5vw, 14px);
   --space-md: clamp(16px, 2vw, 22px);
-  --space-lg: clamp(24px, 3vw, 32px);
+  --space-lg: clamp(32px, 4vw, 48px); /* Increased for better section gaps */
 }
 
 /* ==========================================================================
@@ -53,28 +53,26 @@
    2. PAGE SHELL & BACKGROUND
    ========================================================================== */
 .career-prep-page {
-  min-height: 100vh;
-  width: 100vw;
-  margin-left: calc(-50vw + 50%);
+  height: 100vh;
+  overflow: hidden;
   background: linear-gradient(0deg, var(--color-primary-light) 0%, var(--color-primary) 66%);
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
-  padding: clamp(12px, 2.5vw, 24px);
   box-sizing: border-box;
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
 }
 
 .caa-bg-image {
   position: fixed;
   inset: 0;
-  margin: auto;
   width: 100%;
-  height: auto;
-  aspect-ratio: 290/111;
-  background-size: cover;
+  height: 100%;
+  background-size: 100% auto;
   background-repeat: no-repeat;
-  background-position: center;
+  background-position: center center;
   pointer-events: none;
   z-index: 0;
 }
@@ -87,12 +85,13 @@
   z-index: 1;
   background: var(--color-white);
   border-radius: var(--border-radius-lg);
-  box-shadow: 0 8px 30px rgba(0, 60, 90, 0.2);
-  width: 100%;
-  max-width: 1080px;
-  padding: clamp(20px, 3.5vw, 32px) clamp(20px, 5.5vw, 56px) clamp(24px, 4vw, 36px);
-  max-height: 94vh;
+  box-shadow: 0 4px 20px rgba(2, 85, 113, 0.25);
+  width: calc(100% - 158px);
+  max-width: calc(100% - 158px);
+  padding: clamp(24px, 4.5vw, 44px) clamp(24px, 6vw, 64px) clamp(32px, 5vw, 56px);
+  height: calc(100vh - 48px);
   overflow-y: auto;
+  box-sizing: border-box;
   font-family: var(--font-base);
 }
 
@@ -104,7 +103,7 @@
   background: transparent;
 }
 .career-prep-card::-webkit-scrollbar-thumb {
-  background: #c0d9e0;
+  background: #c0d9e0 transparent;
   border-radius: 999px;
 }
 
@@ -113,8 +112,8 @@
    ========================================================================== */
 .career-prep-logo {
   position: absolute;
-  top: clamp(16px, 3vw, 32px);
-  left: clamp(20px, 4vw, 40px);
+  top: clamp(16px, 3.5vw, 36px);
+  left: clamp(24px, 5vw, 48px);
   height: clamp(36px, 4.5vw, 48px);
   width: auto;
 }
@@ -139,7 +138,7 @@
    5. FORM SECTIONS & GRIDS
    ========================================================================== */
 .form-section {
-  margin-bottom: var(--space-md);
+  margin-bottom: var(--space-lg);
   text-align: left;
 }
 
@@ -169,6 +168,7 @@
 }
 
 .form-grid--three {
+  display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: clamp(10px, 1.5vw, 12px) clamp(16px, 2.5vw, 24px);
 }
@@ -210,6 +210,7 @@
   background: var(--color-white);
   font-family: var(--font-base);
   outline: none;
+  box-sizing: border-box;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
@@ -251,7 +252,7 @@
   width: 100%;
 }
 
-/* Main clickable box styled to match image_cc3350.png */
+/* Main clickable box styled to match original design */
 .file-upload-dropzone {
   display: flex;
   flex-direction: column;
@@ -264,6 +265,7 @@
   border-radius: var(--border-radius-sm);
   cursor: pointer;
   padding: 12px;
+  box-sizing: border-box;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
@@ -391,11 +393,20 @@
 }
 
 /* ==========================================================================
-   8. SUBMIT BUTTON & FOOTER
+   8. SUBMIT BUTTON & FOOTER (Pushed further down for original open layout)
    ========================================================================== */
+.career-prep-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: clamp(40px, 6vw, 72px); /* Generous vertical gap to replicate original layout */
+  width: 100%;
+}
+
 .submit-button {
   display: block;
-  margin: var(--space-lg) auto 0;
+  margin: 0 auto;
   width: 100%;
   max-width: clamp(200px, 30vw, 280px);
   height: clamp(40px, 4.5vw, 46px);
@@ -425,7 +436,7 @@
   align-items: center;
   justify-content: center;
   gap: 6px;
-  margin-top: var(--space-xs);
+  margin-top: 14px;
   color: var(--color-primary);
   font-size: clamp(10.5px, 1.1vw, 12px);
   text-align: center;
@@ -457,11 +468,18 @@
    9. MEDIA RESPONSIVE BREAKPOINTS
    ========================================================================== */
 
-/* ── Tablet / Mobile Landscape (768px and below) ── */
-@media (max-width: 768px) {
+/* ── Tablet / Mobile Landscape (680px and below) ── */
+@media (max-width: 680px) {
   .career-prep-page {
+    height: auto;
+    overflow: visible;
     padding: 12px;
     align-items: flex-start;
+  }
+
+  .caa-bg-image {
+    background-size: cover;
+    background-position: center;
   }
 
   .career-prep-card select#gender {
@@ -469,8 +487,12 @@
   }
 
   .career-prep-card {
-    max-height: none; /* Let natural viewport scrolling handle long forms */
+    width: 100%;
+    max-width: 100%;
     height: auto;
+    max-height: none;
+    border-radius: 0;
+    box-shadow: none;
     padding: 24px 20px;
   }
 
@@ -497,30 +519,11 @@
     padding: 0 16px;
   }
 
+  .career-prep-footer {
+    margin-top: 32px;
+  }
+
   .submit-button {
     max-width: 100%;
-  }
-}
-
-/* ── Mobile Portrait (480px and below) ── */
-@media (max-width: 480px) {
-  .career-prep-page {
-    padding: 0;
-    background: var(--color-white);
-  }
-
-  .career-prep-card {
-    border-radius: 0;
-    box-shadow: none;
-    padding: 20px 16px;
-  }
-
-  .gender-options {
-    flex-direction: row;
-    gap: 20px;
-  }
-
-  .form-field textarea {
-    height: 120px;
   }
 }

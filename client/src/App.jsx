@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
-import SignIn from './views/onboarding/SignIn';
+import api from './api/api';
+// import SignIn from './views/onboarding/SignIn';
 import './App.css';
 
 // import { Router } from 'express'
@@ -11,17 +12,14 @@ function App() {
   const { logout } = useAuth();
 
   useEffect(() => {
-    fetch('http://127.0.0.1:8000/')
-      .then(res => res.json())
-      .then(data => {
-        console.log(data)
-        setMessage(data.message || "No message found")
+    api.get('/')
+      .then(res => {
+        setMessage(res.data.message || "No message found")
       })
       .catch(err => {
         console.error(err)
         setMessage("Backend not reachable")
       })
-      
   }, [])
 
   return (

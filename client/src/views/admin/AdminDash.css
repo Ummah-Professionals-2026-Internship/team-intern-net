@@ -1,0 +1,500 @@
+/* ==========================================================================
+   DESIGN TOKENS (UPDATED FOR RESPONSIVENESS & FLUID SCALING)
+   ========================================================================== */
+:root {
+  --admin-primary: #007ca6;
+  --admin-dark: #00212c;
+  --admin-sky: #8acbdb;
+  --admin-accent: #fdbb37;
+  --admin-available: #8adbb0;
+  --admin-booked: #fd788a;
+  --admin-border: #e7e8ee;
+  --admin-bg: #f4f4f5;
+
+  /* Typography & Layout Tokens */
+  --font-main: "Kollektif", sans-serif;
+  --sidebar-width: clamp(200px, 18vw, 260px);
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-full: 50px;
+  --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.04);
+
+  /* Responsive Fluid Spacing Clamps */
+  --space-xs: clamp(8px, 1vw, 12px);
+  --space-sm: clamp(12px, 1.5vw, 16px);
+  --space-md: clamp(16px, 2.2vw, 24px);
+  --space-lg: clamp(24px, 3vw, 36px);
+}
+
+/* ==========================================================================
+   BASE & CANVAS LAYOUT
+   ========================================================================== */
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100%;
+  box-sizing: border-box;
+}
+
+*, *::before, *::after {
+  box-sizing: inherit;
+}
+
+.admin-dash {
+  display: flex;
+  flex-direction: row;
+  min-height: 100vh;
+  background: var(--admin-bg);
+  font-family: var(--font-main);
+  overflow-x: hidden;
+}
+
+.admin-main {
+  flex: 1;
+  min-width: 0; /* Prevents flex items with tables from breaking container bounds */
+  padding: var(--space-lg);
+  position: relative; /* Context anchor for full canvas decorative backdrops */
+}
+
+.admin-title {
+  position: relative;
+  z-index: 2; /* Keeps text layered above background swirls */
+  font-size: clamp(22px, 2.5vw, 32px);
+  font-weight: 700;
+  color: #000000;
+  margin: 0 0 var(--space-md);
+  word-break: break-word;
+}
+
+/* Canvas Decorative Double Swirl Backdrop (Fully Contained & Zoomed Out) */
+.main-bg-swirl {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.6; /* Balanced texture transparency */
+  z-index: 0;
+  pointer-events: none; /* Allows user interactions to pass straight through */
+}
+
+/* ==========================================================================
+   SIDEBAR COMPONENT
+   ========================================================================== */
+.admin-sidebar {
+  width: var(--sidebar-width);
+  flex-shrink: 0;
+  padding: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  background: linear-gradient(
+    to top,
+    var(--admin-sky),
+    var(--admin-primary) 38%,
+    var(--admin-dark)
+  );
+  color: #ffffff;
+  position: relative; /* Structural frame for absolutely positioned inside assets */
+  overflow: hidden; /* Clips bottom wave graphic inside border radius limits */
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s ease;
+}
+
+.sidebar-logo {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 193px;
+  height: auto;
+  object-fit: contain;
+}
+
+.sidebar-nav {
+  position: relative;
+  z-index: 2; /* Layers dynamic navigation tabs safely above backdrop waves */
+  display: flex;
+  flex-direction: column;
+  gap: clamp(12px, 2vw, 22px);
+}
+
+.sidebar-footer {
+  position: relative;
+  z-index: 3; /* Elevated higher than the graphic wave layer so text clicks stay clean */
+  margin-top: auto;
+  margin-bottom: var(--space-xs);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+/* Sidebar Decorative Single Swirl/Wave Graphic (Moved up above the Logout Button) */
+.sidebar-bg-swirl {
+  position: absolute;
+  bottom: 110px; 
+  left: 0;
+  width: 100%;
+  max-width: 262px;
+  height: auto;
+  aspect-ratio: 131 / 50;
+  object-fit: fill;
+  z-index: 2; /* Layers behind foreground text, but over gradient background */
+  pointer-events: none;
+}
+
+/* Sidebar Navigation Items */
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: clamp(10px, 1.2vw, 16px);
+  background: transparent;
+  border: none;
+  padding: var(--space-xs) 0;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: clamp(15px, 1.5vw, 20px);
+  text-align: left;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color 0.15s ease-in-out;
+}
+
+.nav-item:hover,
+.nav-item.active {
+  color: var(--admin-accent);
+}
+
+.nav-icon {
+  width: clamp(20px, 1.8vw, 26px);
+  height: clamp(20px, 1.8vw, 26px);
+  flex-shrink: 0;
+}
+
+/* ==========================================================================
+   STAT CARDS COMPONENT
+   ========================================================================== */
+.stat-cards {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-sm);
+  margin-bottom: var(--space-lg);
+}
+
+.stat-card {
+  background: #ffffff;
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: clamp(100px, 10vw, 130px);
+  box-shadow: var(--shadow-card);
+}
+
+.stat-card-top {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.stat-card-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-value {
+  font-size: clamp(20px, 2.2vw, 28px);
+  font-weight: 700;
+  color: #111827;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.stat-label {
+  font-size: clamp(12px, 1.1vw, 14px);
+  color: #4b5563;
+  line-height: 1.2;
+}
+
+.stat-icon-bg {
+  width: clamp(36px, 3.5vw, 44px);
+  height: clamp(36px, 3.5vw, 44px);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.card-icon {
+  width: clamp(18px, 1.8vw, 24px);
+  height: clamp(18px, 1.8vw, 24px);
+}
+
+/* Stat Card Colors */
+.bg-blue   { background-color: #8acbdb; }
+.text-blue { stroke: #141b34; }
+
+.bg-teal   { background-color: #6ac377; }
+.text-teal { stroke: #000000; }
+
+.bg-purple   { background-color: #b0b9ff; }
+.text-purple { stroke: #ffffff; }
+
+.bg-yellow   { background-color: #f9f3bd; }
+.text-yellow { stroke: #363538; }
+
+/* ==========================================================================
+   PANELS & GRID COMPONENT
+   ========================================================================== */
+.panel-grid {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 460px), 1fr));
+  gap: var(--space-md);
+}
+
+.panel {
+  background: #ffffff;
+  border: 1px solid var(--admin-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  overflow-x: auto; /* Gracefully scroll wide data columns on tiny layouts */
+  -webkit-overflow-scrolling: touch;
+}
+
+.panel.full-page-panel {
+  position: relative;
+  z-index: 2;
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: var(--space-md);
+}
+
+.panel-header h2 {
+  font-size: clamp(16px, 1.5vw, 20px);
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+}
+
+.panel-icon {
+  width: clamp(18px, 1.6vw, 22px);
+  height: clamp(18px, 1.6vw, 22px);
+  flex-shrink: 0;
+}
+
+/* Header Icon Accent Colors */
+.icon-blue   { stroke: #0284c7; }
+.icon-pink   { stroke: #ec4899; }
+.icon-purple { stroke: #7c3aed; }
+.icon-yellow { stroke: #d97706; }
+
+/* Data Tables Optimization */
+.panel table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: clamp(13px, 1.2vw, 15px);
+  min-width: 400px; /* Forces readable sub-columns without stacking squish */
+}
+
+.panel th {
+  text-align: left;
+  font-weight: 700;
+  color: #111827;
+  padding: var(--space-xs) var(--space-xs) var(--space-xs) 0;
+  border-bottom: 1px solid var(--admin-border);
+}
+
+.panel td {
+  padding: var(--space-xs) var(--space-xs) var(--space-xs) 0;
+  vertical-align: middle;
+  border-bottom: 1px solid var(--admin-bg);
+  color: #1f2937;
+  word-break: break-word;
+}
+
+.panel th:last-child,
+.panel td:last-child {
+  text-align: right;
+  padding-right: 0;
+}
+
+/* ==========================================================================
+   UI UTILITIES & BUTTONS
+   ========================================================================== */
+.pill-btn {
+  background: var(--admin-primary);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 6px 16px;
+  font-family: inherit;
+  font-size: clamp(11px, 1vw, 13px);
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s ease;
+}
+
+.pill-btn:hover {
+  background-color: var(--admin-dark);
+}
+
+.status-pill {
+  display: inline-block;
+  border-radius: var(--radius-full);
+  padding: 4px 14px;
+  font-size: clamp(11px, 1vw, 13px);
+  font-weight: 600;
+  color: #ffffff;
+  text-align: center;
+  min-width: 80px;
+}
+
+.status-pill.available { background-color: var(--admin-available); }
+.status-pill.booked    { background-color: var(--admin-booked); }
+
+.view-all-link {
+  display: inline-block;
+  margin-top: var(--space-sm);
+  color: var(--admin-primary);
+  font-size: clamp(13px, 1.2vw, 15px);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.view-all-link.disabled {
+  color: #9ca3af;
+  cursor: default;
+  pointer-events: none;
+}
+
+.muted {
+  color: #6b7280;
+  font-size: clamp(13px, 1.2vw, 15px);
+  margin: var(--space-xs) 0;
+}
+
+/* ==========================================================================
+   MEDIA RESPONSIVE CANVAS BREAKPOINTS
+   ========================================================================== */
+
+/* ── Tablet Viewports (Below 1024px) ── */
+@media (max-width: 1023px) {
+  .stat-cards {
+    grid-template-columns: repeat(2, 1fr); /* 2x2 grid instead of 4 wide */
+    gap: var(--space-md);
+  }
+}
+
+/* ── Mobile Stacking Viewports (Below 768px) ── */
+@media (max-width: 767px) {
+  .admin-dash {
+    flex-direction: column; /* Stacks navigation sidebar on top of the panels */
+  }
+
+  .admin-sidebar {
+    width: 100%;
+    height: auto;
+    padding: var(--space-sm) var(--space-md);
+    display: flex;
+    flex-direction: row; /* Horizontal navbar flow */
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    gap: var(--space-sm);
+  }
+
+  .sidebar-logo {
+    max-width: 120px;
+    flex-shrink: 0;
+  }
+
+  /* Hide background swirl on top mobile navbar so it doesn't overlap text layout */
+  .sidebar-bg-swirl {
+    display: none;
+  }
+
+  /* Transform links into a clean scrollable horizontal sub-row */
+  .sidebar-nav {
+    flex-direction: row;
+    gap: var(--space-md);
+    overflow-x: auto;
+    padding-bottom: 2px;
+    -webkit-overflow-scrolling: touch;
+    flex: 1;
+    justify-content: flex-start;
+  }
+  
+  .sidebar-nav::-webkit-scrollbar {
+    display: none; /* Keeps UI clean */
+  }
+
+  .nav-item {
+    padding: var(--space-xs) 0;
+    font-size: 15px; /* Compact format for mobile header tabs */
+  }
+
+  /* OPTIMIZED FOR MOBILE: Keep footer container active and display it on the right side */
+  .sidebar-footer {
+    display: flex; 
+    flex-direction: row;
+    margin-top: 0;
+    margin-bottom: 0;
+    flex-shrink: 0;
+  }
+
+  /* Ensure your logout nav item inside the footer renders cleanly */
+  .sidebar-footer .nav-item {
+    padding: var(--space-xs) var(--space-sm);
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+  }
+
+  .admin-main {
+    padding: var(--space-md);
+  }
+}
+
+/* ── Compact Mobile Viewports (Below 480px) ── */
+@media (max-width: 479px) {
+  .admin-sidebar {
+    padding: var(--space-sm);
+    flex-wrap: wrap; /* Wrap links if screen size gets absolutely tiny */
+  }
+  
+  .sidebar-logo {
+    max-width: 95px;
+  }
+
+  .sidebar-nav {
+    order: 3; /* Push navigation choices underneath logo/logout row on narrow frames */
+    width: 100%;
+    margin-top: 4px;
+  }
+
+  .stat-cards {
+    grid-template-columns: 1fr; /* Complete single column list stack */
+    gap: var(--space-sm);
+  }
+
+  .stat-card {
+    min-height: auto;
+  }
+
+  .panel-grid {
+    grid-template-columns: 1fr;
+  }
+}
