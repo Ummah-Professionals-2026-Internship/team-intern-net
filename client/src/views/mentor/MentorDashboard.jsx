@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./MentorDashboard.css";
+import api from "../../api/api";
+import { useAuth } from "../../context/useAuth";
 
 const SERVICE_LABELS = {
   mock_interview:     "Mock Interview",
@@ -24,13 +26,14 @@ function formatDate(iso) {
   });
 }
 
+
 export default function MentorDashboard() {
   const navigate = useNavigate();
 
   const [requests, setRequests]   = useState([]);
   const [loading, setLoading]     = useState(true);
   const [error, setError]         = useState("");
-
+  const { user } = useAuth(); 
   // Derived counts
   const pendingCount = requests.filter((r) => r.status === "pending").length;
   const activeCount  = requests.filter((r) => r.status === "active").length;
@@ -39,12 +42,10 @@ export default function MentorDashboard() {
     const fetchRequests = async () => {
       setLoading(true);
       try {
-        const res  = await fetch("http://localhost:8000/mentors/requests");
-        const data = await res.json();
-        if (!res.ok) setError(data.detail || "Failed to load data.");
-        else setRequests(data);
-      } catch {
-        setError("Network error.");
+        const res = await api.get("/mentors/requests");
+        setRequests(res.data);
+      } catch (err) {
+        setError(err.response?.data?.detail || "Failed to load data.");
       } finally {
         setLoading(false);
       }
@@ -53,7 +54,7 @@ export default function MentorDashboard() {
   }, []);
 
   // Mentor name placeholder — replace with auth context later
-  const mentorName = "Mentor";
+const mentorName = user?.full_name || "Mentor";
   const currentMentee = requests.find((req) => req.status === "active");
   return (
     <div className="mdb-page">

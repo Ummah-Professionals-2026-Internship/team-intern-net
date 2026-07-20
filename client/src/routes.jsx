@@ -1,8 +1,5 @@
 // src/routes.jsx
-import { createBrowserRouter, Navigate } from 'react-router-dom';
-// import { useAuth } from './context/AuthContext';
-import App from './App';
-import ProtectedRoute from './routes/ProtectedRoute';
+import { createBrowserRouter } from 'react-router-dom';
 import SignIn from './views/onboarding/SignIn';
 
 
@@ -10,7 +7,6 @@ import MentorApplicationForm from './views/mentorSignup/MentorApplicationForm';
 import RoleGuard from './routes/RoleGuard';
 import AdminDashboard from './views/admin/AdminDash';
 import StudentDashboard from './views/student/StudentDash';
-import MentorDashboard from './views/mentor/MentorDash';
 import PublicRoute from './routes/PublicRoute';
 import LandingPage from './views/landingpage/landingPage';
 import MentorLayout from "./views/mentor/MentorLayout";
@@ -19,7 +15,7 @@ import MentorRequests from './views/mentor/MentorRequests';
 import MentorDashboard from './views/mentor/MentorDashboard';
 import MentorMeetings from './views/mentor/MentorMeetings';
 import MentorRequestDetail from './views/mentor/MentorRequestDetail';
-import MentorSettings from './views/mentor/MentorSettings';
+// import MentorSettings from './views/mentor/MentorSettings';
 import MentorProfile from './views/mentor/MentorProfile';
 
 
@@ -59,7 +55,21 @@ export const router = createBrowserRouter([
   {
     element: <RoleGuard role="mentor" />,
     children: [
-      { path: '/mentor/dashboard', element: <MentorDashboard /> },
+      {
+        path: "/mentor",
+        element: <MentorLayout />,
+        children: [
+          { index: true, element: <MentorDashboard /> },
+          { path: "dashboard", element: <MentorDashboard /> }, // optional
+          { path: "availability", element: <MentorAvailability /> },
+          { path: "requests", element: <MentorRequests /> },
+          { path: "requests/:id", element: <MentorRequestDetail /> },
+          { path: "meetings", element: <MentorMeetings /> },
+          { path: "profile", element: <MentorProfile /> },
+          // { path: "settings", element: <MentorSettings /> },
+        ],
+      },
+      
     ],
   },
 

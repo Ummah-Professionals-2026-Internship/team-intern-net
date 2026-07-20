@@ -11,18 +11,18 @@ from app.models.enums import AssignmentStatusEnum, IntakeFormStatusEnum
 from app.schemas.mentor_assignment import AssignmentWithIntakeResponse
 from app.models.mentor import Mentor
 from app.models.student_intake_form import StudentIntakeForm
-
+from app.core.deps import require_mentor
 
 router = APIRouter()
 
-def get_current_mentor_id() -> int:
-    return 3  # hardcoded for now
+
 
 @router.get("/mentors/requests", response_model=list[AssignmentWithIntakeResponse])
 async def get_mentor_requests(
-    mentor_id: int = Depends(get_current_mentor_id),
+    user=Depends(require_mentor),
     db: AsyncSession = Depends(get_db),
 ):
+    mentor_id = int(user["sub"])
     result = await db.execute(
         select(MentorAssignment)
         .where(MentorAssignment.mentor_id == mentor_id)
@@ -40,9 +40,10 @@ async def get_mentor_requests(
 @router.patch("/mentors/requests/{assignment_id}/accept")
 async def accept_request(
     assignment_id: int,
-    mentor_id: int = Depends(get_current_mentor_id),
+    user=Depends(require_mentor),
     db: AsyncSession = Depends(get_db),
 ):
+    mentor_id = int(user["sub"])
     result = await db.execute(
         select(MentorAssignment).where(
             MentorAssignment.id == assignment_id,
@@ -76,9 +77,10 @@ async def accept_request(
 @router.patch("/mentors/requests/{assignment_id}/decline")
 async def decline_request(
     assignment_id: int,
-    mentor_id: int = Depends(get_current_mentor_id),
+    user=Depends(require_mentor),    
     db: AsyncSession = Depends(get_db),
 ):
+    mentor_id = int(user["sub"])
     result = await db.execute(
         select(MentorAssignment).where(
             MentorAssignment.id == assignment_id,

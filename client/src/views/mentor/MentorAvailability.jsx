@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect } from "react";
 import "./MentorAvailability.css";
 import TrashIcon from "../../assets/icons/trash.svg";
+import api from "../../api/api";
 
 const DAYS = ["Sun", "Mon", "Tues", "Wed", "Thurs", "Fri", "Sat"];
 const MONTHS = [
@@ -28,13 +29,6 @@ function toUTCDatetime(dateKey, timeValue) {
   return new Date(`${dateKey}T${timeValue}`).toISOString();
 }
 
-// function formatTime(value) {
-//   if (!value) return "";
-//   const [h, m] = value.split(":").map(Number);
-//   const period = h >= 12 ? "PM" : "AM";
-//   const hour = h % 12 || 12;
-//   return `${hour}:${String(m).padStart(2, "0")} ${period}`;
-// }
 
 export default function MentorAvailability() {
   const today = new Date();
@@ -58,8 +52,8 @@ export default function MentorAvailability() {
         setLoading(true);
       
         try {
-            const response = await fetch(`http://localhost:8000/mentors/availability?month=${viewMonth + 1}&year=${viewYear}`);
-            const data = await response.json();
+            const res = await api.get(`/mentors/availability?month=${viewMonth + 1}&year=${viewYear}`);
+            const data = res.data;
             
             // Group slots by date key
             const grouped = {};
@@ -78,8 +72,7 @@ export default function MentorAvailability() {
             setAvailability(grouped);
 
       } catch (err) {
-            console.log(err)    
-            console.error("Failed to fetch availability");
+            console.error("Failed to fetch availability", err.response?.data?.detail || err.message);
       } finally {
             setLoading(false);
         }
@@ -248,30 +241,18 @@ export default function MentorAvailability() {
 
     setDeletingId(id);
     try {
-        const response = await fetch(`http://localhost:8000/mentors/availability/${id}`, {
-        method: "DELETE",
-        });
-
-        if (!response.ok) {
-            const data = await response.json();
-            setSlotError(data.detail || "Failed to delete slot.");
-            return;
-        }
-
-        // remove from local state only after successful delete
+        await api.delete(`/mentors/availability/${id}`);
         setAvailability((prev) => {
-        const updated = (prev[selectedDate] || []).filter((s) => s.id !== id);
-        const next = { ...prev };
-        if (updated.length === 0) delete next[selectedDate];
-        else next[selectedDate] = updated;
-        return next;
+            const updated = (prev[selectedDate] || []).filter((s) => s.id !== id);
+            const next = { ...prev };
+            if (updated.length === 0) delete next[selectedDate];
+            else next[selectedDate] = updated;
+            return next;
         });
-        setSlotError("");
         setSaveSuccess(true);
         setTimeout(() => setSaveSuccess(false), 3000);
     } catch (err) {
-        console.log(err)
-        setSlotError("Network error. Please try again.");
+    setSlotError(err.response?.data?.detail || "Failed to delete slot.");
     } finally {
         setDeletingId(null);
         setConfirmDeleteId(null);
@@ -287,39 +268,28 @@ export default function MentorAvailability() {
     setLoading(true);
     
     try {
-        const response = await fetch("http://localhost:8000/mentors/availability", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+        const response = await api.post("/mentors/availability", {
             slots: selectedSlots.map((slot) => ({
                 start_datetime: slot.start,
                 end_datetime: slot.end,
             })),
-        }),
         });
 
-        const data = await response.json();
+        const data = response.data;
 
-        if (!response.ok) {
-            setSlotError(data.detail || "Failed to save availability.");
-        } else {
-            setSlotError("");
-            setAvailability((prev) => ({
-                ...prev,
-                [selectedDate]: data.slots.map((slot) => ({
-                    id: slot.id,
-                    start: slot.start_datetime,
-                    end: slot.end_datetime,
-                    is_booked: slot.is_booked, 
-                })),
-            }));
-            setSaveSuccess(true);
-            setTimeout(() => setSaveSuccess(false), 3000);
-
-        }
+        setAvailability((prev) => ({
+            ...prev,
+            [selectedDate]: data.slots.map((slot) => ({
+                id: slot.id,
+                start: slot.start_datetime,
+                end: slot.end_datetime,
+                is_booked: slot.is_booked,
+            })),
+        }));
+        setSaveSuccess(true);
+        setTimeout(() => setSaveSuccess(false), 3000);
     } catch (err) {
-        console.log(err)
-        setSlotError("Network error. Please try again.");
+        setSlotError(err.response?.data?.detail || "Failed to save availability.");
     } finally {
         setLoading(false);
     }

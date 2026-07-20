@@ -9,19 +9,20 @@ from app.schemas.availability_slot import (
     AvailabilitySlotResponse,
 )
 from datetime import datetime, timezone
+from app.core.deps import require_mentor
+
 
 router = APIRouter()
 
-# TODO: replace with real auth dependency once auth is set up
-def get_current_mentor_id() -> int:
-    return 3 # hardcoded for now
+
 
 @router.post("/mentors/availability")
 async def set_availability(
     body: AvailabilitySlotBulkCreate,
-    mentor_id: int = Depends(get_current_mentor_id),
+    user=Depends(require_mentor),    
     db: AsyncSession = Depends(get_db),
 ):
+    mentor_id = int(user["sub"])
     if not body.slots:
         raise HTTPException(status_code=400, detail="No slots provided")
     
@@ -64,9 +65,10 @@ async def set_availability(
 async def get_availability(
     month: int,
     year: int,
-    mentor_id: int = Depends(get_current_mentor_id),
+    user=Depends(require_mentor),    
     db: AsyncSession = Depends(get_db),
 ):
+    mentor_id = int(user["sub"])
     start = datetime(year, month, 1, tzinfo=timezone.utc)
     # last day of month
     if month == 12:
@@ -88,9 +90,10 @@ async def get_availability(
 @router.delete("/mentors/availability/{slot_id}")
 async def delete_slot(
     slot_id: int,
-    mentor_id: int = Depends(get_current_mentor_id),
+    user=Depends(require_mentor),    
     db: AsyncSession = Depends(get_db),
 ):
+    mentor_id = int(user["sub"])
     result = await db.execute(
         select(AvailabilitySlot).where(
             AvailabilitySlot.id == slot_id,

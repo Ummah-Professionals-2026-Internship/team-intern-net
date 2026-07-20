@@ -25,10 +25,7 @@ const SignIn = () => {
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-      console.log('submitted', email, password);
-      console.log('login function:', login); 
     const result = await login(email, password);
-        console.log('result', result);
     if (result.success) {
         switch (result.role) {
           case 'admin':
@@ -117,7 +114,7 @@ const SignIn = () => {
             </div>
 
             <div className="form-actions">
-              <Button type="submit" className="signin-submit-btn" onClick={() => console.log('clicked', email,password)}>
+              <Button type="submit" className="signin-submit-btn" >
                 log in
               </Button>
             </div>

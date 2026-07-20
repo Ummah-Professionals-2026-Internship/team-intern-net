@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import "./MentorRequests.css";
+import api from "../../api/api";
 
 const SERVICE_LABELS = {
   mock_interview: "Mock Interview",
@@ -45,17 +46,12 @@ export default function MentorRequestDetail() {
     const fetchRequest = async () => {
       setLoading(true);
       try {
-        const res = await fetch("http://localhost:8000/mentors/requests");
-        const data = await res.json();
-        if (!res.ok) {
-          setError(data.detail || "Failed to load request.");
-        } else {
-          const found = data.find((r) => r.id === parseInt(id));
-          if (!found) setError("Request not found.");
-          else setRequest(found);
-        }
-      } catch {
-        setError("Network error. Please try again.");
+        const res = await api.get("/mentors/requests");
+        const found = res.data.find((r) => r.id === parseInt(id));
+        if (!found) setError("Request not found.");
+        else setRequest(found);
+      } catch (err) {
+        setError(err.response?.data?.detail || "Failed to load request.");
       } finally {
         setLoading(false);
       }
@@ -67,49 +63,33 @@ export default function MentorRequestDetail() {
     setAccepting(true);
     setActionError("");
     try {
-      const res = await fetch(`http://localhost:8000/mentors/requests/${id}/accept`, {
-        method: "PATCH",
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        setActionError(data.detail || "Failed to accept request.");
-      } else {
-        setRequest((prev) => ({ ...prev, status: "active" }));
-        setShowModal(false);
-        setSuccessAction("accepted");
-      }
-    } catch {
-      setActionError("Network error. Please try again.");
+      await api.patch(`/mentors/requests/${id}/accept`);
+      setRequest((prev) => ({ ...prev, status: "active" }));
+      setShowModal(false);
+      setSuccessAction("accepted");
+    } catch (err) {
+      setActionError(err.response?.data?.detail || "Failed to accept request.");
     } finally {
       setAccepting(false);
     }
   };
-
+  
   const handleDecline = async () => {
     setDeclining(true);
     setActionError("");
-
-    try{
-      const res = await fetch(`http://localhost:8000/mentors/requests/${id}/decline`, { 
-        method: "PATCH",
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        setActionError(data.detail || "Failed to decline request.");
-      } else {
-        setRequest((prev) => ({...prev, status: "declined"}));
-        setShowDeclineModal(false);
-        setSuccessAction("declined");
-      }
-
-    } catch {
-        setActionError("Network error. Please try again.");
+    try {
+      await api.patch(`/mentors/requests/${id}/decline`);
+      setRequest((prev) => ({ ...prev, status: "declined" }));
+      setShowDeclineModal(false);
+      setSuccessAction("declined");
+    } catch (err) {
+      setActionError(err.response?.data?.detail || "Failed to decline request.");
     } finally {
       setDeclining(false);
     }
-
   };
 
+  
   if (successAction) {
     return (
       <div className="mrq-page">

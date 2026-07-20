@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./MentorRequests.css";
+import api from "../../api/api";
 
 const STATUS_LABELS = {
   pending:   { label: "Pending",   className: "mrq-badge--pending" },
@@ -34,15 +35,10 @@ export default function MentorRequests() {
     const fetchRequests = async () => {
       setLoading(true);
       try {
-        const res  = await fetch("http://localhost:8000/mentors/requests");
-        const data = await res.json();
-        if (!res.ok) {
-          setError(data.detail || "Failed to load requests.");
-        } else {
-          setRequests(data);
-        }
-      } catch {
-        setError("Network error. Please try again.");
+        const res = await api.get("/mentors/requests");
+        setRequests(res.data);
+      } catch (err) {
+        setError(err.response?.data?.detail || "Failed to load requests.");
       } finally {
         setLoading(false);
       }
