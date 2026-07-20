@@ -53,14 +53,3 @@ app.include_router(mentors.router)
 async def root():
     return {"message": "Hello From FastAPI"}
 
-
-@app.get("/health")
-async def health():
-    return {"status": "ok"}
-
-
-@app.get("/db-check")
-async def db_check(db: AsyncSession = Depends(get_db)):
-    result = await db.execute(text("SELECT 1"))
-    return {"db_status": result.scalar()}
-

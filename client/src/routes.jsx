@@ -1,4 +1,4 @@
-import { createBrowserRouter, Navigate } from 'react-router-dom';
+import { createBrowserRouter } from 'react-router-dom';
 import SignIn from './views/onboarding/SignIn';
 import MentorApplicationForm from './views/mentorSignup/MentorApplicationForm';
 import RoleGuard from './routes/RoleGuard';
@@ -6,13 +6,19 @@ import AdminDashboard from './views/admin/AdminDash';
 import StudentDashboard from './views/student/StudentDash';
 import MentorDashboard from './views/mentor/MentorDash';
 import PublicRoute from './routes/PublicRoute';
+import LandingPage from './views/landingpage/landingPage';
 
 export const router = createBrowserRouter([
   // Public routes
   {
     path: '/',
-    element: <Navigate to="/signin" replace />,
+    element: <LandingPage />,
   },
+  {
+    path: '/siging',
+    element: <SignIn />,
+  },
+  
   {
     element: <PublicRoute />,
     children: [
@@ -20,6 +26,7 @@ export const router = createBrowserRouter([
     ],
     
   },
+
   {
     path: '/apply/mentor',
     element: <MentorApplicationForm />,
