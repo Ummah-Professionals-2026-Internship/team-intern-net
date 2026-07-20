@@ -1,0 +1,97 @@
+@font-face {
+  font-family: "Kollektif";
+  src: url("../../fonts/kollektif-webfont/Kollektif.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Kollektif Bold";
+  src: url("../../fonts/kollektif-webfont/Kollektif-Bold.woff") format("woff");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+
+.lp-page {
+  height: 100vh;
+  overflow: hidden;
+  background: #FFF;
+  display: flex;
+  position: relative;
+  box-sizing: border-box;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+}
+
+.lp-container{
+    display: flex;
+    width: 100vw;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.lp-card{
+    font-family: 'Kollektif', system-ui, -apple-system, sans-serif;
+    max-width: 390px;
+    width: 100%;
+    aspect-ratio: 390 / 457;    
+    border-radius: 12px;
+    background: #FFF;
+    box-shadow: 4px 4px 4px 4px rgba(0, 0, 0, 0.25);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    padding: 0 10px;
+    
+}
+
+
+.lp-card-title{
+    font-family: 'Kollektif Bold', system-ui, -apple-system, sans-serif;
+    color: #007CA6;
+    font-size: 30px;
+    font-weight: 700;
+    line-height: normal;
+
+}
+
+.lp-card-subtitle{
+    color: #000;
+    font-size: 25px;
+    font-style: normal;
+    line-height: normal;
+}
+
+.lp-btn{
+    border: none;
+    width: 267px;
+    aspect-ratio: 267/49;
+    border-radius: 15px;
+    background: #FDBB37;
+    color: #FFF;
+    text-align: center;
+    font-size: 25px;
+    font-style: normal;
+    line-height: normal;
+    cursor: pointer;
+    transition: background 0.15s, box-shadow 0.15s, transform 0.1s;
+
+
+}
+
+
+.lp-btn:hover {
+  background: #E5A929;
+  box-shadow: 0 6px 20px rgba(253, 187, 55, 0.35);
+  transform: translateY(-1px);
+}
+
+.lp-btn:active {
+  transform: translateY(0);
+}

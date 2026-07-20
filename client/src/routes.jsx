@@ -7,6 +7,12 @@ import SignIn from './views/onboarding/SignIn';
 
 
 import MentorApplicationForm from './views/mentorSignup/MentorApplicationForm';
+import RoleGuard from './routes/RoleGuard';
+import AdminDashboard from './views/admin/AdminDash';
+import StudentDashboard from './views/student/StudentDash';
+import MentorDashboard from './views/mentor/MentorDash';
+import PublicRoute from './routes/PublicRoute';
+import LandingPage from './views/landingpage/landingPage';
 import MentorLayout from "./views/mentor/MentorLayout";
 import MentorAvailability from './views/mentor/MentorAvailability';
 import MentorRequests from './views/mentor/MentorRequests';
@@ -18,44 +24,50 @@ import MentorProfile from './views/mentor/MentorProfile';
 
 
 export const router = createBrowserRouter([
-    // 1. Auth Routes
-    {
-        path: '/',
-        element: <Navigate to="/signin" replace />,
-    },
-    {
-        path: '/signin',
-        element: <SignIn />,
-    },
-    {
-        path: '/prep',
-        element: <MentorApplicationForm />,
-    },
+  // Public routes
+  {
+    path: '/',
+    element: <LandingPage />,
+  },
+  {
+    path: '/siging',
+    element: <SignIn />,
+  },
+  
+  {
+    element: <PublicRoute />,
+    children: [
+        { path: '/signin', element: <SignIn /> },
+    ],
+    
+  },
 
-    {
-        element: <ProtectedRoute />,
-        children: [
-            { path: '/dashboard', element: <App /> },
-        ],
-    },
-    {
-        path: '/mentor',
-        element: <MentorLayout  />,
-        children: [
-            { index: true, element: <MentorDashboard />, },
-            { path: "availability", element: <MentorAvailability /> },
-            { path: "requests",  element: <MentorRequests /> },
-            { path: "requests/:id", element: <MentorRequestDetail /> },
-            { path: "meetings",  element: <MentorMeetings /> },
-            { path: "profile",   element: <MentorProfile /> },
-            { path: "settings",  element: <MentorSettings /> },
-        ]
-    }
+  {
+    path: '/apply/mentor',
+    element: <MentorApplicationForm />,
+  },
 
+  // Admin routes
+  {
+    element: <RoleGuard role="admin" />,
+    children: [
+      { path: '/admin/dashboard', element: <AdminDashboard /> },
+    ],
+  },
 
-    // 2. Main Application Routes
-    // {
+  // Mentor routes
+  {
+    element: <RoleGuard role="mentor" />,
+    children: [
+      { path: '/mentor/dashboard', element: <MentorDashboard /> },
+    ],
+  },
 
-    // }
-    // ...
+  // Student routes
+  {
+    element: <RoleGuard role="student" />,
+    children: [
+      { path: '/student/dashboard', element: <StudentDashboard /> },
+    ],
+  },
 ]);

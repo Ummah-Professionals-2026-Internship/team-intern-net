@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import  { useState } from 'react';
 import Button from '../../components/ui/Button';
 import InputField from '../../components/ui/InputField';
 
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../context/useAuth';
 import { useNavigate } from 'react-router-dom';
 
 // Importing svgs
@@ -25,8 +25,25 @@ const SignIn = () => {
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
+      console.log('submitted', email, password);
+      console.log('login function:', login); 
     const result = await login(email, password);
-    if (result.success) navigate('/dashboard');
+        console.log('result', result);
+    if (result.success) {
+        switch (result.role) {
+          case 'admin':
+            navigate('/admin/dashboard');
+            break;
+          case 'mentor':
+            navigate('/mentor/dashboard');
+            break;
+          case 'student':
+            navigate('/student/dashboard');
+            break;
+          default:
+            navigate('/signin');
+        }
+      }
   };
 
   return (
@@ -100,7 +117,7 @@ const SignIn = () => {
             </div>
 
             <div className="form-actions">
-              <Button type="submit" className="signin-submit-btn">
+              <Button type="submit" className="signin-submit-btn" onClick={() => console.log('clicked', email,password)}>
                 log in
               </Button>
             </div>
