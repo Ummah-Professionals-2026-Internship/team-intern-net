@@ -17,7 +17,6 @@ class MentorProfileUpdate(BaseModel):
     county: Optional[str] = None
     state: Optional[str] = None
     service_types: Optional[List[ServiceTypeEnum]] = None
-    is_available: Optional[bool] = None
 
     @field_validator("service_types")
     @classmethod

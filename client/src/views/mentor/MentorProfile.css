@@ -1,0 +1,51 @@
+@font-face {
+  font-family: "Kollektif";
+  src: url("../../fonts/kollektif-webfont/Kollektif.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Kollektif Bold";
+  src: url("../../fonts/kollektif-webfont/Kollektif-Bold.woff") format("woff");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+.mp-page{
+    font-family: 'Kollektif', system-ui, -apple-system, sans-serif;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    padding: 8px 32px 32px;
+
+}
+
+.mp-header{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    
+}
+.mp-title{
+    margin: 0;
+    font-family: "Kollektif Bold", system-ui, -apple-system, sans-serif;
+    font-weight: 700;
+    font-size: 35px;
+    color: #000;
+    line-height: normal;
+
+}
+.mp-subtitle{
+    font-family: "Kollektif", system-ui, -apple-system, sans-serif;
+    color: #363538;
+    line-height: 1.4;
+
+}
+
+.mp-container{
+    display: flex;
+    flex-direction: column;
+}

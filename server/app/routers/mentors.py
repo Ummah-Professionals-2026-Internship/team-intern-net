@@ -20,11 +20,16 @@ from app.core.email import send_email
 from datetime import datetime, timezone
 import secrets
 import logging
+from app.core.deps import require_mentor
+from app.models.meeting import Meeting 
+from app.models.mentor_assignment import MentorAssignment
+from sqlalchemy.orm import selectinload
 
 logger = logging.getLogger(__name__)
 
 
 router = APIRouter()
+
 
 @router.post("/mentors/apply")
 async def apply_mentor(form: MentorApplicationCreate, db: AsyncSession = Depends(get_db)):
@@ -144,6 +149,23 @@ async def get_mentor_applications(user=Depends(require_admin), db: AsyncSession 
     return result.scalars().all()
 
 
+
+@router.get("/mentor/meetings")
+async def get_mentor_meetings(user=Depends(require_mentor), db: AsyncSession = Depends(get_db)):
+    
+    mentor_id = int(user["sub"])
+    result = await db.execute(
+        select(Meeting)
+        .join(MentorAssignment, Meeting.assignment_id == MentorAssignment.id)
+        .where(MentorAssignment.mentor_id == mentor_id)
+        .options(
+            selectinload(Meeting.assignment),
+            selectinload(Meeting.slot),
+        )
+        .order_by(Meeting.start_datetime)
+    )
+
+    return result.scalars().all()
 
 
 from app.models.user import User
