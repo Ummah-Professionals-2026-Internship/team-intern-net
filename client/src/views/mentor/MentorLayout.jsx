@@ -67,8 +67,11 @@ export default function MentorLayout() {
       </aside>
 
       {/* ── Main content area ── style={{backgroundImage: `url(${bgImage})`}} */}
-      <main className="ml-main" >
-        <img src={bgImage} alt="" className="ml-main-bgImage"/>
+      <main 
+        className="ml-main" 
+        style={{backgroundImage: `url(${bgImage})`}}
+
+      >
         <Outlet />
 
       </main>

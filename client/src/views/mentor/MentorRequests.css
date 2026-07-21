@@ -22,12 +22,15 @@
 
 /* ---------- Page ---------- */
 .mrq-page {
-  padding: 0px 32px 40px;
+  padding: 8px 32px 32px;
   box-sizing: border-box;
   font-family: 'Kollektif', system-ui, -apple-system, sans-serif;
 }
 
 .mrq-header {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
   margin-bottom: 24px;
 }
 
@@ -36,17 +39,21 @@
 }
 
 .mrq-title {
-  margin: 0 0 6px;
+  margin: 0;
   font-size: 35px;
   font-family: 'Kollektif Bold', system-ui, -apple-system, sans-serif;
   font-weight: 700;
-  color: #111827;
+  color: #000;
+  line-height: normal;
+
 }
 
 .mrq-subtitle {
   margin: 0;
-  font-size: 16px;
-  color: #111827;
+  /* font-size: 16px; */
+  color: #363538;
+  line-height: 1.4;
+
 }
 
 /* ---------- Back button ---------- */

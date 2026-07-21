@@ -20,7 +20,7 @@
 
 /* ---------- Page ---------- */
 .mdb-page {
-  padding: 32px 40px;
+  padding: 8px 32px 32px;
   box-sizing: border-box;
   font-family: 'Kollektif', system-ui, -apple-system, sans-serif;
   display: flex;
