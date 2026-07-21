@@ -125,20 +125,21 @@ async def book_meeting(booking: MeetingCreate, student_id: int, db: AsyncSession
     await db.commit()
     await db.refresh(meeting)
 
-    meeting_time = slot.start_datetime.strftime("%B %d, %Y at %I:%M %p")
+    meeting_date = slot.start_datetime.strftime("%A, %B %d, %Y")
+    meeting_time = slot.start_datetime.strftime("%I:%M %p") + " - " + slot.end_datetime.strftime("%I:%M %p") + " EST"
 
     if student_user:
         await send_email(
-            subject="Meeting Scheduled!",
+            subject="Your Career Prep Meeting Has Been Scheduled",
             recipient=student_user.email,
-            body="<h2>Hi " + student_user.full_name + ",</h2><p>Your meeting has been scheduled for <strong>" + meeting_time + "</strong>.</p><p><strong>Join here:</strong> <a href='" + meet_link + "'>" + meet_link + "</a></p>"
+            body="<h2>Hi " + student_user.full_name + ",</h2><p>Your Career Prep meeting has been scheduled!</p><p><strong>Mentor:</strong> " + (mentor_user.full_name if mentor_user else 'Your Mentor') + "</p><p><strong>Date:</strong> " + meeting_date + "</p><p><strong>Time:</strong> " + meeting_time + "</p><p><strong>Meeting Link:</strong> <a href='" + meet_link + "'>" + meet_link + "</a></p><hr><p>Please make sure to join on time and come prepared for your mentorship session. We recommend joining a few minutes early to ensure you are able to access the meeting successfully.</p><p>We look forward to your session!</p><p><em>This meeting is part of the Ummah Professionals Career Prep mentorship program.</em></p>"
         )
 
     if mentor_user:
         await send_email(
-            subject="New Meeting Scheduled",
+            subject="Upcoming Career Prep Mentorship Session",
             recipient=mentor_user.email,
-            body="<h2>Hi " + mentor_user.full_name + ",</h2><p>A student has booked a meeting with you on <strong>" + meeting_time + "</strong>.</p><p><strong>Join here:</strong> <a href='" + meet_link + "'>" + meet_link + "</a></p>"
+            body="<h2>Hi " + mentor_user.full_name + ",</h2><p>You have an upcoming mentorship session scheduled!</p><p><strong>Applicant:</strong> " + (student_user.full_name if student_user else 'Your Student') + "</p><p><strong>Date:</strong> " + meeting_date + "</p><p><strong>Time:</strong> " + meeting_time + "</p><p><strong>Meeting Link:</strong> <a href='" + meet_link + "'>" + meet_link + "</a></p><hr><p>Please attend the scheduled mentorship session and be prepared to meet with your assigned applicant.</p><p>Thank you for your contribution to the Ummah Professionals Career Prep program!</p>"
         )
 
     meeting.slot = slot
