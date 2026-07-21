@@ -55,28 +55,3 @@ app.include_router(availability.router)
 async def root():
     return {"message": "Hello From FastAPI"}
 
-
-@app.get("/health")
-async def health():
-    return {"status": "ok"}
-
-
-@app.get("/db-check")
-async def db_check(db: AsyncSession = Depends(get_db)):
-    result = await db.execute(text("SELECT 1"))
-    return {"db_status": result.scalar()}
-
-
-# For demo purposes, please ignore 
-@app.post("/demo_login", response_model=TokenResponse)
-def login(loginModel: LoginRequest):
-    return TokenResponse(
-        access_token="token",
-        refresh_token="refresh",
-        user=LoggedInUser(
-            id=1,
-            email="example@gmail.com",
-            full_name="John Doe",
-            role=RoleEnum.student
-        )
-    )

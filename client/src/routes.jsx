@@ -1,67 +1,71 @@
-// src/routes.jsx
 import { createBrowserRouter, Navigate } from 'react-router-dom';
-// import { useAuth } from './context/AuthContext';
 import App from './App';
 import ProtectedRoute from './routes/ProtectedRoute';
+import RoleGuard from './routes/RoleGuard';
+import PublicRoute from './routes/PublicRoute';
+import LandingPage from './views/landingpage/landingPage';
 
+// Main branch onboarding paths
 import SignIn from './views/onboarding/SignIn';
 import MentorApplicationForm from './views/mentorSignup/MentorApplicationForm';
-import AvailabilityView from './views/availability/AvailabilityView';
+
+// Dashboard views
+import AdminDashboard from './views/admin/AdminDash';
+import MentorDashboard from './views/mentor/MentorDash';
 import StudentLayout from './views/student/StudentLayout';
 import StudentDashboard from './views/student/StudentDashboard';
-
-// Moved ProtectedRoute to routes folder.
-//
-// const ProtectedRoute = () => {
-//   const { user } = useAuth();
-//   return user ? <Outlet /> : <Navigate to="/signin" replace />;
-// };
+import AvailabilityView from './views/availability/AvailabilityView';
 
 export const router = createBrowserRouter([
-    // 1. Auth Routes
-    {
-        path: '/',
-        element: <Navigate to="/signin" replace />,
-    },
-    {
-        path: '/signin',
-        element: <SignIn />,
-    },
-    {
-        path: '/prep',
-        element: <MentorApplicationForm />,
-    },
-    // Temporary test route
-    {
-        path: '/availability/:mentorId',
-        element: <AvailabilityView mentorId={7} />,
-    },
-
-    {
-        element: <ProtectedRoute />,
-        children: [
-            { path: '/dashboard', element: <App /> },
-        ],
-    },
-
-    {
-  path: '/student',
-  element: <StudentLayout />,
-  children: [
-    { path: 'availability', element: <AvailabilityView /> },
-    { path: '', element: <StudentDashboard /> },
-    { path: 'availability', element: <AvailabilityView /> },
-
-  ],
-
+  // Public routes
+  {
+    path: '/',
+    element: <LandingPage />,
+  },
+  {
+    element: <PublicRoute />,
+    children: [
+      { path: '/signin', element: <SignIn /> },
+    ],
+  },
+  {
+    path: '/apply/mentor',
+    element: <MentorApplicationForm />,
+  },
+  {
+    path: '/availability/:mentorId',
+    element: <AvailabilityView mentorId="7" />,
+  },
   
-
-},
-
-
-    // 2. Main Application Routes
-    // {
-
-    // }
-    // ...
+  // Protected Dashboard Routes
+  {
+    element: <ProtectedRoute />,
+    children: [
+      {
+        element: <RoleGuard allowedRoles={['student']} />,
+        children: [
+          {
+            element: <StudentLayout />,
+            children: [
+              { path: '/student/dashboard', element: <StudentDashboard /> },
+            ],
+          },
+        ],
+      },
+      {
+        element: <RoleGuard allowedRoles={['mentor']} />,
+        children: [
+          { path: '/mentor/dashboard', element: <MentorDashboard /> },
+        ],
+      },
+      {
+        element: <RoleGuard allowedRoles={['admin']} />,
+        children: [
+          { path: '/admin/dashboard', element: <AdminDashboard /> },
+        ],
+      },
+    ],
+  },
 ]);
+
+export default router;
