@@ -1,4 +1,5 @@
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/useAuth"; // 👈 Integrated Auth context for clean system logout
 import "./StudentLayout.css";
 import umLogo from "../../assets/images/um-small-logo.png";
 import bgImage from "../../assets/images/mentor-app-bg.png";
@@ -9,8 +10,9 @@ import SettingIcon from "../../assets/icons/settings.svg";
 import LogOutIcon from "../../assets/icons/signout.svg";
 import RequestsIcon from "../../assets/icons/requests.svg";
 
+// Fixed to match the exact paths configured in routes.jsx
 const NAV_ITEMS = [
-  { label: "Dashboard", to: "/student/", icon: DashIcon },
+  { label: "Dashboard", to: "/student/dashboard", icon: DashIcon },
   { label: "Career Form", to: "/student/career-form", icon: RequestsIcon },
   { label: "Meetings", to: "/student/meetings", icon: MeetingIcon },
   { label: "Profile", to: "/student/profile", icon: ProfileIcon },
@@ -18,7 +20,7 @@ const NAV_ITEMS = [
 ];
 
 export default function StudentLayout() {
-  const navigate = useNavigate();
+  const { logout } = useAuth(); // 👈 Pull secure logout function 
 
   return (
     <div className="sl-shell">
@@ -31,7 +33,6 @@ export default function StudentLayout() {
             <NavLink
               key={to}
               to={to}
-              end={to === "/student/"}
               className={({ isActive }) =>
                 `sl-nav-item${isActive ? " sl-nav-item--active" : ""}`
               }
@@ -42,7 +43,8 @@ export default function StudentLayout() {
           ))}
         </nav>
         <div className="sl-sidebar-footer">
-          <button className="sl-logout" onClick={() => navigate("/signin")}>
+          {/* Scrub storage context on logout */}
+          <button className="sl-logout" onClick={logout}>
             <img src={LogOutIcon} alt="" className="sl-nav-icon" />
             <span className="sl-nav-label">Logout</span>
           </button>

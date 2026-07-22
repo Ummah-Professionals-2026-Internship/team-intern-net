@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from typing import List
@@ -13,7 +13,7 @@ from app.core.email import send_email
 from app.schemas.availability_slot import AvailabilitySlotCreate, AvailabilitySlotBulkCreate, AvailabilitySlotBulkResponse
 from app.models.mentor import Mentor
 from app.models.user import User
-from app.core.deps import get_current_user
+from app.core.deps import require_student 
 
 router = APIRouter()
 
@@ -34,7 +34,6 @@ async def get_mentor_availability(mentor_id: int, db: AsyncSession = Depends(get
 # Mentor submits availability slots
 @router.post("/mentors/{mentor_id}/availability", response_model=AvailabilitySlotBulkResponse)
 async def add_mentor_availability(mentor_id: int, payload: AvailabilitySlotBulkCreate, db: AsyncSession = Depends(get_db)):
-    # Check mentor exists
     mentor_result = await db.execute(select(Mentor).where(Mentor.user_id == mentor_id))
     mentor = mentor_result.scalar_one_or_none()
     if not mentor:
@@ -58,8 +57,13 @@ async def add_mentor_availability(mentor_id: int, payload: AvailabilitySlotBulkC
 
 # Ticket #55 — Student books a meeting
 @router.post("/meetings", response_model=MeetingResponse)
-async def book_meeting(booking: MeetingCreate, student_id: int, db: AsyncSession = Depends(get_db)):
-    # Get the slot
+async def book_meeting(
+    booking: MeetingCreate, 
+    current_user: dict = Depends(require_student), 
+    db: AsyncSession = Depends(get_db)
+):
+    student_id = int(current_user["sub"])
+
     slot_result = await db.execute(
         select(AvailabilitySlot).where(AvailabilitySlot.id == booking.slot_id)
     )
@@ -69,7 +73,6 @@ async def book_meeting(booking: MeetingCreate, student_id: int, db: AsyncSession
     if slot.is_booked:
         raise HTTPException(status_code=400, detail="Slot is already booked")
 
-    # Get student's active assignment
     assignment_result = await db.execute(
         select(MentorAssignment).where(
             MentorAssignment.student_id == student_id,
@@ -80,11 +83,9 @@ async def book_meeting(booking: MeetingCreate, student_id: int, db: AsyncSession
     if not assignment:
         raise HTTPException(status_code=404, detail="No active assignment found for this student")
 
-    # Verify slot belongs to assigned mentor
     if slot.mentor_id != assignment.mentor_id:
         raise HTTPException(status_code=403, detail="This slot does not belong to your assigned mentor")
 
-    # Create meeting
     meeting = Meeting(
         assignment_id=assignment.id,
         slot_id=slot.id,
@@ -93,15 +94,12 @@ async def book_meeting(booking: MeetingCreate, student_id: int, db: AsyncSession
         status=MeetingStatusEnum.scheduled
     )
     db.add(meeting)
-
-    # Mark slot as booked
     slot.is_booked = True
 
     await db.commit()
     await db.refresh(meeting)
     await db.refresh(slot)
 
-    # Generate Google Meet link
     student_user_result = await db.execute(select(User).where(User.id == student_id))
     student_user = student_user_result.scalar_one_or_none()
 
@@ -114,13 +112,10 @@ async def book_meeting(booking: MeetingCreate, student_id: int, db: AsyncSession
     if mentor_user:
         attendees.append(mentor_user.email)
 
-    # Get mentor's stored meeting link
     mentor_result = await db.execute(select(Mentor).where(Mentor.user_id == assignment.mentor_id))
     mentor = mentor_result.scalar_one_or_none()
     meet_link = mentor.meeting_url if mentor and mentor.meeting_url else "No meeting link provided yet - mentor will send it separately"
 
-
-    # Store meet link in meeting record
     meeting.meeting_url = meet_link
     await db.commit()
     await db.refresh(meeting)
@@ -132,15 +127,54 @@ async def book_meeting(booking: MeetingCreate, student_id: int, db: AsyncSession
         await send_email(
             subject="Your Career Prep Meeting Has Been Scheduled",
             recipient=student_user.email,
-            body="<h2>Hi " + student_user.full_name + ",</h2><p>Your Career Prep meeting has been scheduled!</p><p><strong>Mentor:</strong> " + (mentor_user.full_name if mentor_user else 'Your Mentor') + "</p><p><strong>Date:</strong> " + meeting_date + "</p><p><strong>Time:</strong> " + meeting_time + "</p><p><strong>Meeting Link:</strong> <a href='" + meet_link + "'>" + meet_link + "</a></p><hr><p>Please make sure to join on time and come prepared for your mentorship session. We recommend joining a few minutes early to ensure you are able to access the meeting successfully.</p><p>We look forward to your session!</p><p><em>This meeting is part of the Ummah Professionals Career Prep mentorship program.</em></p>"
+            body="<h2>Hi " + student_user.full_name + ",</h2><p>Your Career Prep meeting has been scheduled!</p><p><strong>Mentor:</strong> " + (mentor_user.full_name if mentor_user else 'Your Mentor') + "</p><p><strong>Date:</strong> " + meeting_date + "</p><p><strong>Time:</strong> " + meeting_time + "</p><p><strong>Meeting Link:</strong> <a href='" + meet_link + "'>" + meet_link + "</a></p><hr><p>Please make sure to join on time and come prepared for your mentorship session.</p>"
         )
 
     if mentor_user:
         await send_email(
             subject="Upcoming Career Prep Mentorship Session",
             recipient=mentor_user.email,
-            body="<h2>Hi " + mentor_user.full_name + ",</h2><p>You have an upcoming mentorship session scheduled!</p><p><strong>Applicant:</strong> " + (student_user.full_name if student_user else 'Your Student') + "</p><p><strong>Date:</strong> " + meeting_date + "</p><p><strong>Time:</strong> " + meeting_time + "</p><p><strong>Meeting Link:</strong> <a href='" + meet_link + "'>" + meet_link + "</a></p><hr><p>Please attend the scheduled mentorship session and be prepared to meet with your assigned applicant.</p><p>Thank you for your contribution to the Ummah Professionals Career Prep program!</p>"
+            body="<h2>Hi " + mentor_user.full_name + ",</h2><p>You have an upcoming mentorship session scheduled!</p><p><strong>Applicant:</strong> " + (student_user.full_name if student_user else 'Your Student') + "</p><p><strong>Date:</strong> " + meeting_date + "</p><p><strong>Time:</strong> " + meeting_time + "</p><p><strong>Meeting Link:</strong> <a href='" + meet_link + "'>" + meet_link + "</a></p>"
         )
 
     meeting.slot = slot
     return meeting
+
+# 👇 NEW CANCELLATION ENDPOINT 👇
+@router.delete("/meetings/{meeting_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def cancel_meeting(
+    meeting_id: int,
+    current_user: dict = Depends(require_student),
+    db: AsyncSession = Depends(get_db)
+):
+    user_id = int(current_user["sub"])
+
+    # 1. Look for the target meeting
+    meeting_res = await db.execute(select(Meeting).where(Meeting.id == meeting_id))
+    meeting = meeting_res.scalar_one_or_none()
+    if not meeting:
+        raise HTTPException(status_code=404, detail="Meeting record not found")
+
+    # 2. Check if the meeting belongs to this student's assignment
+    assignment_res = await db.execute(
+        select(MentorAssignment).where(
+            MentorAssignment.id == meeting.assignment_id,
+            MentorAssignment.student_id == user_id
+        )
+    )
+    assignment = assignment_res.scalar_one_or_none()
+    if not assignment:
+        raise HTTPException(status_code=403, detail="Not authorized to alter this meeting context")
+
+    # 3. Release the availability slot back to the mentor's open pool
+    slot_res = await db.execute(select(AvailabilitySlot).where(AvailabilitySlot.id == meeting.slot_id))
+    slot = slot_res.scalar_one_or_none()
+    if slot:
+        slot.is_booked = False
+        db.add(slot)
+
+    # 4. Remove the meeting record from the database table
+    await db.delete(meeting)
+    await db.commit()
+    
+    return None

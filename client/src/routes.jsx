@@ -4,7 +4,8 @@ import ProtectedRoute from './routes/ProtectedRoute';
 import RoleGuard from './routes/RoleGuard';
 import PublicRoute from './routes/PublicRoute';
 import LandingPage from './views/landingpage/landingPage';
-
+import StudentProfile from './views/student/StudentProfile';
+import StudentMeetings from './views/student/StudentMeetings';
 // Main branch onboarding paths
 import SignIn from './views/onboarding/SignIn';
 import MentorApplicationForm from './views/mentorSignup/MentorApplicationForm';
@@ -41,6 +42,7 @@ export const router = createBrowserRouter([
   {
     element: <ProtectedRoute />,
     children: [
+      // STUDENT ROUTES
       {
         element: <RoleGuard allowedRoles={['student']} />,
         children: [
@@ -48,16 +50,20 @@ export const router = createBrowserRouter([
             element: <StudentLayout />,
             children: [
               { path: '/student/dashboard', element: <StudentDashboard /> },
+              { path: '/student/profile', element: <StudentProfile /> },
+              { path: '/student/meetings', element: <StudentMeetings /> },
             ],
           },
         ],
       },
+      // MENTOR ROUTES
       {
         element: <RoleGuard allowedRoles={['mentor']} />,
         children: [
           { path: '/mentor/dashboard', element: <MentorDashboard /> },
         ],
       },
+      // ADMIN ROUTES
       {
         element: <RoleGuard allowedRoles={['admin']} />,
         children: [

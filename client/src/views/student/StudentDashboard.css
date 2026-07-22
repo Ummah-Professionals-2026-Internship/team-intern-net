@@ -402,3 +402,36 @@
 
 .sd-confirm-btn:hover { background: #024a62; }
 .sd-confirm-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.sd-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5); /* Dim the background */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000; /* Force it to stay on top of everything */
+}
+
+.sd-modal-content {
+  background: #ffffff;
+  padding: 2.5rem;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+  text-align: center;
+  max-width: 450px;
+  width: 90%;
+}
+
+
+/* Dashboard-specific cancel button layout */
+.sd-dashboard-cancel-btn {
+  transition: background-color 0.2s ease-in-out;
+}
+
+.sd-dashboard-cancel-btn:hover {
+  background-color: #e04343 !important;
+}

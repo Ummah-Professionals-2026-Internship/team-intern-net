@@ -9,7 +9,7 @@ from app.routers import test
 from app.routers import dashboard
 from app.routers import matching
 from app.routers import auth
-
+from app.routers.student import router as student_router
 from app.routers import intake
 from app.routers import mentors
 from app.routers import availability
@@ -42,7 +42,7 @@ app.add_middleware(
 )
 
 app.include_router(test.router)
-
+app.include_router(student_router)
 app.include_router(dashboard.router)
 app.include_router(auth.router)
 app.include_router(matching.router)
