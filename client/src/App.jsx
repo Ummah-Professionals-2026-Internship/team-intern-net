@@ -1,26 +1,24 @@
 import { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
-import { useAuth } from './context/AuthContext';
+import { useAuth } from './context/useAuth';
 import api from './api/api';
-// import SignIn from './views/onboarding/SignIn';
 import './App.css';
 
-// import { Router } from 'express'
-
 function App() {
-  const [message, setMessage] = useState('Loading...')
+  const [message, setMessage] = useState('Loading...');
   const { logout } = useAuth();
 
   useEffect(() => {
+    // Health check using the centralized API client instance
     api.get('/')
-      .then(res => {
-        setMessage(res.data.message || "No message found")
+      .then((res) => {
+        setMessage(res.data.message || "No message found");
       })
-      .catch(err => {
-        console.error(err)
-        setMessage("Backend not reachable")
-      })
-  }, [])
+      .catch((err) => {
+        console.error(err);
+        setMessage("Backend not reachable");
+      });
+  }, []);
 
   return (
     <div className="app-layout">
@@ -34,7 +32,7 @@ function App() {
         <button onClick={logout}>Log out</button>
       </main>
     </div>
-  )
+  );
 }
 
 export default App;

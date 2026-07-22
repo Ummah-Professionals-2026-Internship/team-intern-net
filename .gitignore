@@ -64,3 +64,7 @@ Thumbs.db:encryptable
 ehthumbs.db
 ehthumbs_vista.db
 [Dd]esktop.ini
+
+# LOCAL DEV SCRIPTS
+/server/app/create_admin.py
+/server/app/delete_admin.py
