@@ -24,6 +24,8 @@ class Mentor(Base):
     linkedin_url         : Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     employer             : Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     job_title            : Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    major                : Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    experience           : Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     industry             : Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     alma_mater           : Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     county               : Mapped[Optional[str]] = mapped_column(String(100), nullable=True)

@@ -69,8 +69,14 @@ async def update_mentor_profile(
                 detail="Cannot change service types while you have an active assignment."
             )
 
+    # Separate user fields from mentor fields
+    user_fields = {"full_name"}
+
     for field, value in update_data.items():
-        if field == "linkedin_url" and value is not None:
+        if field in user_fields:
+            # Update User model
+            setattr(mentor.user, field, value)
+        elif field == "linkedin_url" and value is not None:
             setattr(mentor, field, str(value))
         else:
             setattr(mentor, field, value)

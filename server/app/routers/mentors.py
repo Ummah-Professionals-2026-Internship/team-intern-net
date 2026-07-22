@@ -99,6 +99,8 @@ async def apply_mentor(form: MentorApplicationCreate, db: AsyncSession = Depends
         state=form.state,
         phone_number=form.phone_number,
         service_types=form.service_types,
+        major=form.major,
+        experience=form.experience,
     )
     db.add(mentor)
 
