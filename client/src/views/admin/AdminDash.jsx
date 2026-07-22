@@ -360,18 +360,31 @@ function FullMentorsPanel({ title, loading, data }) {
             </tr>
           </thead>
           <tbody>
-            {data.map((m) => (
-              <tr key={m.id || m.mentor_user_id}>
-                <td>{m.full_name || `${m.first_name || ''} ${m.last_name || ''}`}</td>
-                <td>{m.email || "N/A"}</td>
-                <td>{m.industry || m.field || "General"}</td>
-                <td>
-                  <span className={`status-pill ${m.is_active === false ? "booked" : "available"}`}>
-                    {m.is_active === false ? "Inactive" : "Active"}
-                  </span>
-                </td>
-              </tr>
-            ))}
+            {data.map((m) => {
+              // Extract name from top level OR nested user object
+              const rawName =
+                m.full_name ||
+                m.user?.full_name ||
+                `${m.first_name || m.user?.first_name || ""} ${m.last_name || m.user?.last_name || ""}`.trim();
+
+              const name = rawName || "N/A";
+              const email = m.email || m.user?.email || "N/A";
+              const industry = m.industry || m.field || m.company || "General";
+              const isActive = m.is_active !== false && m.user?.is_active !== false;
+
+              return (
+                <tr key={m.id || m.mentor_user_id}>
+                  <td>{name}</td>
+                  <td>{email}</td>
+                  <td>{industry}</td>
+                  <td>
+                    <span className={`status-pill ${isActive ? "available" : "booked"}`}>
+                      {isActive ? "Active" : "Inactive"}
+                    </span>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       )}
