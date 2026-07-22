@@ -1,33 +1,3 @@
-"""
-Mentor assignment + capacity tracking.
-
-Capacity counts ASSIGNMENTS, not meetings -- this matches the ticket's AC
-literally: "current assigned applicant count tracked", "capacity updates
-when assignments are created/removed". A slot is used the moment a mentor
-accepts a student (MentorAssignment created), not when a meeting happens.
-Cancelling an assignment releases its slot automatically, since cancelled
-assignments are excluded from the live count.
-
-MentorAssignment allows only ONE active assignment per mentor at a time
-(partial unique index). That's tracked separately as has_active_assignment
--- it still gates new assignments (the DB would reject a 2nd active one
-regardless of capacity headroom), but it no longer conflates with the
-numeric counter the way an earlier meeting-based version of this did.
-
-Cooldown rule: the counter does NOT reset on the calendar month. The
-moment a mentor's Nth assignment (max_monthly_sessions) is accepted, they
-go on cooldown until exactly one month after THAT assignment's
-assigned_at date -- e.g. accepting a 2nd student on the 31st puts them on
-cooldown through next month's 1st, not two days later. Computed by
-replaying assignment dates in order, not a single COUNT, since it depends
-on dates relative to each other.
-
-NOTE: assigned_by should come from the authenticated admin's user id.
-There's no auth dependency wired up yet (main.py's login is demo-only),
-so it's taken as a plain field on the request for now -- swap the
-admin_user_id param for a real `current_admin: User = Depends(...)` once
-auth exists.
-"""
 import calendar
 from datetime import datetime, timezone
 from typing import List, Optional, Tuple
@@ -52,8 +22,7 @@ router = APIRouter()
 
 
 def _add_one_month(dt: datetime) -> datetime:
-    """dt + 1 calendar month, clamping the day for shorter months
-    (e.g. Jan 31 -> Feb 28/29)."""
+    """dt + 1 calendar month, clamping the day for shorter months."""
     year = dt.year + (dt.month // 12)
     month = dt.month % 12 + 1
     day = min(dt.day, calendar.monthrange(year, month)[1])
@@ -63,11 +32,12 @@ def _add_one_month(dt: datetime) -> datetime:
 def _compute_cooldown_state(
     event_dates: List[datetime], capacity: int, now: datetime
 ) -> Tuple[int, Optional[datetime]]:
-    """event_dates must be sorted ascending -- assignment assigned_at
-    dates for non-cancelled assignments. Returns
-    (assigned_count_in_current_cycle, cooldown_until | None)."""
+    """(assigned_count_in_current_cycle, cooldown_until | None)."""
     window_count = 0
     cooldown_until: Optional[datetime] = None
+
+    if capacity <= 0:
+        return 0, None
 
     for dt in event_dates:
         if cooldown_until is not None:
@@ -87,36 +57,53 @@ def _compute_cooldown_state(
 
 
 async def _capacity_for(db: AsyncSession, mentor: Mentor) -> MentorCapacity:
+    # Query assignments by Mentor.user_id OR Mentor.id consistently.
+    # Assuming MentorAssignment.mentor_id points to Mentor.user_id:
+    target_id = mentor.user_id if hasattr(mentor, "user_id") and mentor.user_id else mentor.id
+
     rows = (await db.execute(
         select(MentorAssignment.assigned_at, MentorAssignment.status).where(
-            MentorAssignment.mentor_id == mentor.user_id,
+            MentorAssignment.mentor_id == target_id,
             MentorAssignment.status != AssignmentStatusEnum.cancelled,
         ).order_by(MentorAssignment.assigned_at.asc())
     )).all()
 
     has_active = any(r.status == AssignmentStatusEnum.active for r in rows)
-    assigned_dates = [r.assigned_at for r in rows]
 
-    capacity = mentor.max_monthly_sessions
-    now = datetime.now(timezone.utc)
+    # Safely handle null/missing assigned_at timestamps
+    assigned_dates = [
+        r.assigned_at.replace(tzinfo=None)
+        for r in rows
+        if r.assigned_at is not None
+    ]
+
+    capacity = mentor.max_monthly_sessions or 0
+    now = datetime.now(timezone.utc).replace(tzinfo=None)
+
     window_count, cooldown_until = _compute_cooldown_state(assigned_dates, capacity, now)
     at_capacity = cooldown_until is not None
 
     return MentorCapacity(
-        mentor_user_id=mentor.user_id,
-        full_name=mentor.user.full_name,
+        mentor_user_id=mentor.user_id if hasattr(mentor, "user_id") else mentor.id,
+        full_name=mentor.user.full_name if (mentor.user and hasattr(mentor.user, "full_name")) else "Unknown Mentor",
         capacity=capacity,
         assigned_count=window_count,
         available_capacity=0 if at_capacity else max(capacity - window_count, 0),
         cooldown_until=cooldown_until,
         has_active_assignment=has_active,
         at_capacity=at_capacity,
-        eligible=mentor.is_available and not has_active and not at_capacity,
+        eligible=bool(mentor.is_available and not has_active and not at_capacity),
     )
 
 
 async def assert_mentor_assignable(db: AsyncSession, mentor_id: int) -> Mentor:
-    mentor = await db.get(Mentor, mentor_id, options=[selectinload(Mentor.user)])
+    # Look up mentor by primary key or user_id gracefully
+    stmt = select(Mentor).options(selectinload(Mentor.user)).where(
+        (Mentor.id == mentor_id) | (Mentor.user_id == mentor_id)
+    )
+    res = await db.execute(stmt)
+    mentor = res.scalars().first()
+
     if not mentor:
         raise HTTPException(404, "Mentor not found")
     if not mentor.is_available:
@@ -139,11 +126,11 @@ async def list_mentor_capacity(db: AsyncSession = Depends(get_db)):
 
 @router.get("/mentors/recommendations", response_model=List[MentorCapacity])
 async def get_mentor_recommendations(db: AsyncSession = Depends(get_db)):
-    """Mentors eligible for a NEW assignment: available, no active
-    assignment, not on cooldown. Most available capacity first."""
+    """Mentors eligible for a NEW assignment."""
     mentors = (await db.execute(
         select(Mentor).options(selectinload(Mentor.user)).where(Mentor.is_available == True)
     )).scalars().all()
+    
     capacities = [await _capacity_for(db, m) for m in mentors]
     eligible = [c for c in capacities if c.eligible]
     eligible.sort(key=lambda c: c.available_capacity, reverse=True)
@@ -156,18 +143,25 @@ async def create_assignment(
     admin_user_id: int,  # TODO: replace with Depends(current_admin) once auth exists
     db: AsyncSession = Depends(get_db),
 ):
-    await assert_mentor_assignable(db, form.mentor_id)
+    mentor = await assert_mentor_assignable(db, form.mentor_id)
 
     assignment = MentorAssignment(
-        mentor_id=form.mentor_id,
+        mentor_id=mentor.user_id if hasattr(mentor, "user_id") and mentor.user_id else mentor.id,
         student_id=form.student_id,
         intake_form_id=form.intake_form_id,
         assigned_by=admin_user_id,
     )
     db.add(assignment)
     await db.commit()
-    await db.refresh(assignment, attribute_names=["mentor", "student"])
-    return assignment
+    
+    # Re-query with explicit options to avoid Async MissingGreenlet serialization crashes
+    stmt = (
+        select(MentorAssignment)
+        .options(selectinload(MentorAssignment.mentor), selectinload(MentorAssignment.student))
+        .where(MentorAssignment.id == assignment.id)
+    )
+    res = await db.execute(stmt)
+    return res.scalars().one()
 
 
 @router.patch("/assignments/{assignment_id}/status", response_model=AssignmentResponse)
@@ -176,9 +170,6 @@ async def update_assignment_status(
     form: AssignmentStatusUpdate,
     db: AsyncSession = Depends(get_db),
 ):
-    """Cancelling an assignment releases its capacity slot immediately
-    (live count excludes cancelled rows). Completing one keeps the slot
-    counted for this cycle -- it was genuinely used."""
     assignment = await db.get(MentorAssignment, assignment_id)
     if not assignment:
         raise HTTPException(404, "Assignment not found")
@@ -188,5 +179,11 @@ async def update_assignment_status(
         assignment.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
 
     await db.commit()
-    await db.refresh(assignment, attribute_names=["mentor", "student"])
-    return assignment
+    
+    stmt = (
+        select(MentorAssignment)
+        .options(selectinload(MentorAssignment.mentor), selectinload(MentorAssignment.student))
+        .where(MentorAssignment.id == assignment.id)
+    )
+    res = await db.execute(stmt)
+    return res.scalars().one()

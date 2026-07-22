@@ -7,6 +7,7 @@
   --admin-sky: #8acbdb;
   --admin-accent: #fdbb37;
   --admin-available: #8adbb0;
+  --admin-pending: #FCE181;
   --admin-booked: #fd788a;
   --admin-border: #e7e8ee;
   --admin-bg: #f4f4f5;
@@ -348,19 +349,46 @@ html, body, #root {
   background-color: var(--admin-dark);
 }
 
-.status-pill {
-  display: inline-block;
-  border-radius: var(--radius-full);
-  padding: 4px 14px;
-  font-size: clamp(11px, 1vw, 13px);
-  font-weight: 600;
-  color: #ffffff;
-  text-align: center;
+.status-pill { 
+  display: inline-block; 
+  border-radius: var(--radius-full); 
+  padding: 4px 14px; 
+  font-size: clamp(11px, 1vw, 13px); 
+  font-weight: 600; 
+  text-align: center; 
   min-width: 80px;
+  background-color: transparent;
+  border-width: 1px;
+  border-style: solid;
+} 
+
+.status-pill.available, 
+.status-pill.assigned { 
+  border-color: var(--admin-available); 
+  color: #318259; 
+} 
+
+.status-pill.booked { 
+  border-color: var(--admin-booked); 
+  color: #D34356; 
+} 
+
+.status-pill.pending { 
+  border-color: #FCD34D; 
+  color: #B45309; 
 }
 
-.status-pill.available { background-color: var(--admin-available); }
-.status-pill.booked    { background-color: var(--admin-booked); }
+/* Active Mentor Colors */
+.full-page-panel .status-pill.available {
+  border-color: #8adbb0;
+  color: #318259;        
+}
+
+/* Inactive Mentor Colors */
+.full-page-panel .status-pill.booked {
+  border-color: #fd788a;
+  color: #D34356;        
+}
 
 .view-all-link {
   display: inline-block;
