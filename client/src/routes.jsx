@@ -39,7 +39,7 @@ export const router = createBrowserRouter([
   },
 
   {
-    path: '/apply/mentor',
+    path: '/advisor',
     element: <MentorApplicationForm />,
   },
 
