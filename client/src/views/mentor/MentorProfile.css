@@ -64,15 +64,23 @@
 /* ---------- Card ---------- */
 .mp-card {
   background: #ffffff;
-  border-radius: 15px;
-  border: 1px solid rgba(0, 0, 0, 0.25);
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
   padding: 24px 28px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+}
+
+.mp-card-header{
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  margin-bottom: 15px;
+  
 }
 
 .mp-card-title {
-  margin: 0 0 20px;
-  font-size: 16px;
+  margin: 0;
+  font-size: 20px;
   font-weight: 700;
   color: #111827;
   font-family: "Kollektif Bold", system-ui, sans-serif;
@@ -89,9 +97,10 @@
   min-width: 300px;
   background: #ffffff;
   padding: 24px 28px;
-  border-radius: 15px;
-  border: 1px solid rgba(0, 0, 0, 0.25);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
+  /* border: 1px solid rgba(0, 0, 0, 0.25); */
+  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
   flex: 1;
 
 }
@@ -104,22 +113,22 @@
 }
 
 .mp-avatar {
-  width: 72px;
+  /* width: 72px;
   height: 72px;
   border-radius: 50%;
-  background: #8acbdb;
+  background: #8acbdb; */
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
 }
 
-.mp-avatar-initials {
+/* .mp-avatar-initials {
   font-size: 28px;
   font-weight: 700;
   color: #025571;
   font-family: "Kollektif Bold", system-ui, sans-serif;
-}
+} */
 
 .mp-identity-info {
   display: flex;
@@ -129,7 +138,7 @@
 
 .mp-identity-name {
   margin: 0;
-  font-size: clamp(18px, 1.6vw, 22px);
+  font-size: clamp(18px, 1.6vw, 28px);
   font-weight: 700;
   color: #111827;
   font-family: "Kollektif Bold", system-ui, sans-serif;
@@ -157,15 +166,15 @@
 /* ---------- Grid ---------- */
 .mp-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px 32px;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 10px 10px;
 }
 
 /* ---------- Field ---------- */
 .mp-field {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  /* gap: 6px; */
 }
 
 .mp-field--full {
@@ -173,7 +182,7 @@
 }
 
 .mp-field-label {
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
   color: #6b7280;
   text-transform: uppercase;
@@ -181,8 +190,8 @@
 }
 
 .mp-field-value {
-  font-size: 15px;
-  font-weight: 500;
+  font-size: 18px;
+  font-weight: 700;
   color: #111827;
 }
 
@@ -192,7 +201,7 @@
   padding: 10px 14px;
   border: 1.5px solid #d1d5db;
   border-radius: 8px;
-  font-size: 14px;
+  font-size: 16px;
   color: #111827;
   background: #f9fafb;
   box-sizing: border-box;
@@ -245,7 +254,7 @@
   padding: 10px 14px;
   border: 1.5px solid #d1d5db;
   border-radius: 8px;
-  font-size: 14px;
+  font-size: 16px;
   color: #111827;
   background: #f9fafb;
   box-sizing: border-box;
@@ -264,7 +273,7 @@
 /* ---------- Bio display ---------- */
 .mp-bio-text {
   margin: 0;
-  font-size: 14px;
+  font-size: 16px;
   color: #374151;
   line-height: 1.6;
 }
@@ -282,7 +291,7 @@
   border: 1px solid #d1d5db;
   border-radius: 12px;
   background: #ffffff;
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 500;
   color: #374151;
   cursor: pointer;

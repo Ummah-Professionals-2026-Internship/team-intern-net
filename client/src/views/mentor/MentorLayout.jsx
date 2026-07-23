@@ -79,7 +79,7 @@ export default function MentorLayout() {
                 <path d="M59.2812 75.9688H49.4375C49.0645 75.9688 48.7069 75.8206 48.4431 75.5569C48.1794 75.2931 48.0312 74.9355 48.0312 74.5625V46.4375C48.0312 46.0645 48.1794 45.7069 48.4431 45.4431C48.7069 45.1794 49.0645 45.0312 49.4375 45.0312H59.2812" stroke="#FF383C" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </div>
-            <h1 className="ml-modal-title">Logout? </h1>
+            <h1 className="ml-modal-title">Confirm Logout </h1>
             <p className="ml-modal-subtitle">Are you sure you want to logout?</p>
             <div className="ml-modal-btns">
               <button className="ml-btn-cancel" onClick={() => setShowLogoutModal(false)}>

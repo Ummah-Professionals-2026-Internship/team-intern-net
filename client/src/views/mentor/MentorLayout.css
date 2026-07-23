@@ -233,6 +233,7 @@
   font-size: 30px;
   font-weight: 700;
   color: #111827;
+  letter-spacing: 0.01rem;
   font-family: 'Kollektif Bold', system-ui, sans-serif;
 }
 
@@ -256,7 +257,7 @@
   background: #ffffff;
   color: #374151;
   border: 1.5px solid #d1d5db;
-  border-radius: 100px;
+  border-radius: 12px;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
@@ -274,9 +275,8 @@
   background: #dc2626;
   color: #ffffff;
   border: none;
-  border-radius: 100px;
+  border-radius: 12px;
   font-size: 14px;
-  font-weight: 600;
   cursor: pointer;
   transition: background 0.15s;
   font-family: 'Kollektif', system-ui, sans-serif;
