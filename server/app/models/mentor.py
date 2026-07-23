@@ -26,6 +26,7 @@ class Mentor(Base):
     job_title            : Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     major                : Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     experience           : Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    meeting_url          : Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     industry             : Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     alma_mater           : Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     county               : Mapped[Optional[str]] = mapped_column(String(100), nullable=True)

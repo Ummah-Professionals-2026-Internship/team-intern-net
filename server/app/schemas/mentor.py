@@ -19,6 +19,7 @@ class MentorProfileUpdate(BaseModel):
     county       : Optional[str] = None
     state        : Optional[str] = None
     linkedin_url : Optional[HttpUrl] = None
+    meeting_url  : Optional[str] = None
     # Education
     major        : Optional[str] = None
     alma_mater   : Optional[str] = None
@@ -48,6 +49,7 @@ class MentorResponse(BaseModel):
     employer: Optional[str] = None
     job_title: Optional[str] = None
     industry: Optional[str] = None
+    meeting_url : Optional[str] = None  
     phone_number: Optional[str] = None
     experience: Optional[str] = None
     major: Optional[str] = None 

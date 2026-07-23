@@ -11,8 +11,15 @@ from app.models.enums import AssignmentStatusEnum, IntakeFormStatusEnum
 from app.schemas.mentor_assignment import AssignmentWithIntakeResponse
 from app.models.mentor import Mentor
 from app.models.student_intake_form import StudentIntakeForm
+from app.core.email import send_email
 from app.core.deps import require_mentor
+from app.models.student import Student
+from sqlalchemy.orm import selectinload
+import logging
 
+
+
+logger = logging.getLogger(__name__)
 router = APIRouter()
 
 
@@ -67,10 +74,35 @@ async def accept_request(
     mentor = mentor_result.scalar_one_or_none()
     if mentor:
         mentor.is_available = False
-
-
+    
     await db.commit()
     await db.refresh(assignment)
+
+    try:
+        student_result = await db.execute(
+            select(Student).where(Student.user_id == assignment.student_id)
+            .options(selectinload(Student.user))
+        )
+        student = student_result.scalar_one_or_none()
+
+        if student and student.user:
+            await send_email(
+                subject="You Have Been Assigned a Mentor – Ummah Professionals",
+                recipient=student.user.email,
+                body=f"""
+                <p>Assalamu Alaikum, {student.user.full_name},</p>
+                <p>Great news! You have been assigned a mentor through Ummah Professionals.</p>
+                <p>Please log in to your dashboard to schedule a meeting with your mentor.</p>
+                <p>We look forward to supporting you on your journey.</p>
+                <br>
+                <p>Jazakum Allahu Khayran,</p>
+                <p>The Ummah Professionals Team</p>
+                """
+            )
+    except Exception as e:
+        logger.error(f"Failed to send email notification to student {assignment.student_id}: {e}")
+
+
     return {"message": "Assignment accepted", "status": assignment.status}
 
 
