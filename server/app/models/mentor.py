@@ -12,6 +12,7 @@ if TYPE_CHECKING:
     from .user import User
     from .availability_slot import AvailabilitySlot
     from .mentor_assignment import MentorAssignment
+    from .mentor_tag import MentorTag
  
 class Mentor(Base):
     __tablename__ = "mentors"
@@ -40,3 +41,4 @@ class Mentor(Base):
     user        : Mapped["User"]                   = relationship(back_populates="mentor")
     slots       : Mapped[List["AvailabilitySlot"]] = relationship(back_populates="mentor", cascade="all, delete-orphan")
     assignments : Mapped[List["MentorAssignment"]] = relationship(back_populates="mentor")
+    tag_links: Mapped[List["MentorTag"]] = relationship(back_populates="mentor",cascade="all, delete-orphan")

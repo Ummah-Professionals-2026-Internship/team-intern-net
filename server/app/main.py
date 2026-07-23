@@ -7,6 +7,8 @@ from typing import List # May be removed if not needed
 from app.routers import test
 from app.routers import dashboard
 from app.routers import auth
+from app.routers import matching
+from app.routers import admin_recommendations
 
 from app.routers import intake
 from app.routers import mentors
@@ -44,6 +46,8 @@ app.include_router(auth.router)
 
 app.include_router(intake.router)
 app.include_router(mentors.router)
+app.include_router(matching.router)
+app.include_router(admin_recommendations.router)
 
 @app.get("/")
 async def root():

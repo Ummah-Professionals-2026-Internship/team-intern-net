@@ -9,6 +9,7 @@ if TYPE_CHECKING:
     from .user import User
     from .student_intake_form import StudentIntakeForm
     from .mentor_assignment import MentorAssignment 
+    from .student_tag import StudentTag
 
 
 class Student(Base):
@@ -27,6 +28,7 @@ class Student(Base):
     user         : Mapped["User"]                    = relationship(back_populates="student")
     intake_forms : Mapped[List["StudentIntakeForm"]] = relationship(back_populates="student")
     assignments  : Mapped[List["MentorAssignment"]]  = relationship(back_populates="student")
+    tag_links: Mapped[List["StudentTag"]] = relationship(back_populates="student",cascade="all, delete-orphan")
 
 # created_at: Mapped[datetime] = mapped_column(
 #     DateTime(timezone=True),
