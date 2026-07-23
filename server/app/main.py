@@ -15,6 +15,7 @@ from app.routers import intake
 from app.routers import mentors
 from app.routers import availability
 from app.routers import mentor_profile
+from app.routers import mentor_meetings
 
 from sqlalchemy import text
 from fastapi import Depends
@@ -56,6 +57,7 @@ app.include_router(mentors.router)
 app.include_router(availability.router)
 app.include_router(mentor_assignments.router)
 app.include_router(mentor_profile.router)
+app.include_router(mentor_meetings.router)
 
 
 @app.get("/")

@@ -20,9 +20,19 @@ const STATUS_LABELS = {
   cancelled: { label: "Cancelled", className: "mdb-badge--cancelled" },
 };
 
+const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
 function formatDate(iso) {
   return new Date(iso).toLocaleDateString("en-US", {
     month: "long", day: "numeric", year: "numeric",
+    timeZone: userTimezone,
+  });
+}
+
+function formatTime(iso) {
+  return new Date(iso).toLocaleTimeString("en-US", {
+    hour: "numeric", minute: "2-digit", hour12: true,
+    timeZone: userTimezone,
   });
 }
 
@@ -37,13 +47,18 @@ export default function MentorDashboard() {
   // Derived counts
   const pendingCount = requests.filter((r) => r.status === "pending").length;
   const activeCount  = requests.filter((r) => r.status === "active").length;
+  const [meetings, setMeetings] = useState([]);
 
   useEffect(() => {
     const fetchRequests = async () => {
       setLoading(true);
       try {
-        const res = await api.get("/mentors/requests");
-        setRequests(res.data);
+        const [requestsRes, meetingsRes] = await Promise.all([
+          api.get("/mentors/requests"),
+          api.get("/mentor/meetings"),
+        ]);        
+        setRequests(requestsRes.data);
+        setMeetings(meetingsRes.data.filter((m) => m.status === "scheduled"));
       } catch (err) {
         setError(err.response?.data?.detail || "Failed to load data.");
       } finally {
@@ -92,41 +107,65 @@ const mentorName = user?.full_name || "Mentor";
       {/* Upcoming Meetings */}
       <div className="mdb-section">
         <div className="mdb-section-header">
-            <svg className="mdb-section-icon" width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M8 14.1772C8.88366 14.1772 9.6 13.4518 9.6 12.557C9.6 11.6621 8.88366 10.9367 8 10.9367C7.11634 10.9367 6.4 11.6621 6.4 12.557C6.4 13.4518 7.11634 14.1772 8 14.1772Z" fill="#007CA6"/>
-                <path d="M17.6 12.557C17.6 13.4518 16.8837 14.1772 16 14.1772C15.1163 14.1772 14.4 13.4518 14.4 12.557C14.4 11.6621 15.1163 10.9367 16 10.9367C16.8837 10.9367 17.6 11.6621 17.6 12.557Z" fill="#007CA6"/>
-                <path d="M24 14.1772C24.8837 14.1772 25.6 13.4518 25.6 12.557C25.6 11.6621 24.8837 10.9367 24 10.9367C23.1163 10.9367 22.4 11.6621 22.4 12.557C22.4 13.4518 23.1163 14.1772 24 14.1772Z" fill="#007CA6"/>
-                <path d="M9.6 18.2278C9.6 19.1227 8.88366 19.8481 8 19.8481C7.11634 19.8481 6.4 19.1227 6.4 18.2278C6.4 17.333 7.11634 16.6076 8 16.6076C8.88366 16.6076 9.6 17.333 9.6 18.2278Z" fill="#007CA6"/>
-                <path d="M16 19.8481C16.8837 19.8481 17.6 19.1227 17.6 18.2278C17.6 17.333 16.8837 16.6076 16 16.6076C15.1163 16.6076 14.4 17.333 14.4 18.2278C14.4 19.1227 15.1163 19.8481 16 19.8481Z" fill="#007CA6"/>
-                <path d="M25.6 18.2278C25.6 19.1227 24.8837 19.8481 24 19.8481C23.1163 19.8481 22.4 19.1227 22.4 18.2278C22.4 17.333 23.1163 16.6076 24 16.6076C24.8837 16.6076 25.6 17.333 25.6 18.2278Z" fill="#007CA6"/>
-                <path d="M8 25.519C8.88366 25.519 9.6 24.7936 9.6 23.8987C9.6 23.0039 8.88366 22.2785 8 22.2785C7.11634 22.2785 6.4 23.0039 6.4 23.8987C6.4 24.7936 7.11634 25.519 8 25.519Z" fill="#007CA6"/>
-                <path d="M17.6 23.8987C17.6 24.7936 16.8837 25.519 16 25.519C15.1163 25.519 14.4 24.7936 14.4 23.8987C14.4 23.0039 15.1163 22.2785 16 22.2785C16.8837 22.2785 17.6 23.0039 17.6 23.8987Z" fill="#007CA6"/>
-                <path d="M24 25.519C24.8837 25.519 25.6 24.7936 25.6 23.8987C25.6 23.0039 24.8837 22.2785 24 22.2785C23.1163 22.2785 22.4 23.0039 22.4 23.8987C22.4 24.7936 23.1163 25.519 24 25.519Z" fill="#007CA6"/>
-                <path fillRule="evenodd" clipRule="evenodd" d="M9.2 1.21519C9.2 0.544059 8.66274 0 8 0C7.33726 0 6.8 0.544059 6.8 1.21519H6.4C2.86538 1.21519 0 4.11684 0 7.6962V25.519C0 29.0984 2.86538 32 6.4 32H25.6C29.1346 32 32 29.0984 32 25.519V7.6962C32 4.11684 29.1346 1.21519 25.6 1.21519H25.2C25.2 0.544059 24.6627 0 24 0C23.3373 0 22.8 0.544059 22.8 1.21519H9.2ZM22.8 6.07595V3.64557H9.2V6.07595C9.2 6.74708 8.66274 7.29114 8 7.29114C7.33726 7.29114 6.8 6.74708 6.8 6.07595V3.64557H6.4C4.19086 3.64557 2.4 5.4591 2.4 7.6962V25.519C2.4 27.7561 4.19086 29.5696 6.4 29.5696H25.6C27.8091 29.5696 29.6 27.7561 29.6 25.519V7.6962C29.6 5.4591 27.8091 3.64557 25.6 3.64557H25.2V6.07595C25.2 6.74708 24.6627 7.29114 24 7.29114C23.3373 7.29114 22.8 6.74708 22.8 6.07595Z" fill="#007CA6"/>
-            </svg>
+          <svg className="mdb-section-icon" width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M8 14.1772C8.88366 14.1772 9.6 13.4518 9.6 12.557C9.6 11.6621 8.88366 10.9367 8 10.9367C7.11634 10.9367 6.4 11.6621 6.4 12.557C6.4 13.4518 7.11634 14.1772 8 14.1772Z" fill="#007CA6"/>
+            <path d="M17.6 12.557C17.6 13.4518 16.8837 14.1772 16 14.1772C15.1163 14.1772 14.4 13.4518 14.4 12.557C14.4 11.6621 15.1163 10.9367 16 10.9367C16.8837 10.9367 17.6 11.6621 17.6 12.557Z" fill="#007CA6"/>
+            <path d="M24 14.1772C24.8837 14.1772 25.6 13.4518 25.6 12.557C25.6 11.6621 24.8837 10.9367 24 10.9367C23.1163 10.9367 22.4 11.6621 22.4 12.557C22.4 13.4518 23.1163 14.1772 24 14.1772Z" fill="#007CA6"/>
+            <path d="M9.6 18.2278C9.6 19.1227 8.88366 19.8481 8 19.8481C7.11634 19.8481 6.4 19.1227 6.4 18.2278C6.4 17.333 7.11634 16.6076 8 16.6076C8.88366 16.6076 9.6 17.333 9.6 18.2278Z" fill="#007CA6"/>
+            <path d="M16 19.8481C16.8837 19.8481 17.6 19.1227 17.6 18.2278C17.6 17.333 16.8837 16.6076 16 16.6076C15.1163 16.6076 14.4 17.333 14.4 18.2278C14.4 19.1227 15.1163 19.8481 16 19.8481Z" fill="#007CA6"/>
+            <path d="M25.6 18.2278C25.6 19.1227 24.8837 19.8481 24 19.8481C23.1163 19.8481 22.4 19.1227 22.4 18.2278C22.4 17.333 23.1163 16.6076 24 16.6076C24.8837 16.6076 25.6 17.333 25.6 18.2278Z" fill="#007CA6"/>
+            <path d="M8 25.519C8.88366 25.519 9.6 24.7936 9.6 23.8987C9.6 23.0039 8.88366 22.2785 8 22.2785C7.11634 22.2785 6.4 23.0039 6.4 23.8987C6.4 24.7936 7.11634 25.519 8 25.519Z" fill="#007CA6"/>
+            <path d="M17.6 23.8987C17.6 24.7936 16.8837 25.519 16 25.519C15.1163 25.519 14.4 24.7936 14.4 23.8987C14.4 23.0039 15.1163 22.2785 16 22.2785C16.8837 22.2785 17.6 23.0039 17.6 23.8987Z" fill="#007CA6"/>
+            <path d="M24 25.519C24.8837 25.519 25.6 24.7936 25.6 23.8987C25.6 23.0039 24.8837 22.2785 24 22.2785C23.1163 22.2785 22.4 23.0039 22.4 23.8987C22.4 24.7936 23.1163 25.519 24 25.519Z" fill="#007CA6"/>
+            <path fillRule="evenodd" clipRule="evenodd" d="M9.2 1.21519C9.2 0.544059 8.66274 0 8 0C7.33726 0 6.8 0.544059 6.8 1.21519H6.4C2.86538 1.21519 0 4.11684 0 7.6962V25.519C0 29.0984 2.86538 32 6.4 32H25.6C29.1346 32 32 29.0984 32 25.519V7.6962C32 4.11684 29.1346 1.21519 25.6 1.21519H25.2C25.2 0.544059 24.6627 0 24 0C23.3373 0 22.8 0.544059 22.8 1.21519H9.2ZM22.8 6.07595V3.64557H9.2V6.07595C9.2 6.74708 8.66274 7.29114 8 7.29114C7.33726 7.29114 6.8 6.74708 6.8 6.07595V3.64557H6.4C4.19086 3.64557 2.4 5.4591 2.4 7.6962V25.519C2.4 27.7561 4.19086 29.5696 6.4 29.5696H25.6C27.8091 29.5696 29.6 27.7561 29.6 25.519V7.6962C29.6 5.4591 27.8091 3.64557 25.6 3.64557H25.2V6.07595C25.2 6.74708 24.6627 7.29114 24 7.29114C23.3373 7.29114 22.8 6.74708 22.8 6.07595Z" fill="#007CA6"/>
+          </svg>
           <h2 className="mdb-section-title">Upcoming Meetings</h2>
         </div>
         <table className="mdb-table">
           <thead>
             <tr>
               <th className="mdb-th">Applicant</th>
-              <th className="mdb-th">Service</th>
+              <th className="mdb-th">Service Requested</th>
               <th className="mdb-th">Date</th>
               <th className="mdb-th">Time</th>
+              <th className="mdb-th">Status</th>
               <th className="mdb-th">Details</th>
-              {/* <th className="mdb-th">Meeting Link</th> */}
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td className="mdb-td mdb-td--empty" colSpan={6}>
-                No upcoming meetings.
-              </td>
-            </tr>
+            {meetings.length === 0 ? (
+              <tr>
+                <td className="mdb-td mdb-td--empty" colSpan={6}>
+                  No upcoming meetings.
+                </td>
+              </tr>
+            ) : (
+              meetings.map((meeting) => (
+                <tr key={meeting.id} className="mdb-row">
+                  <td className="mdb-td mdb-td--name">
+                    {meeting.assignment?.student?.user?.full_name || "—"}
+                  </td>
+                  <td className="mdb-td">
+                    {SERVICE_LABELS[meeting.assignment?.intake_form?.service_type] || "—"}
+                  </td>
+                  <td className="mdb-td">{formatDate(meeting.start_datetime)}</td>
+                  <td className="mdb-td">{formatTime(meeting.start_datetime)}</td>
+                  <td className="mdb-td">
+                    <span className={`mdb-badge mdb-badge--${meeting.status}`}>
+                      {meeting.status.charAt(0).toUpperCase() + meeting.status.slice(1)}
+                    </span>
+                  </td>
+                  <td className="mdb-td">
+                    <button className="mdb-btn-link" onClick={() => navigate("/mentor/meetings")}>
+                      View
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>
-
       {/* Application Requests */}
       <div className="mdb-section">
         <div className="mdb-section-header">
@@ -146,15 +185,15 @@ const mentorName = user?.full_name || "Mentor";
         ) : requests.length === 0 ? (
           <p className="mdb-empty">No requests assigned to you yet.</p>
         ) : (
-          <table className="mdb-table">
+          <table className="mdb-table" colSpan={6}>
             <thead>
               <tr>
                 <th className="mdb-th">Applicant</th>
                 <th className="mdb-th">Service Requested</th>
                 <th className="mdb-th">Desired Career</th>
-                <th className="mdb-th">Status</th>
                 <th className="mdb-th">Date Assigned</th>
-                <th className="mdb-th mdb-th--right">Action</th>
+                <th className="mdb-th">Status</th>
+                <th className="mdb-th ">Action</th>
               </tr>
             </thead>
             <tbody>
@@ -168,11 +207,12 @@ const mentorName = user?.full_name || "Mentor";
                     <td className="mdb-td mdb-td--name">{name}</td>
                     <td className="mdb-td">{service}</td>
                     <td className="mdb-td">{career}</td>
+                    <td className="mdb-td">{formatDate(req.assigned_at)}</td>
+
                     <td className="mdb-td">
                       <span className={`mdb-badge ${badge.className}`}>{badge.label}</span>
                     </td>
-                    <td className="mdb-td">{formatDate(req.assigned_at)}</td>
-                    <td className="mdb-td mdb-td--action">
+                    <td className="mdb-td">
                       <button
                         className="mdb-btn-view"
                         onClick={() => navigate(`/mentor/requests/${req.id}`)}

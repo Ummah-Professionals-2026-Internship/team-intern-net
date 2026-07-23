@@ -186,6 +186,11 @@
   font-weight: 600;
 }
 
+.mdb-badge--scheduled {
+  background: #025571;
+  color: #ffffff;
+}
+
 .mdb-badge--pending {
   background: #fef9c3;
   color: #854d0e;
@@ -211,6 +216,10 @@
   color: #6b7280;
 }
 
+.mdb-badge--no_show {
+  background: #fef9c3;
+  color: #854d0e;
+}
 /* ---------- View button ---------- */
 .mdb-btn-view {
   padding: 7px 16px;
@@ -227,6 +236,29 @@
 
 .mdb-btn-view:hover {
   background: #024a62;
+}
+
+
+.mdb-btn-link {
+  background: none;
+  border: none;
+  color: #025571;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  font-family: system-ui, -apple-system, sans-serif;
+  transition: opacity 0.15s;
+}
+
+.mdb-btn-link:hover:not(:disabled) {
+  text-decoration: underline;
+  opacity: 0.8;
+}
+
+.mdb-btn-link:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 
 /* ---------- Loading / error / empty ---------- */

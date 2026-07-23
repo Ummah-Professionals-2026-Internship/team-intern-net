@@ -55,19 +55,19 @@ async def update_mentor_profile(
     # Only update fields that were explicitly provided
     update_data = body.model_dump(exclude_unset=True)
 
-        # Guard — block service_types change if active assignment exists
-    if "service_types" in update_data:
-        active = await db.execute(
-            select(MentorAssignment).where(
-                MentorAssignment.mentor_id == mentor_id,
-                MentorAssignment.status == AssignmentStatusEnum.active,
-            )
-        )
-        if active.scalar_one_or_none():
-            raise HTTPException(
-                status_code=400,
-                detail="Cannot change service types while you have an active assignment."
-            )
+    # Guard — block service_types change if active assignment exists
+    # if "service_types" in update_data:
+    #     active = await db.execute(
+    #         select(MentorAssignment).where(
+    #             MentorAssignment.mentor_id == mentor_id,
+    #             MentorAssignment.status == AssignmentStatusEnum.active,
+    #         )
+    #     )
+    #     if active.scalar_one_or_none():
+    #         raise HTTPException(
+    #             status_code=400,
+    #             detail="Cannot change service types while you have an active assignment."
+    #         )
 
     # Separate user fields from mentor fields
     user_fields = {"full_name"}
