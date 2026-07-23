@@ -2,6 +2,8 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
+from sqlalchemy.orm import selectinload
+from app.schemas.mentor import MentorResponse
 from pydantic import BaseModel, EmailStr
 from typing import Optional, List
 from app.db.database import get_db
@@ -253,3 +255,17 @@ Please log in and change your password after your first login.
         "application_id": application_id,
         "status": payload.status.value
     }
+
+
+@router.get("/mentors", response_model=List[MentorResponse])
+async def get_all_mentors(
+    db: AsyncSession = Depends(get_db),
+    user=Depends(require_admin)
+):
+    """
+    Fetch all registered mentors with their associated user details.
+    """
+    result = await db.execute(
+        select(Mentor).options(selectinload(Mentor.user))
+    )
+    return result.scalars().all()
