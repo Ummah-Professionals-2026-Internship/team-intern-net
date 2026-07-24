@@ -50,7 +50,8 @@
   margin: 0;
   font-family: "Kollektif", system-ui, sans-serif;
   color: #363538;
-  font-size: 14px;
+  /* font-size: 14px; */
+  font-size: clamp(14px, 2.4vw, 18px);
   line-height: 1.4;
 }
 

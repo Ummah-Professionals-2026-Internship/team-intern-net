@@ -40,7 +40,7 @@
 
 .mrq-title {
   margin: 0;
-  font-size: 35px;
+  font-size: clamp(24px, 2.4vw, 35px);
   font-family: 'Kollektif Bold', system-ui, -apple-system, sans-serif;
   font-weight: 700;
   color: #000;
@@ -50,6 +50,7 @@
 
 .mrq-subtitle {
   margin: 0;
+  font-size: clamp(14px, 2.4vw, 18px);
   /* font-size: 16px; */
   color: #363538;
   line-height: 1.4;
@@ -122,10 +123,10 @@
 }
 
 .mrq-th {
-  padding: 14px 20px;
+  padding: 14px 24px;
   text-align: left;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 700;
   color: #6b7280;
   border-bottom: 1px solid #f3f4f6;
   background: #f9fafb;
@@ -166,9 +167,9 @@
 /* ---------- Status badge ---------- */
 .mrq-badge {
   display: inline-block;
-  padding: 4px 12px;
+  padding: 8px 20px;
   border-radius: 100px;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
 }
 
@@ -182,11 +183,6 @@
   color: #166534;
 }
 
-.mrq-badge--declined {
-  background: #fee2e2;
-  color: #991b1b;
-}
-
 .mrq-badge--completed {
   background: #e0f2fe;
   color: #075985;
@@ -197,22 +193,30 @@
   color: #6b7280;
 }
 
+.mrq-badge--declined {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
 /* ---------- View button ---------- */
 .mrq-btn-view {
-  padding: 8px 18px;
-  background: #025571;
-  color: #ffffff;
-  border: none;
+  padding: 8px 20px;
+  border: 1.5px solid #025571;
+  background: #ffffff;
+  color: #025571;
   border-radius: 100px;
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
   transition: background 0.15s;
   font-family: "Kollektif", system-ui, -apple-system, sans-serif;
+  white-space: nowrap;
+
 }
 
 .mrq-btn-view:hover {
-  background: #024a62;
+  background: #025571;
+  color: #ffffff;
 }
 
 /* ---------- Detail page sections ---------- */
@@ -317,29 +321,39 @@
 }
 
 .mrq-btn-decline {
-  padding: 12px 28px;
+  padding: 12px 24px;
   background: #ffffff;
   color: #dc2626;
   border: 1.5px solid #dc2626;
-  border-radius: 100px;
-  font-size: 14px;
-  font-weight: 600;
+  max-width: 283px;
+  width: 100%;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 700;
   cursor: not-allowed;
-  opacity: 0.5;
-  font-family:  'Kollektif', system-ui, -apple-system, sans-serif;
+  transition: background 0.15s;
+  /* opacity: 0.5; */
+  font-family:  'Kollektif Bold', system-ui, -apple-system, sans-serif;
+}
+
+.mrq-btn-decline:hover:not(:disabled) {
+  background: #dc2626;
+  color: #ffff;
 }
 
 .mrq-btn-accept {
-  padding: 12px 28px;
+  padding: 12px 24px;
   background: #40AE50;
   color: #ffffff;
   border: none;
-  border-radius: 100px;
-  font-size: 14px;
-  font-weight: 600;
+  border-radius: 12px;
+  max-width: 283px;
+  width: 100%;
+  font-size: 16px;
+  font-weight: 700;
   cursor: pointer;
   transition: background 0.15s;
-  font-family: 'Kollektif', system-ui, -apple-system, sans-serif;
+  font-family: 'Kollektif Bold', system-ui, -apple-system, sans-serif;
 }
 
 .mrq-btn-accept:hover:not(:disabled) {
@@ -460,7 +474,7 @@
   background: #ffffff;
   color: #374151;
   border: 1.5px solid #d1d5db;
-  border-radius: 100px;
+  border-radius: 12px;
   font-size: 14px;
   cursor: pointer;
   transition: background 0.15s;
@@ -482,12 +496,12 @@
   background: #dc2626;
   color: #ffffff;
   border: none;
-  border-radius: 100px;
+  border-radius: 12px;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   transition: background 0.15s;
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family: 'Kollektif',system-ui, -apple-system, sans-serif;
 }
 
 .mrq-btn-decline-confirm:hover:not(:disabled) {
@@ -500,9 +514,34 @@
 }
 
 .mrq-btn-decline {
-  cursor: pointer; /* remove not-allowed and opacity from before */
+  cursor: pointer; 
   opacity: 1;
 }
+
+
+.mrq-btn-accept-confirm {
+  flex: 1;
+  padding: 11px;
+  background: #40AE50;
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+  font-family: 'Kollektif', system-ui, -apple-system, sans-serif;
+}
+
+.mrq-btn-accept-confirm:hover:not(:disabled) {
+  background: #15803d;
+}
+
+.mrq-btn-aceept-confirm:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 
 
 

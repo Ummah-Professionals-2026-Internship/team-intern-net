@@ -129,7 +129,7 @@ const mentorName = user?.full_name || "Mentor";
               <th className="mdb-th">Date</th>
               <th className="mdb-th">Time</th>
               <th className="mdb-th">Status</th>
-              <th className="mdb-th">Details</th>
+              <th className="mdb-th mdb-th--right">Details</th>
             </tr>
           </thead>
           <tbody>
@@ -155,7 +155,7 @@ const mentorName = user?.full_name || "Mentor";
                       {meeting.status.charAt(0).toUpperCase() + meeting.status.slice(1)}
                     </span>
                   </td>
-                  <td className="mdb-td">
+                  <td className="mdb-td mdb-th--right">
                     <button className="mdb-btn-link" onClick={() => navigate("/mentor/meetings")}>
                       View
                     </button>
@@ -193,7 +193,7 @@ const mentorName = user?.full_name || "Mentor";
                 <th className="mdb-th">Desired Career</th>
                 <th className="mdb-th">Date Assigned</th>
                 <th className="mdb-th">Status</th>
-                <th className="mdb-th ">Action</th>
+                <th className="mdb-th mdb-th--right">Action</th>
               </tr>
             </thead>
             <tbody>
@@ -212,7 +212,7 @@ const mentorName = user?.full_name || "Mentor";
                     <td className="mdb-td">
                       <span className={`mdb-badge ${badge.className}`}>{badge.label}</span>
                     </td>
-                    <td className="mdb-td">
+                    <td className="mdb-td mdb-th--right">
                       <button
                         className="mdb-btn-view"
                         onClick={() => navigate(`/mentor/requests/${req.id}`)}

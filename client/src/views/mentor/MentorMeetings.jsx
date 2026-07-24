@@ -105,7 +105,7 @@ export default function MentorMeetings() {
                       <button
                         className={`mm-btn-join ${!active ? "mm-btn-join--disabled" : ""}`}
                         disabled={!active}
-                        onClick={() => active && meeting.meeting_url && window.open(meeting.meeting_url, "_blank")}
+                        // onClick={() => active && meeting.meeting_url && window.open(meeting.meeting_url, "_blank")}
                       >
                         Join Meeting
                       </button>
