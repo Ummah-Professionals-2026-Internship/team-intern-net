@@ -23,6 +23,7 @@ from .tag import Tag
 from .student_tag import StudentTag
 from .mentor_tag import MentorTag
 from .mentor_recommendation import (MentorRecommendation,RecommendationStatus,)
+from .google_calendar_token import GoogleCalendarToken
 
 __all__ = [
     "Base",
@@ -49,4 +50,5 @@ __all__ = [
     "MentorTag",
     "MentorRecommendation",
     "RecommendationStatus",
+    "GoogleCalendarToken",
 ]

@@ -10,6 +10,7 @@ from app.routers import test
 from app.routers import dashboard
 from app.routers import matching
 from app.routers import auth
+from app.routers import google_calendar
 
 from app.routers import intake
 from app.routers import mentors
@@ -59,6 +60,7 @@ app.include_router(mentor_assignments.router)
 app.include_router(mentor_profile.router)
 app.include_router(mentor_meetings.router)
 
+app.include_router(google_calendar.router)
 
 @app.get("/")
 async def root():

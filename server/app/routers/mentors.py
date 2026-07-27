@@ -16,7 +16,6 @@ from app.models.mentor import Mentor
 from app.models.enums import RoleEnum
 from app.core.security import hash_password
 from app.core.deps import require_admin
-from app.core.email import send_email
 from datetime import datetime, timezone
 import secrets
 import logging
