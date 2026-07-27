@@ -1,18 +1,16 @@
-import  { useState } from 'react';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Button from '../../components/ui/Button';
 import InputField from '../../components/ui/InputField';
-
 import { useAuth } from '../../context/useAuth';
-import { useNavigate } from 'react-router-dom';
 
-// Importing svgs
+// Assets
 import logoWhite from '../../assets/horizontal white 1.svg';
 import swirlBg from '../../assets/horizontal-swirl.svg';
 
 import './SignIn.css';
 
 const SignIn = () => {
-  // 1. Local UI states
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -25,25 +23,26 @@ const SignIn = () => {
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-      console.log('submitted', email, password);
-      console.log('login function:', login); 
+    console.log('Submitting login with:', { email, password });
+
     const result = await login(email, password);
-        console.log('result', result);
+    console.log('Login result:', result);
+
     if (result.success) {
-        switch (result.role) {
-          case 'admin':
-            navigate('/admin/dashboard');
-            break;
-          case 'mentor':
-            navigate('/mentor/dashboard');
-            break;
-          case 'student':
-            navigate('/student/dashboard');
-            break;
-          default:
-            navigate('/signin');
-        }
+      switch (result.role) {
+        case 'admin':
+          navigate('/admin/dashboard');
+          break;
+        case 'mentor':
+          navigate('/mentor/dashboard');
+          break;
+        case 'student':
+          navigate('/student/dashboard');
+          break;
+        default:
+          navigate('/signin');
       }
+    }
   };
 
   return (
@@ -51,7 +50,6 @@ const SignIn = () => {
       
       {/* LEFT COLUMN: BRANDING SIDEBAR */}
       <div className="signin-sidebar">
-
         <div className="sidebar-content">
           <img src={logoWhite} alt="Ummah Professionals Logo" className="sidebar-logo" />
           <h1 className="sidebar-tagline">
@@ -60,14 +58,12 @@ const SignIn = () => {
           </h1>
         </div>
 
-        {/* Wave sits between content and description */}
+        {/* Background Wave Graphic */}
         <img src={swirlBg} className="sidebar-bg-wave" alt="" />
 
-        {/* Description is now BELOW the wave */}
         <p className="sidebar-description">
           Join a network of Muslim professionals helping one another begin and advance their careers
         </p>
-
       </div>
 
       {/* RIGHT COLUMN: SIGN IN FORM */}
@@ -117,7 +113,11 @@ const SignIn = () => {
             </div>
 
             <div className="form-actions">
-              <Button type="submit" className="signin-submit-btn" onClick={() => console.log('clicked', email,password)}>
+              <Button 
+                type="submit" 
+                className="signin-submit-btn"
+                onClick={() => console.log('Login button clicked')}
+              >
                 log in
               </Button>
             </div>

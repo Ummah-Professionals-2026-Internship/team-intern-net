@@ -27,7 +27,7 @@ const LandingPage = () => {
                             Use your experience to make an impact! Sign up to become a volunteer advisor and support the next generation of professionals
                         </div>
                         <div>
-                            <button className="lp-btn" onClick={() => navigate("/apply/mentor")}> SignUp</button>
+                            <button className="lp-btn" onClick={() => navigate("/advisor")}> SignUp</button>
                         </div>
 
                     </div>

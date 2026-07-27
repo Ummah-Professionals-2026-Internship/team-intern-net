@@ -1,23 +1,28 @@
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
-from typing import List
-import secrets
 import logging
+import secrets
 from datetime import datetime, timezone
+from typing import List, Optional
 
+from fastapi import APIRouter, Depends, HTTPException, status
+from pydantic import BaseModel, EmailStr
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
+
+from app.core.deps import require_admin
+from app.core.email import send_email
+from app.core.security import hash_password
 from app.db.database import get_db
-from app.models.user import User
+from app.models.enums import ApplicationStatusEnum, GenderEnum, RoleEnum, ServiceTypeEnum
 from app.models.mentor import Mentor
 from app.models.mentor_application import MentorApplication
-from app.models.enums import RoleEnum, ApplicationStatusEnum, ServiceTypeEnum, GenderEnum
+from app.models.user import User
+from app.schemas.mentor import MentorResponse
 from app.schemas.mentor_application import MentorApplicationCreate, MentorApplicationReview
-from app.core.security import hash_password
-from app.core.email import send_email
-from app.core.deps import require_admin
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
+
 
 @router.post("/mentors/apply")
 async def apply_mentor(form: MentorApplicationCreate, db: AsyncSession = Depends(get_db)):
@@ -116,6 +121,7 @@ async def apply_mentor(form: MentorApplicationCreate, db: AsyncSession = Depends
 
     return {"message": "Mentor application submitted successfully. Check your email for login credentials.", "application_id": application.id}
 
+
 @router.get("/mentors/applications")
 async def get_mentor_applications(user=Depends(require_admin), db: AsyncSession = Depends(get_db)):
     result = await db.execute(
@@ -124,6 +130,7 @@ async def get_mentor_applications(user=Depends(require_admin), db: AsyncSession 
         )
     )
     return result.scalars().all()
+
 
 @router.patch("/mentors/applications/{application_id}/review")
 async def review_mentor_application(
@@ -204,3 +211,17 @@ async def review_mentor_application(
         "application_id": application_id,
         "status": payload.status.value
     }
+
+
+@router.get("/mentors", response_model=List[MentorResponse])
+async def get_all_mentors(
+    db: AsyncSession = Depends(get_db),
+    user=Depends(require_admin)
+):
+    """
+    Fetch all registered mentors with their associated user details.
+    """
+    result = await db.execute(
+        select(Mentor).options(selectinload(Mentor.user))
+    )
+    return result.scalars().all()

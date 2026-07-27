@@ -1,0 +1,529 @@
+/* ==========================================================================
+   0. DESIGN TOKENS
+   ========================================================================== */
+:root {
+  --font-base: 'Kollektif', system-ui, -apple-system, sans-serif;
+  --font-bold: 'Kollektif Bold', system-ui, -apple-system, sans-serif;
+
+  --color-primary: #007ca6;
+  --color-primary-hover: #005f80;
+  --color-primary-light: #8acbdb;
+  --color-dark-heading: #00212c;
+  --color-title: #025571;
+  --color-text: #111827;
+  --color-black: #000000;
+  --color-white: #ffffff;
+  --color-border: #e2e8f0;
+  --color-error: #da1d37;
+
+  --input-height: clamp(38px, 4.2vw, 44px);
+  --border-radius-sm: clamp(6px, 0.8vw, 8px);
+  --border-radius-lg: 20px;
+
+  --space-xs: clamp(6px, 1vw, 8px);
+  --space-sm: clamp(10px, 1.5vw, 14px);
+  --space-md: clamp(16px, 2vw, 22px);
+  --space-lg: clamp(32px, 4vw, 48px); /* Increased for better section gaps */
+}
+
+/* ==========================================================================
+   1. FONTS & RESET
+   ========================================================================== */
+@font-face {
+  font-family: "Kollektif";
+  src: url("../../fonts/kollektif-webfont/Kollektif.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Kollektif Bold";
+  src: url("../../fonts/kollektif-webfont/Kollektif-Bold.woff") format("woff");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* ==========================================================================
+   2. PAGE SHELL & BACKGROUND
+   ========================================================================== */
+.career-prep-page {
+  height: 100vh;
+  overflow: hidden;
+  background: linear-gradient(0deg, var(--color-primary-light) 0%, var(--color-primary) 66%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  box-sizing: border-box;
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+}
+
+.caa-bg-image {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background-size: 100% auto;
+  background-repeat: no-repeat;
+  background-position: center center;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ==========================================================================
+   3. MAIN CONTAINER CARD
+   ========================================================================== */
+.career-prep-card {
+  position: relative;
+  z-index: 1;
+  background: var(--color-white);
+  border-radius: var(--border-radius-lg);
+  box-shadow: 0 4px 20px rgba(2, 85, 113, 0.25);
+  width: calc(100% - 158px);
+  max-width: calc(100% - 158px);
+  padding: clamp(24px, 4.5vw, 44px) clamp(24px, 6vw, 64px) clamp(32px, 5vw, 56px);
+  height: calc(100vh - 48px);
+  overflow-y: auto;
+  box-sizing: border-box;
+  font-family: var(--font-base);
+}
+
+/* Scrollbar styling for desktop inner scroll */
+.career-prep-card::-webkit-scrollbar {
+  width: 6px;
+}
+.career-prep-card::-webkit-scrollbar-track {
+  background: transparent;
+}
+.career-prep-card::-webkit-scrollbar-thumb {
+  background: #c0d9e0 transparent;
+  border-radius: 999px;
+}
+
+/* ==========================================================================
+   4. HEADER & LOGO
+   ========================================================================== */
+.career-prep-logo {
+  position: absolute;
+  top: clamp(16px, 3.5vw, 36px);
+  left: clamp(24px, 5vw, 48px);
+  height: clamp(36px, 4.5vw, 48px);
+  width: auto;
+}
+
+.career-prep-title {
+  margin: 0 0 2px 0;
+  font-size: clamp(22px, 3.2vw, 32px);
+  font-weight: 700;
+  color: var(--color-title);
+  text-align: center;
+  font-family: var(--font-bold);
+}
+
+.career-prep-subtitle {
+  margin: 0 0 var(--space-lg) 0;
+  font-size: clamp(13px, 1.6vw, 16px);
+  color: var(--color-primary);
+  text-align: center;
+}
+
+/* ==========================================================================
+   5. FORM SECTIONS & GRIDS
+   ========================================================================== */
+.form-section {
+  margin-bottom: var(--space-lg);
+  text-align: left;
+}
+
+.section-title {
+  font-size: clamp(15px, 1.8vw, 18px);
+  font-weight: 700;
+  color: var(--color-dark-heading);
+  font-family: var(--font-bold);
+  margin: 0 0 var(--space-xs) 0;
+  text-align: left;
+}
+
+.section-title--field {
+  margin-bottom: 6px;
+}
+
+.required-mark {
+  color: var(--color-error);
+  font-size: 1.1em;
+  margin-left: 2px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(10px, 1.5vw, 12px) clamp(20px, 4vw, 48px);
+}
+
+.form-grid--three {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(10px, 1.5vw, 12px) clamp(16px, 2.5vw, 24px);
+}
+
+.upload-and-referral-col {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(12px, 1.8vw, 16px);
+}
+
+/* ==========================================================================
+   6. INPUTS & FIELDS
+   ========================================================================== */
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-align: left;
+  width: 100%;
+}
+
+.form-field label {
+  font-size: clamp(11px, 1.1vw, 12px);
+  font-weight: 700;
+  color: var(--color-black);
+  font-family: var(--font-bold);
+}
+
+.form-field input,
+.form-field select,
+.form-field textarea {
+  width: 100%;
+  height: var(--input-height);
+  padding: 6px clamp(10px, 1.2vw, 14px);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-sm);
+  font-size: clamp(12px, 1.3vw, 14px);
+  color: var(--color-text);
+  background: var(--color-white);
+  font-family: var(--font-base);
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.form-field select {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23000000' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 32px;
+  cursor: pointer;
+}
+
+.form-field textarea {
+  height: clamp(120px, 18vw, 190px);
+  resize: vertical;
+  line-height: 1.4;
+}
+
+.form-field input:focus,
+.form-field select:focus,
+.form-field textarea:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(0, 124, 166, 0.15);
+}
+
+.form-field--referral {
+  max-width: 100%;
+}
+
+/* Container for file input hidden default */
+.file-upload-input {
+  display: none;
+}
+
+/* Outer wrapper */
+.file-upload-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+/* Main clickable box styled to match original design */
+.file-upload-dropzone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: clamp(80px, 10vw, 100px);
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  padding: 12px;
+  box-sizing: border-box;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.file-upload-dropzone:hover {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(0, 124, 166, 0.1);
+}
+
+/* Centered layout for Icon + Text */
+.file-upload-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.file-upload-icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.file-upload-placeholder {
+  font-family: var(--font-bold);
+  font-size: clamp(12px, 1.2vw, 13px);
+  font-weight: 700;
+  color: var(--color-dark-heading);
+  text-align: center;
+}
+
+/* Selected File & Clear Button */
+.file-upload-filename {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text);
+  word-break: break-all;
+  text-align: center;
+}
+
+.file-upload-clear {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: transparent;
+  border: none;
+  font-size: 18px;
+  color: var(--color-error);
+  cursor: pointer;
+}
+
+/* ==========================================================================
+   7. SERVICE REQUESTED & GENDER OPTIONS
+   ========================================================================== */
+.service-options {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(10px, 2vw, 24px);
+  margin-top: 6px;
+  width: 100%;
+}
+
+.service-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(8px, 1vw, 12px);
+  height: clamp(44px, 5vw, 52px);
+  padding: 0 var(--space-xs);
+  border: 1px solid #e5e7eb;
+  border-radius: clamp(8px, 1vw, 12px);
+  background: var(--color-white);
+  cursor: pointer;
+  font-family: var(--font-bold);
+  font-size: clamp(13px, 1.4vw, 15px);
+  color: var(--color-dark-heading);
+  width: 100%;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.06);
+  transition: all 0.15s ease-in-out;
+}
+
+.service-card:hover {
+  border-color: var(--color-primary);
+  box-shadow: 0px 4px 12px rgba(0, 124, 166, 0.15);
+}
+
+.service-card--selected {
+  border-color: var(--color-primary);
+  box-shadow: 0px 4px 14px rgba(0, 124, 166, 0.22);
+}
+
+.service-icon {
+  width: clamp(20px, 2.2vw, 26px);
+  height: clamp(20px, 2.2vw, 26px);
+  flex-shrink: 0;
+}
+
+.gender-options {
+  display: flex;
+  gap: clamp(20px, 3vw, 28px);
+  align-items: center;
+  margin-top: 4px;
+}
+
+.career-prep-card select#gender {
+  max-width: calc(50% - (clamp(20px, 4vw, 48px) / 2));
+}
+
+.radio-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  font-size: clamp(12px, 1.3vw, 14px);
+  color: var(--color-black);
+  cursor: pointer;
+  font-family: var(--font-bold);
+}
+
+.radio-option input[type="radio"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--color-primary);
+  cursor: pointer;
+}
+
+/* ==========================================================================
+   8. SUBMIT BUTTON & FOOTER (Pushed further down for original open layout)
+   ========================================================================== */
+.career-prep-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: clamp(40px, 6vw, 72px); /* Generous vertical gap to replicate original layout */
+  width: 100%;
+}
+
+.submit-button {
+  display: block;
+  margin: 0 auto;
+  width: 100%;
+  max-width: clamp(200px, 30vw, 280px);
+  height: clamp(40px, 4.5vw, 46px);
+  border: none;
+  border-radius: clamp(8px, 1vw, 10px);
+  background: var(--color-primary);
+  color: var(--color-white);
+  font-family: var(--font-bold);
+  font-size: clamp(16px, 2vw, 20px);
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s ease, box-shadow 0.15s ease;
+}
+
+.submit-button:hover:not(:disabled) {
+  background-color: var(--color-primary-hover);
+  box-shadow: 0 4px 12px rgba(0, 124, 166, 0.3);
+}
+
+.submit-button:disabled {
+  background: #a0aec0;
+  cursor: not-allowed;
+}
+
+.credentials-note {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 14px;
+  color: var(--color-primary);
+  font-size: clamp(10.5px, 1.1vw, 12px);
+  text-align: center;
+}
+
+.info-icon {
+  width: 14px;
+  height: 14px;
+}
+
+.field-error {
+  margin: 3px 0 0;
+  font-size: 11px;
+  color: var(--color-error);
+}
+
+.submit-error {
+  color: var(--color-error);
+  background: #fdecea;
+  border: 1px solid #f5c2c0;
+  border-radius: var(--border-radius-sm);
+  padding: 8px 12px;
+  font-size: 13px;
+  margin-top: 12px;
+  text-align: center;
+}
+
+/* ==========================================================================
+   9. MEDIA RESPONSIVE BREAKPOINTS
+   ========================================================================== */
+
+/* ── Tablet / Mobile Landscape (680px and below) ── */
+@media (max-width: 680px) {
+  .career-prep-page {
+    height: auto;
+    overflow: visible;
+    padding: 12px;
+    align-items: flex-start;
+  }
+
+  .caa-bg-image {
+    background-size: cover;
+    background-position: center;
+  }
+
+  .career-prep-card select#gender {
+    max-width: 100%;
+  }
+
+  .career-prep-card {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    max-height: none;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 24px 20px;
+  }
+
+  .career-prep-logo {
+    position: static;
+    display: block;
+    margin: 0 auto 12px;
+  }
+
+  .form-grid,
+  .form-grid--three {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .service-options {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .service-card {
+    height: 48px;
+    justify-content: flex-start;
+    padding: 0 16px;
+  }
+
+  .career-prep-footer {
+    margin-top: 32px;
+  }
+
+  .submit-button {
+    max-width: 100%;
+  }
+}

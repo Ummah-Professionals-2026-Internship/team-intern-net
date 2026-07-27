@@ -13,6 +13,7 @@ from app.routers.student import router as student_router
 from app.routers import intake
 from app.routers import mentors
 from app.routers import availability
+from app.routers import mentor_assignments
 from sqlalchemy import text
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -50,8 +51,8 @@ app.include_router(matching.router)
 app.include_router(intake.router)
 app.include_router(mentors.router)
 app.include_router(availability.router)
+app.include_router(mentor_assignments.router)
 
 @app.get("/")
 async def root():
     return {"message": "Hello From FastAPI"}
-
