@@ -393,7 +393,7 @@ export default function StudentDashboard() {
                   <span>ℹ️</span>
                   <span>You're matched with {mentor.name} — select a meeting time that works best for you</span>
                 </div>
-                <p className="sd-cal-tz">All times are displayed locally ({userTimezone})</p>
+                <p className="sd-cal-tz">All times are displayed in EST ({userTimezone})</p>
 
                 <div className="sd-calendar">
                   {loadingSlots && <div className="sd-loading"><div className="sd-spinner" /></div>}

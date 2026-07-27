@@ -16,7 +16,6 @@ const NAV_ITEMS = [
   { label: "Career Form", to: "/student/career-form", icon: RequestsIcon },
   { label: "Meetings", to: "/student/meetings", icon: MeetingIcon },
   { label: "Profile", to: "/student/profile", icon: ProfileIcon },
-  { label: "Settings", to: "/student/settings", icon: SettingIcon },
 ];
 
 export default function StudentLayout() {
