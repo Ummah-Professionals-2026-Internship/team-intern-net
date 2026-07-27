@@ -352,7 +352,7 @@ export default function StudentDashboard() {
                   <div className="sd-session-details">
                     <p>📅 {formatDateLong(upcomingMeeting.start_datetime?.split("T")[0])}</p>
                     <p>⏰ {formatTime(upcomingMeeting.start_datetime)} – {formatTime(upcomingMeeting.end_datetime)} ({userTimezone})</p>
-                    <p>📹 Google Meet</p>
+                    <p>📹 Meeting Platform: Jitsi Meet</p>
                   </div>
                   <div className="sd-action-buttons-row" style={{ display: 'flex', gap: '12px', marginTop: '16px' }}>
                     <a 
@@ -490,7 +490,7 @@ export default function StudentDashboard() {
             <div className="sd-modal-receipt-box">
               <p>📅 {formatDateLong(upcomingMeeting.start_datetime?.split("T")[0])}</p>
               <p>⏰ {formatTime(upcomingMeeting.start_datetime)} – {formatTime(upcomingMeeting.end_datetime)}</p>
-              <p>📹 Google Meet</p>
+              <p>📹 Meeting Platform: Jitsi Meet</p>
             </div>
             
             <p className="sd-modal-footer-notice">Meeting details have been emailed to you.</p>

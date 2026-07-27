@@ -14,6 +14,7 @@ from app.schemas.availability_slot import AvailabilitySlotCreate, AvailabilitySl
 from app.models.mentor import Mentor
 from app.models.user import User
 from app.core.deps import require_student 
+from app.core.calendar import generate_meet_link
 
 router = APIRouter()
 
@@ -112,9 +113,8 @@ async def book_meeting(
     if mentor_user:
         attendees.append(mentor_user.email)
 
-    mentor_result = await db.execute(select(Mentor).where(Mentor.user_id == assignment.mentor_id))
-    mentor = mentor_result.scalar_one_or_none()
-    meet_link = mentor.meeting_url if mentor and mentor.meeting_url else "No meeting link provided yet - mentor will send it separately"
+    # 💡 SYSTEM AUTO-GENERATION LAYER: Build a secure, unique Jitsi link on the fly
+    meet_link = generate_meet_link()
 
     meeting.meeting_url = meet_link
     await db.commit()
