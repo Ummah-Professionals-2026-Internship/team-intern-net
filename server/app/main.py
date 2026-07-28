@@ -18,6 +18,7 @@ from app.routers import availability
 from app.routers import mentor_profile
 from app.routers import mentor_meetings
 
+from app.routers import mentor_assignments
 from sqlalchemy import text
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -61,6 +62,7 @@ app.include_router(mentor_profile.router)
 app.include_router(mentor_meetings.router)
 
 app.include_router(google_calendar.router)
+app.include_router(mentor_assignments.router)
 
 @app.get("/")
 async def root():

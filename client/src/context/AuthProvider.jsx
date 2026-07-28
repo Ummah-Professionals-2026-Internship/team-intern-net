@@ -1,4 +1,4 @@
-import {  useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { registerTokenGetter } from '../api/api';
 import api from '../api/api';
 import { AuthContext } from './AuthContext';
@@ -9,11 +9,14 @@ export function AuthProvider({ children }) {
     const storedUser = localStorage.getItem('user');
     const storedToken = localStorage.getItem('token');
     if (storedUser && storedToken) {
-      return { ...JSON.parse(storedUser), token: storedToken };
+      try {
+        return { ...JSON.parse(storedUser), token: storedToken };
+      } catch (e) {
+        return null;
+      }
     }
     return null;
   });
-
 
   const [loading, setLoading] = useState(false);
   const [authError, setAuthError] = useState(null);
@@ -29,22 +32,22 @@ export function AuthProvider({ children }) {
         const res = await api.post('/auth/login', { email, password });
         const { access_token, user: userData } = res.data;
 
-        // Store token and user info in localStorage
-        localStorage.setItem('token', access_token);
-        localStorage.setItem('user', JSON.stringify(userData));
+      // Store token and user info in localStorage
+      localStorage.setItem('token', access_token);
+      localStorage.setItem('user', JSON.stringify(userData));
 
-        setUser({ ...userData, token: access_token });
-        return { success: true, role: userData.role };
+      setUser({ ...userData, token: access_token });
+      return { success: true, role: userData.role };
 
     } catch (err) {
-        const detail = err.response?.data?.detail;
-        const message = Array.isArray(detail)
-            ? detail.map(d => d.msg).join(', ')
-            : detail || 'Login failed. Please try again.';
-       setAuthError(message);
-       return { success: false };
-    }finally{
-        setLoading(false);
+      const detail = err.response?.data?.detail;
+      const message = Array.isArray(detail)
+        ? detail.map(d => d.msg).join(', ')
+        : detail || 'Login failed. Please try again.';
+      setAuthError(message);
+      return { success: false };
+    } finally {
+      setLoading(false);
     }
   };
 

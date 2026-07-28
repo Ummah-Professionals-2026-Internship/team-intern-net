@@ -4,7 +4,11 @@ import SignIn from './views/onboarding/SignIn';
 
 
 import MentorApplicationForm from './views/mentorSignup/MentorApplicationForm';
+import CareerPrep from './views/onboarding/CareerPrep';
 import RoleGuard from './routes/RoleGuard';
+import PublicRoute from './routes/PublicRoute';
+
+import LandingPage from './views/landingpage/landingPage';
 import AdminDashboard from './views/admin/AdminDash';
 import StudentDashboard from './views/student/StudentDash';
 import PublicRoute from './routes/PublicRoute';
@@ -26,14 +30,19 @@ export const router = createBrowserRouter([
     element: <LandingPage />,
   },
   {
-    path: '/siging',
-    element: <SignIn />,
+    path: '/advisor',
+    element: <MentorApplicationForm />,
   },
-  
+  {
+    path: '/prep',
+    element: <CareerPrep />,
+  },
+
+  // Auth / Guest-only routes
   {
     element: <PublicRoute />,
     children: [
-        { path: '/signin', element: <SignIn /> },
+      { path: '/signin', element: <SignIn /> },
     ],
     
   },
@@ -43,15 +52,13 @@ export const router = createBrowserRouter([
     element: <MentorApplicationForm />,
   },
 
-  // Admin routes
+  // Role-protected routes
   {
     element: <RoleGuard role="admin" />,
     children: [
       { path: '/admin/dashboard', element: <AdminDashboard /> },
     ],
   },
-
-  // Mentor routes
   {
     element: <RoleGuard role="mentor" />,
     children: [
@@ -72,8 +79,6 @@ export const router = createBrowserRouter([
       
     ],
   },
-
-  // Student routes
   {
     element: <RoleGuard role="student" />,
     children: [
