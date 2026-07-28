@@ -47,11 +47,6 @@ export const router = createBrowserRouter([
     
   },
 
-  {
-    path: '/advisor',
-    element: <MentorApplicationForm />,
-  },
-
   // Role-protected routes
   {
     element: <RoleGuard role="admin" />,
@@ -73,7 +68,6 @@ export const router = createBrowserRouter([
           { path: "requests/:id", element: <MentorRequestDetail /> },
           { path: "meetings", element: <MentorMeetings /> },
           { path: "profile", element: <MentorProfile /> },
-          // { path: "settings", element: <MentorSettings /> },
         ],
       },
       
