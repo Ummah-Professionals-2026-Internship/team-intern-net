@@ -52,7 +52,7 @@ export default function MentorAvailability() {
         setLoading(true);
       
         try {
-            const res = await api.get(`/mentors/availability?month=${viewMonth + 1}&year=${viewYear}`);
+            const res = await api.get(`/mentor/availability?month=${viewMonth + 1}&year=${viewYear}`);
             const data = res.data;
             
             // Group slots by date key
@@ -241,7 +241,7 @@ export default function MentorAvailability() {
 
     setDeletingId(id);
     try {
-        await api.delete(`/mentors/availability/${id}`);
+        await api.delete(`/mentor/availability/${id}`);
         setAvailability((prev) => {
             const updated = (prev[selectedDate] || []).filter((s) => s.id !== id);
             const next = { ...prev };
@@ -268,7 +268,7 @@ export default function MentorAvailability() {
     setLoading(true);
     
     try {
-        const response = await api.post("/mentors/availability", {
+        const response = await api.post("/mentor/availability", {
             slots: selectedSlots.map((slot) => ({
                 start_datetime: slot.start,
                 end_datetime: slot.end,

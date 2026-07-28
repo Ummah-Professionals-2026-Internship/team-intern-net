@@ -12,11 +12,11 @@ from datetime import datetime, timezone
 from app.core.deps import require_mentor
 
 
-router = APIRouter()
+router = APIRouter(tags=["Mentor"])
 
 
 
-@router.post("/mentors/availability")
+@router.post("/mentor/availability")
 async def set_availability(
     body: AvailabilitySlotBulkCreate,
     user=Depends(require_mentor),    
@@ -61,7 +61,7 @@ async def set_availability(
     return AvailabilitySlotBulkResponse(created=len(new_slots), slots=new_slots)
 
 
-@router.get("/mentors/availability", response_model=list[AvailabilitySlotResponse])
+@router.get("/mentor/availability", response_model=list[AvailabilitySlotResponse])
 async def get_availability(
     month: int,
     year: int,
@@ -87,7 +87,7 @@ async def get_availability(
     return result.scalars().all()
 
 
-@router.delete("/mentors/availability/{slot_id}")
+@router.delete("/mentor/availability/{slot_id}")
 async def delete_slot(
     slot_id: int,
     user=Depends(require_mentor),    

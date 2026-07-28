@@ -12,7 +12,7 @@ from app.core.deps import require_mentor
 from sqlalchemy.orm import selectinload
 
 
-router = APIRouter(prefix="/mentor", tags=["mentor-profile"])
+router = APIRouter(prefix="/mentor", tags=["Mentor"])
 
 @router.get("/profile", response_model=MentorResponse)
 async def get_mentor_profile(

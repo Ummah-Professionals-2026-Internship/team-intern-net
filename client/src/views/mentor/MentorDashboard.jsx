@@ -54,7 +54,7 @@ export default function MentorDashboard() {
       setLoading(true);
       try {
         const [requestsRes, meetingsRes] = await Promise.all([
-          api.get("/mentors/requests"),
+          api.get("/mentor/requests"),
           api.get("/mentor/meetings"),
         ]);        
         setRequests(requestsRes.data);

@@ -20,11 +20,11 @@ import logging
 
 
 logger = logging.getLogger(__name__)
-router = APIRouter()
+router = APIRouter(tags=["Mentor"])
 
 
 
-@router.get("/mentors/requests", response_model=list[AssignmentWithIntakeResponse])
+@router.get("/mentor/requests", response_model=list[AssignmentWithIntakeResponse])
 async def get_mentor_requests(
     user=Depends(require_mentor),
     db: AsyncSession = Depends(get_db),
@@ -44,7 +44,7 @@ async def get_mentor_requests(
     return assignments
 
 
-@router.patch("/mentors/requests/{assignment_id}/accept")
+@router.patch("/mentor/requests/{assignment_id}/accept")
 async def accept_request(
     assignment_id: int,
     user=Depends(require_mentor),
@@ -106,7 +106,7 @@ async def accept_request(
     return {"message": "Assignment accepted", "status": assignment.status}
 
 
-@router.patch("/mentors/requests/{assignment_id}/decline")
+@router.patch("/mentor/requests/{assignment_id}/decline")
 async def decline_request(
     assignment_id: int,
     user=Depends(require_mentor),    

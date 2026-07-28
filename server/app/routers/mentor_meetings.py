@@ -16,7 +16,7 @@ from app.models.student import Student
 import logging
 logger = logging.getLogger(__name__)
 
-router = APIRouter()
+router = APIRouter(tags=["Mentor"])
 
 @router.get("/mentor/meetings", response_model=list[MeetingResponse])
 async def get_mentor_meetings(

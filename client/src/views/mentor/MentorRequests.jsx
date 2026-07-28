@@ -35,7 +35,7 @@ export default function MentorRequests() {
     const fetchRequests = async () => {
       setLoading(true);
       try {
-        const res = await api.get("/mentors/requests");
+        const res = await api.get("/mentor/requests");
         setRequests(res.data);
       } catch (err) {
         setError(err.response?.data?.detail || "Failed to load requests.");

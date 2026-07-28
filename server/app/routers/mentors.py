@@ -27,10 +27,10 @@ from sqlalchemy.orm import selectinload
 logger = logging.getLogger(__name__)
 
 
-router = APIRouter()
+router = APIRouter(tags=["Mentor"])
 
 
-@router.post("/mentors/apply")
+@router.post("/mentor/apply")
 async def apply_mentor(form: MentorApplicationCreate, db: AsyncSession = Depends(get_db)):
     
    
@@ -140,7 +140,7 @@ async def apply_mentor(form: MentorApplicationCreate, db: AsyncSession = Depends
 
     return {"message": "Mentor application submitted successfully. Check your email for login credentials.", "application_id": application.id}
 
-@router.get("/mentors/applications")
+@router.get("/mentor/applications")
 async def get_mentor_applications(user=Depends(require_admin), db: AsyncSession = Depends(get_db)):
     result = await db.execute(
         select(MentorApplication).where(
@@ -176,7 +176,7 @@ from app.core.security import hash_password
 from app.core.deps import require_admin
 import secrets
 
-@router.patch("/mentors/applications/{application_id}/review")
+@router.patch("/mentor/applications/{application_id}/review")
 async def review_mentor_application(
     application_id: int,
     payload: MentorApplicationReview,

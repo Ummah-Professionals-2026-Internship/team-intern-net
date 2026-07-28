@@ -46,7 +46,7 @@ export default function MentorRequestDetail() {
     const fetchRequest = async () => {
       setLoading(true);
       try {
-        const res = await api.get("/mentors/requests");
+        const res = await api.get("/mentor/requests");
         const found = res.data.find((r) => r.id === parseInt(id));
         if (!found) setError("Request not found.");
         else setRequest(found);
@@ -63,7 +63,7 @@ export default function MentorRequestDetail() {
     setAccepting(true);
     setActionError("");
     try {
-      await api.patch(`/mentors/requests/${id}/accept`);
+      await api.patch(`/mentor/requests/${id}/accept`);
       setRequest((prev) => ({ ...prev, status: "active" }));
       setShowModal(false);
       setSuccessAction("accepted");
