@@ -7,19 +7,32 @@ const MONTHS = [
   "July", "August", "September", "October", "November", "December",
 ];
 
+// Lock the app context tightly to Eastern Time
+const EST_TIMEZONE = "America/New_York";
+
 function toDateKey(year, month, day) {
   return `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
 }
 
-const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+function formatExternalUrl(url) {
+  if (!url) return "";
+  if (/^https?:\/\//i.test(url)) {
+    return url;
+  }
+  if (url.startsWith("//")) {
+    return `https:${url}`;
+  }
+  return `https://${url}`;
+}
 
+// Force time formatting to compute exclusively using the Eastern Time grid
 function formatTime(utcDatetime) {
   if (!utcDatetime) return "";
   return new Date(utcDatetime).toLocaleTimeString("en-US", {
     hour: "numeric",
     minute: "2-digit",
     hour12: true,
-    timeZone: userTimezone,
+    timeZone: EST_TIMEZONE,
   });
 }
 
@@ -34,7 +47,7 @@ function formatDateLong(dateStr) {
 }
 
 export default function StudentDashboard() {
-  const today = new Date();
+  const today = useMemo(() => new Date(), []);
   
   // Application Dynamic States
   const [studentProfile, setStudentProfile] = useState(null);
@@ -50,20 +63,22 @@ export default function StudentDashboard() {
   const [availability, setAvailability] = useState({});
   const [loadingSlots, setLoadingSlots] = useState(false);
   const [selectedSlotId, setSelectedSlotId] = useState(null);
-  const [selectedSlotDetails, setSelectedSlotDetails] = useState(null);
+  const [, setSelectedSlotDetails] = useState(null);
   
+  // Custom Notes State Variable
+  const [studentNotes, setStudentNotes] = useState("");
+
   // Booking UI Status Flags
   const [showConfirmedModal, setShowConfirmedModal] = useState(false);
   const [bookingError, setBookingError] = useState("");
   const [booking, setBooking] = useState(false);
 
-  // 1. Load active student application & schedule telemetry data
+  // 1. Load active student application data
   useEffect(() => {
     const fetchDashboardContextData = async () => {
       try {
         const token = localStorage.getItem("token");
         
-        // Fetch base student match meta-profile
         const profileRes = await fetch("http://localhost:8000/student/profile", {
           headers: { "Authorization": `Bearer ${token}` }
         });
@@ -72,7 +87,6 @@ export default function StudentDashboard() {
         const profileData = await profileRes.json();
         setStudentProfile(profileData);
 
-        // NORMALIZATION LAYER: Catches key variations between backend models and frontend layout
         const activeMentor = profileData?.mentor || profileData?.assigned_mentor;
         if (activeMentor) {
           setMentor({
@@ -81,7 +95,6 @@ export default function StudentDashboard() {
           });
         }
 
-        // Fetch any existing confirmed meetings for the user (Hitting the /student prefix route)
         const meetingsRes = await fetch("http://localhost:8000/student/meetings", {
           headers: { "Authorization": `Bearer ${token}` }
         });
@@ -101,18 +114,29 @@ export default function StudentDashboard() {
     fetchDashboardContextData();
   }, []);
 
-  // 2. Fetch mentor slot availability windows dynamically if matched
+  // 2. Fetch mentor slot availability windows dynamically
+  const mentorId = mentor?.id;
   useEffect(() => {
-    if (!mentor?.id || upcomingMeeting) return;
+    if (!mentorId || upcomingMeeting) return;
 
     const fetchSlots = async () => {
       setLoadingSlots(true);
       try {
-        const res = await fetch(`http://localhost:8000/mentors/${mentor.id}/availability`);
+        const res = await fetch(`http://localhost:8000/mentors/${mentorId}/availability`);
         const data = await res.json();
         const grouped = {};
+        
         data.forEach((slot) => {
-          const dateKey = slot.start_datetime.split("T")[0];
+          // Standardize availability mapping to strictly match target calendar dates in Eastern Time
+          const estDateStr = new Date(slot.start_datetime).toLocaleDateString("en-US", {
+            timeZone: EST_TIMEZONE,
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit'
+          });
+          const [m, d, y] = estDateStr.split("/");
+          const dateKey = `${y}-${m}-${d}`;
+          
           if (!grouped[dateKey]) grouped[dateKey] = [];
           grouped[dateKey].push(slot);
         });
@@ -124,9 +148,9 @@ export default function StudentDashboard() {
       }
     };
     fetchSlots();
-  }, [viewMonth, viewYear, mentor, upcomingMeeting]);
+  }, [viewMonth, viewYear, mentorId, upcomingMeeting]);
 
-  // Compute Dynamic Application Steps for Progress Bar Layout
+  // Compute Dynamic Application Steps
   const steps = useMemo(() => {
     if (upcomingMeeting) {
       return [
@@ -173,10 +197,11 @@ export default function StudentDashboard() {
     setSelectedDate(null);
   };
 
-  const isToday = (day) =>
-    day === today.getDate() &&
-    viewMonth === today.getMonth() &&
-    viewYear === today.getFullYear();
+  const isToday = (day) => {
+    const estTodayStr = new Date().toLocaleDateString("en-US", { timeZone: EST_TIMEZONE });
+    const [m, d, y] = estTodayStr.split("/");
+    return day === parseInt(d) && (viewMonth + 1) === parseInt(m) && viewYear === parseInt(y);
+  };
 
   const isSelected = (day) => selectedDate === toDateKey(viewYear, viewMonth, day);
 
@@ -189,6 +214,7 @@ export default function StudentDashboard() {
     setSelectedDate(toDateKey(viewYear, viewMonth, day));
     setSelectedSlotId(null);
     setSelectedSlotDetails(null);
+    setStudentNotes(""); 
     setBookingError("");
   };
 
@@ -203,24 +229,23 @@ export default function StudentDashboard() {
     setBookingError("");
     try {
       const token = localStorage.getItem("token");
-      
-      // Fetch the correct student identifier to append as a query param
       const studentId = studentProfile?.id || studentProfile?.user_id;
       
-      // Pass the student_id in the query parameters as the backend expects
       const res = await fetch(`http://localhost:8000/meetings?student_id=${studentId}`, {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`
         },
-        body: JSON.stringify({ slot_id: selectedSlotId }),
+        body: JSON.stringify({ 
+          slot_id: selectedSlotId,
+          student_notes: studentNotes 
+        }),
       });
       
       const resData = await res.json();
       
       if (!res.ok) {
-        // Safe parsing: Avoid passing a raw array object to React state
         let errorMsg = "Failed to book meeting.";
         if (typeof resData.detail === "string") {
           errorMsg = resData.detail;
@@ -234,6 +259,7 @@ export default function StudentDashboard() {
       setUpcomingMeeting(resData);
       setShowConfirmedModal(true);
       setSelectedSlotId(null);
+      setStudentNotes("");
     } catch (err) {
       setBookingError("Network validation failed. Please try again.");
     } finally {
@@ -261,13 +287,9 @@ export default function StudentDashboard() {
         return;
       }
 
-      // Reset local state immediately to force re-render back to the calendar view
       setUpcomingMeeting(null);
       setSelectedDate(null);
       setSelectedSlotId(null);
-      
-      // Re-fetch profile context data to populate fresh slots if necessary
-      window.location.reload(); 
     } catch (err) {
       console.error("Error canceling meeting:", err);
       alert("Network error. Could not cancel meeting.");
@@ -308,7 +330,7 @@ export default function StudentDashboard() {
       {/* Content Canvas */}
       <div className="sd-body">
         
-        {/* VIEW 1: Finding A Match (Fallback State) */}
+        {/* VIEW 1: Finding A Match */}
         {!mentor && (
           <div className="sd-matching-card">
             <div className="sd-illustration-search">
@@ -336,13 +358,38 @@ export default function StudentDashboard() {
               <p className="sd-mentor-detail">{mentor.job_title || "Professional Profile"}</p>
               <p className="sd-mentor-detail">{mentor.employer || "Industry Group"}</p>
               <p className="sd-mentor-detail">{mentor.industry || "Field Expert"}</p>
-              {/* 💡 Fixed below: onClick now safely calls an arrow function to prevent render crashing loops */}
+              
+              {/* LinkedIn Badge */}
+              {(mentor.linkedin || mentor.linkedin_url) && (
+                <div style={{ display: 'flex', justifyContent: 'center', width: '100%', marginTop: '8px', marginBottom: '8px' }}>
+                  <a 
+                    href={formatExternalUrl(mentor.linkedin || mentor.linkedin_url)} 
+                    target="_blank" 
+                    rel="noreferrer"
+                    style={{ 
+                      color: '#0077b5', 
+                      textDecoration: 'none', 
+                      fontWeight: '600', 
+                      display: 'inline-flex', 
+                      alignItems: 'center', 
+                      gap: '6px', 
+                      fontSize: '0.9rem' 
+                    }}
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#0077b5">
+                      <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                    </svg>
+                    Connect on LinkedIn
+                  </a>
+                </div>
+              )}
+
               <button onClick={() => setShowMentorModal(true)} className="sd-view-profile">View Profile</button>
             </div>
 
             {/* Right Box Column: Booking Grid / Upcoming Meeting */}
             {upcomingMeeting ? (
-              /* VIEW 3: Final Dash (Meeting Scheduled Card) */
+              /* VIEW 3: Meeting Scheduled Card */
               <div className="sd-calendar-card sd-final-dash-card">
                 <div className="sd-cal-header-row">
                   <h3 className="sd-cal-title">📅 Upcoming Meeting</h3>
@@ -351,7 +398,7 @@ export default function StudentDashboard() {
                   <h4>Career Advice with {mentor.name}</h4>
                   <div className="sd-session-details">
                     <p>📅 {formatDateLong(upcomingMeeting.start_datetime?.split("T")[0])}</p>
-                    <p>⏰ {formatTime(upcomingMeeting.start_datetime)} – {formatTime(upcomingMeeting.end_datetime)} ({userTimezone})</p>
+                    <p>⏰ {formatTime(upcomingMeeting.start_datetime)} – {formatTime(upcomingMeeting.end_datetime)} (Eastern Time)</p>
                     <p>📹 Meeting Platform: Jitsi Meet</p>
                   </div>
                   <div className="sd-action-buttons-row" style={{ display: 'flex', gap: '12px', marginTop: '16px' }}>
@@ -389,11 +436,12 @@ export default function StudentDashboard() {
                 <div className="sd-cal-header-row">
                   <h3 className="sd-cal-title">📅 Choose Meeting Time</h3>
                 </div>
-                <div className="sd-cal-info">
-                  <span>ℹ️</span>
-                  <span>You're matched with {mentor.name} — select a meeting time that works best for you</span>
+                
+                {/* Fixed operational warning block for out-of-zone users */}
+                <div className="sd-cal-info" style={{ backgroundColor: '#fffbeb', border: '1px solid #fef3c7', color: '#b45309' }}>
+                  <span>⚠️</span>
+                  <span><strong>Notice:</strong> All schedule windows are displayed in <strong>Eastern Time (EST/EDT)</strong>. Please manually adjust if you are booking from another timezone.</span>
                 </div>
-                <p className="sd-cal-tz">All times are displayed in EST ({userTimezone})</p>
 
                 <div className="sd-calendar">
                   {loadingSlots && <div className="sd-loading"><div className="sd-spinner" /></div>}
@@ -443,7 +491,7 @@ export default function StudentDashboard() {
                     <p className="sd-slots-date">
                       {new Date(selectedDate + "T00:00:00").toLocaleDateString("en-US", {
                         weekday: "long", month: "long", day: "numeric"
-                      })}
+                      })} (EST)
                     </p>
                     {selectedSlots.length === 0 ? (
                       <p className="sd-no-slots">No available slots for this date.</p>
@@ -459,12 +507,45 @@ export default function StudentDashboard() {
                           }}
                         >
                           <span className="sd-slot-time">
-                            {formatTime(slot.start_datetime)} – {formatTime(slot.end_datetime)}
+                            {formatTime(slot.start_datetime)} – {formatTime(slot.end_datetime)} EST
                           </span>
                           {selectedSlotId === slot.id && <span className="sd-slot-check">✓</span>}
                         </div>
                       ))
                     )}
+                    
+                    {selectedSlots.length > 0 && (
+                      <div className="sd-notes-container" style={{ marginTop: "16px", marginBottom: "12px" }}>
+                        <label 
+                          htmlFor="dashboard-student-notes" 
+                          style={{ display: "block", fontSize: "0.85rem", fontWeight: "600", marginBottom: "6px", color: "#374151", textAlign: "left" }}
+                        >
+                          What would you like to discuss? (Optional)
+                        </label>
+                        <textarea
+                          id="dashboard-student-notes"
+                          rows="3"
+                          maxLength="500"
+                          placeholder="e.g., Help reviewing my DevOps resume, backend engineering roadmaps, or interview prep advice..."
+                          value={studentNotes}
+                          onChange={(e) => setStudentNotes(e.target.value)}
+                          style={{
+                            width: "100%",
+                            padding: "10px",
+                            fontSize: "0.875rem",
+                            borderRadius: "6px",
+                            border: "1px solid #d1d5db",
+                            resize: "none",
+                            fontFamily: "inherit",
+                            boxSizing: "border-box"
+                          }}
+                        />
+                        <span style={{ display: "block", textAlign: "right", fontSize: "0.75rem", color: "#6b7280", marginTop: "4px" }}>
+                          {studentNotes.length}/500 characters
+                        </span>
+                      </div>
+                    )}
+
                     {bookingError && <p className="sd-error">{bookingError}</p>}
                     {selectedSlots.length > 0 && (
                       <button className="sd-confirm-btn" onClick={handleBook} disabled={booking || !selectedSlotId}>
@@ -489,7 +570,7 @@ export default function StudentDashboard() {
             
             <div className="sd-modal-receipt-box">
               <p>📅 {formatDateLong(upcomingMeeting.start_datetime?.split("T")[0])}</p>
-              <p>⏰ {formatTime(upcomingMeeting.start_datetime)} – {formatTime(upcomingMeeting.end_datetime)}</p>
+              <p>⏰ {formatTime(upcomingMeeting.start_datetime)} – {formatTime(upcomingMeeting.end_datetime)} EST</p>
               <p>📹 Meeting Platform: Jitsi Meet</p>
             </div>
             
@@ -512,18 +593,87 @@ export default function StudentDashboard() {
               </div>
               <div>
                 <h3 style={{ margin: 0, color: '#0f766e', fontSize: '1.4rem' }}>{mentor.name}</h3>
-                <p style={{ margin: 0, color: '#4b5563', fontWeight: '500' }}>{mentor.job_title || "DevOps ENG"}</p>
+                <p style={{ margin: 0, color: '#4b5563', fontWeight: '500' }}>{mentor.job_title || "Professional Profile"}</p>
               </div>
             </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.95rem', color: '#374151' }}>
-              <p><strong>🏢 Employer / Company:</strong> {mentor.employer || "CU"}</p>
-              <p><strong>🌐 Focus Industry:</strong> {mentor.industry || "IT"}</p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', fontSize: '0.95rem', color: '#374151' }}>
               
-              <hr style={{ border: 0, borderTop: '1px solid #e5e7eb', margin: '10px 0' }} />
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{ fontSize: '1.1rem', width: '20px', display: 'inline-block', textAlign: 'center' }}>🏢</span>
+                <span><strong>Employer / Company:</strong> {mentor.employer || "N/A"}</span>
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{ fontSize: '1.1rem', width: '20px', display: 'inline-block', textAlign: 'center' }}>🌐</span>
+                <span><strong>Focus Industry:</strong> {mentor.industry || "N/A"}</span>
+              </div>
+
+              {mentor.alma_mater && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <span style={{ fontSize: '1.1rem', width: '20px', display: 'inline-block', textAlign: 'center' }}>🎓</span>
+                  <span><strong>Alma Mater:</strong> {mentor.alma_mater}</span>
+                </div>
+              )}
+
+              {(mentor.county || mentor.state) && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <span style={{ fontSize: '1.1rem', width: '20px', display: 'inline-block', textAlign: 'center' }}>📍</span>
+                  <span>
+                    <strong>Location:</strong> {mentor.county ? `${mentor.county}, ` : ""}{mentor.state || ""}
+                  </span>
+                </div>
+              )}
+              
+              {(mentor.linkedin || mentor.linkedin_url) && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <div style={{ width: '20px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#0077b5" style={{ flexShrink: 0 }}>
+                      <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                    </svg>
+                  </div>
+                  <span>
+                    <strong>LinkedIn Profile:</strong>{' '}
+                    <a 
+                      href={formatExternalUrl(mentor.linkedin || mentor.linkedin_url)} 
+                      target="_blank" 
+                      rel="noreferrer" 
+                      style={{ color: '#0077b5', fontWeight: '600', textDecoration: 'none' }}
+                    >
+                      View Profile
+                    </a>
+                  </span>
+                </div>
+              )}
+
+              {mentor.service_types && mentor.service_types.length > 0 && (
+                <div style={{ marginTop: '4px' }}>
+                  <p style={{ fontWeight: '600', margin: '0 0 6px 0' }}>Expertise Offerings:</p>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                    {mentor.service_types.map((type, index) => (
+                      <span 
+                        key={index} 
+                        style={{ 
+                          backgroundColor: '#f0fdf4', 
+                          color: '#166534', 
+                          border: '1px solid #bbf7d0',
+                          padding: '3px 8px', 
+                          borderRadius: '12px', 
+                          fontSize: '0.8rem',
+                          fontWeight: '500' 
+                        }}
+                      >
+                        {type}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+              
+              <hr style={{ border: 0, borderTop: '1px solid #e5e7eb', margin: '6px 0' }} />
               
               <p style={{ fontWeight: '600', marginBottom: '4px' }}>About Your Mentor:</p>
-              <p style={{ color: '#6b7280', lineHeight: '1.5', fontStyle: mentor.bio ? 'normal' : 'italic' }}>
+              <p style={{ color: '#6b7280', lineHeight: '1.5', fontStyle: mentor.bio ? 'normal' : 'italic', marginTop: 0 }}>
                 {mentor.bio || "No professional biography has been provided yet by the mentor. Use your scheduled meeting to ask them about their career path and field experiences!"}
               </p>
             </div>

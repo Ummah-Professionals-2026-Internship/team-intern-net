@@ -53,8 +53,8 @@ const SignIn = () => {
         <div className="sidebar-content">
           <img src={logoWhite} alt="Ummah Professionals Logo" className="sidebar-logo" />
           <h1 className="sidebar-tagline">
-            connecting an <span className="text-gold">ummah</span> <br />
-            of <span className="text-gold">professionals</span>
+            Connecting An <span className="text-gold">Ummah</span> <br />
+            Of <span className="text-gold">Professionals</span>
           </h1>
         </div>
 
@@ -71,12 +71,12 @@ const SignIn = () => {
         <div className="signin-form-container">
           <header className="form-header">
             <h2>WELCOME!</h2>
-            <p>sign into your account</p>
+            <p>Sign into your Account</p>
           </header>
           
           <form onSubmit={handleFormSubmit}>
             <InputField
-              label="email"
+              label="Email"
               id="email"
               type="email"
               value={email}
@@ -85,9 +85,9 @@ const SignIn = () => {
             />
 
             <InputField
-              label="password"
+              label="Password"
               id="password"
-              type={showPassword ? 'text' : 'password'}
+              type={showPassword ? 'text' : 'Password'}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required

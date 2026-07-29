@@ -62,7 +62,7 @@ export default function StudentMeetings() {
             <div key={meeting.id} className="sm-card">
               <div className="sm-card-header">
                 <div>
-                  <p className="sm-mentor">with {meeting.mentor_name}</p>
+                  <p className="sm-mentor">With {meeting.mentor_name}</p>
                   <p className="sm-date">{formatDate(meeting.start_datetime)}</p>
                   <p className="sm-time">
                     {formatTime(meeting.start_datetime)} — {formatTime(meeting.end_datetime)}
