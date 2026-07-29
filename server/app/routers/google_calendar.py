@@ -297,22 +297,25 @@ async def book_meeting(
 
     # 7. Send confirmation email
     try:
+        print(meeting.start_datetime)
+        print(meeting.start_datetime.tzinfo)
         mentor_name = assignment.mentor.user.full_name
         student_name = assignment.student.user.full_name
         meeting_date = meeting.start_datetime.strftime("%B %d, %Y")
         meeting_time = meeting.start_datetime.strftime("%I:%M %p")
 
         email_body = f"""
-        <p>Assalamu Alaikum, {student_name},</p>
+        <p>Assalamu Alaikum {student_name},</p>
         <p>Your mentorship meeting has been scheduled successfully.</p>
         <p><strong>Mentor:</strong> {mentor_name}</p>
         <p><strong>Date:</strong> {meeting_date}</p>
-        <p><strong>Time:</strong> {meeting_time} EST</p>
+        <p> The meeting time and link will appear in your Google Calendar invitation. </p>
         {f'<p><strong>Meeting Link:</strong> <a href="{meeting.meeting_url}">{meeting.meeting_url}</a></p>' if meeting.meeting_url else '<p>Your meeting link will be provided shortly.</p>'}
         <br>
         <p>Jazakum Allahu Khayran,</p>
         <p>The Ummah Professionals Team</p>
         """
+        # <p><strong>Time:</strong> {meeting_time} EST</p>
 
         await send_email(
             subject="Mentorship Meeting Confirmed – Ummah Professionals",
@@ -325,16 +328,17 @@ async def book_meeting(
             subject="New Mentorship Meeting Scheduled – Ummah Professionals",
             recipient=assignment.mentor.user.email,
             body=f"""
-            <p>Assalamu Alaikum, {mentor_name},</p>
+            <p>Assalamu Alaikum {mentor_name},</p>
             <p>A meeting has been scheduled with <strong>{student_name}</strong>.</p>
             <p><strong>Date:</strong> {meeting_date}</p>
-            <p><strong>Time:</strong> {meeting_time} EST</p>
+            <p> The meeting time and link will appear in your Google Calendar invitation. </p>
             {f'<p><strong>Meeting Link:</strong> <a href="{meeting.meeting_url}">{meeting.meeting_url}</a></p>' if meeting.meeting_url else '<p>The meeting link will be added shortly.</p>'}
             <br>
             <p>Jazakum Allahu Khayran,</p>
             <p>The Ummah Professionals Team</p>
             """,
         )
+            # <p><strong>Time:</strong> {meeting_time} EST</p>
 
     except Exception as e:
         logger.warning(f"Failed to send meeting confirmation emails: {e}")
