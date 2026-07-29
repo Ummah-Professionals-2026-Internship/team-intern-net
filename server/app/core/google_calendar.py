@@ -80,12 +80,12 @@ async def create_google_meet_event(db: AsyncSession, admin_id: int, meeting: Mee
         "summary": "Mentorship Meeting",
         "description": ("Scheduled mentorship session"),
         "start": {
-            "dateTime": (meeting.slot.start_datetime.isoformat()),
-            "timeZone": "America/New_York",
+            "dateTime": meeting.start_datetime.astimezone(timezone.utc).isoformat(),
+            "timeZone": "UTC",
         },
         "end": {
-            "dateTime": (meeting.slot.end_datetime.isoformat()),
-            "timeZone": "America/New_York",
+            "dateTime": meeting.end_datetime.astimezone(timezone.utc).isoformat(),
+            "timeZone": "UTC",
         },
         "attendees": [{"email": mentor_email}, {"email": student_email},],
         "conferenceData": {

@@ -10,7 +10,7 @@ from app.core.google_oauth import (
     get_google_authorization_url,
     exchange_code_for_tokens,
 )
-from app.core.deps import require_admin
+from app.core.deps import require_admin, require_student
 from app.core.google_calendar import create_google_meet_event
 
 from app.models.meeting import Meeting
@@ -19,6 +19,13 @@ from app.models.mentor import Mentor
 from app.models.student import Student
 from app.models.enums import MeetingStatusEnum
 from datetime import datetime, timezone, timedelta
+
+from app.models.meeting import Meeting
+from app.models.availability_slot import AvailabilitySlot
+from app.models.mentor_assignment import MentorAssignment
+from app.models.mentor import Mentor
+from app.models.student import Student
+from app.models.enums import AssignmentStatusEnum, MeetingStatusEnum
 
 from app.core.email import send_email
 import logging
@@ -125,11 +132,8 @@ async def generate_meet_link(
         .options(
             selectinload(Meeting.assignment)
             .options(
-                selectinload(MentorAssignment.mentor)
-                .selectinload(Mentor.user),
-
-                selectinload(MentorAssignment.student)
-                .selectinload(Student.user),
+                selectinload(MentorAssignment.mentor).selectinload(Mentor.user),
+                selectinload(MentorAssignment.student).selectinload(Student.user),
             ),
             selectinload(Meeting.slot),
         )
@@ -163,32 +167,182 @@ async def generate_meet_link(
         )
 
         meeting.meeting_url = meet_url
-
         await db.commit()
-        await db.refresh(meeting)
 
-    except Exception:
+    except Exception as e:
+        logger.error(f"Failed to generate Meet link for meeting {meeting_id}: {e}")
         await db.rollback()
-        raise
+        raise HTTPException(status_code=500, detail="Failed to generate Google Meet link")
 
 
-    # try: 
-    #     await send_email(
-    #         subject="Thank You for Your Application - Ummah Professionals",
-    #         recipient=,
-    #         body=f""" <p>Assalamu Alaikum, {form.full_name} </p>
-    #             <p>Thank you for your interest in becoming a Career Advisor with Ummah Professionals. We have received your application. Your account has been created and you should be receiving your credentials in separate email.</p>
-    #             <p>In the meantime, if you have any questions, feel free to reach out to us.</p>
-    #             <p>We appreciate your willingness to give back to the community and look forward to potentially welcoming you to our network of volunteers.</p>
-    #             <p>Jazakum Allahu Khayran,<br>The Ummah Professionals Team</p>
-    #             """
-    #     )
+    await db.refresh(meeting)
 
+    try:
+        mentor_name = meeting.assignment.mentor.user.full_name
+        student_name = meeting.assignment.student.user.full_name
+        meeting_date = meeting.start_datetime.strftime("%B %d, %Y")
+        meeting_time = meeting.start_datetime.strftime("%I:%M %p")
 
-    # except Exception as e:
-    #     logger.error(f"Failed to send email to {form.email}: {e}")
+        await send_email(
+            subject="Mentorship Meeting Link Ready – Ummah Professionals",
+            recipient=meeting.assignment.student.user.email,
+            body=f"""
+            <p>Assalamu Alaikum, {student_name},</p>
+            <p>Your mentorship meeting link is now ready.</p>
+            <p><strong>Mentor:</strong> {mentor_name}</p>
+            <p><strong>Date:</strong> {meeting_date}</p>
+            <p><strong>Time:</strong> {meeting_time} EST</p>
+            <p><strong>Meeting Link:</strong> <a href="{meet_url}">{meet_url}</a></p>
+            <br>
+            <p>Jazakum Allahu Khayran,</p>
+            <p>The Ummah Professionals Team</p>
+            """
+        )
+
+        await send_email(
+            subject="Mentorship Meeting Link Ready – Ummah Professionals",
+            recipient=meeting.assignment.mentor.user.email,
+            body=f"""
+            <p>Assalamu Alaikum, {mentor_name},</p>
+            <p>The meeting link for your session with <strong>{student_name}</strong> is now ready.</p>
+            <p><strong>Date:</strong> {meeting_date}</p>
+            <p><strong>Time:</strong> {meeting_time} EST</p>
+            <p><strong>Meeting Link:</strong> <a href="{meet_url}">{meet_url}</a></p>
+            <br>
+            <p>Jazakum Allahu Khayran,</p>
+            <p>The Ummah Professionals Team</p>
+            """
+        )
+
+    except Exception as e:
+        logger.error(f"Failed to send meet link emails for meeting {meeting_id}: {e}")
 
     return {
         "message": "Google Meet link generated",
         "meet_url": meet_url,
+    }
+
+
+
+
+
+@router.post("/student/meetings/book")
+async def book_meeting(
+    slot_id: int,
+    user=Depends(require_student),
+    db: AsyncSession = Depends(get_db),
+):
+    student_id = int(user["sub"])
+
+    # 1. Get the slot
+    slot_result = await db.execute(
+        select(AvailabilitySlot).where(
+            AvailabilitySlot.id == slot_id,
+            AvailabilitySlot.is_booked == False,
+        )
+    )
+    slot = slot_result.scalar_one_or_none()
+    if not slot:
+        raise HTTPException(status_code=404, detail="Slot not available")
+
+    # 2. Check student has active assignment with this mentor
+    assignment_result = await db.execute(
+        select(MentorAssignment)
+        .where(
+            MentorAssignment.student_id == student_id,
+            MentorAssignment.mentor_id == slot.mentor_id,
+            MentorAssignment.status == AssignmentStatusEnum.active,
+        )
+        .options(
+            selectinload(MentorAssignment.mentor).selectinload(Mentor.user),
+            selectinload(MentorAssignment.student).selectinload(Student.user),
+        )
+    )
+    assignment = assignment_result.scalar_one_or_none()
+    if not assignment:
+        raise HTTPException(status_code=403, detail="You are not assigned to this mentor")
+
+    # 3. Create meeting
+    meeting = Meeting(
+        assignment_id=assignment.id,
+        slot_id=slot.id,
+        start_datetime=slot.start_datetime,
+        end_datetime=slot.end_datetime,
+        status=MeetingStatusEnum.scheduled,
+    )
+    db.add(meeting)
+
+    # 4. Mark slot as booked
+    slot.is_booked = True
+
+    await db.flush()  # get meeting.id before generating link
+
+    # 5. Load meeting relationships needed for Meet link generation
+    await db.refresh(meeting, ["assignment", "slot"])
+
+    # 6. Auto-generate Meet link
+    try:
+        meet_url = await create_google_meet_event(
+            db=db,
+            admin_id=assignment.assigned_by,
+            meeting=meeting,
+        )
+        meeting.meeting_url = meet_url
+    except Exception as e:
+        logger.warning(f"Meet link generation failed for meeting {meeting.id}: {e}")
+
+    await db.commit()
+    await db.refresh(meeting)
+
+
+    # 7. Send confirmation email
+    try:
+        mentor_name = assignment.mentor.user.full_name
+        student_name = assignment.student.user.full_name
+        meeting_date = meeting.start_datetime.strftime("%B %d, %Y")
+        meeting_time = meeting.start_datetime.strftime("%I:%M %p")
+
+        email_body = f"""
+        <p>Assalamu Alaikum, {student_name},</p>
+        <p>Your mentorship meeting has been scheduled successfully.</p>
+        <p><strong>Mentor:</strong> {mentor_name}</p>
+        <p><strong>Date:</strong> {meeting_date}</p>
+        <p><strong>Time:</strong> {meeting_time} EST</p>
+        {f'<p><strong>Meeting Link:</strong> <a href="{meeting.meeting_url}">{meeting.meeting_url}</a></p>' if meeting.meeting_url else '<p>Your meeting link will be provided shortly.</p>'}
+        <br>
+        <p>Jazakum Allahu Khayran,</p>
+        <p>The Ummah Professionals Team</p>
+        """
+
+        await send_email(
+            subject="Mentorship Meeting Confirmed – Ummah Professionals",
+            recipient=assignment.student.user.email,
+            body=email_body,
+        )
+
+        # Also notify mentor
+        await send_email(
+            subject="New Mentorship Meeting Scheduled – Ummah Professionals",
+            recipient=assignment.mentor.user.email,
+            body=f"""
+            <p>Assalamu Alaikum, {mentor_name},</p>
+            <p>A meeting has been scheduled with <strong>{student_name}</strong>.</p>
+            <p><strong>Date:</strong> {meeting_date}</p>
+            <p><strong>Time:</strong> {meeting_time} EST</p>
+            {f'<p><strong>Meeting Link:</strong> <a href="{meeting.meeting_url}">{meeting.meeting_url}</a></p>' if meeting.meeting_url else '<p>The meeting link will be added shortly.</p>'}
+            <br>
+            <p>Jazakum Allahu Khayran,</p>
+            <p>The Ummah Professionals Team</p>
+            """,
+        )
+
+    except Exception as e:
+        logger.warning(f"Failed to send meeting confirmation emails: {e}")
+
+    return {
+        "message": "Meeting booked successfully",
+        "meeting_id": meeting.id,
+        "meeting_url": meeting.meeting_url,
+        "start_datetime": meeting.start_datetime,
+        "end_datetime": meeting.end_datetime,
     }
