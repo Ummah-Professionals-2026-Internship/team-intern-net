@@ -5,20 +5,34 @@ from pydantic import BaseModel, HttpUrl, field_validator
 from app.models.enums import ServiceTypeEnum
 from app.schemas.user import UserResponse
 
+# Personal: full_name, email (n), phone, gender (n), county, state, linkedin
+# Education: Major, Alma Mater
+# Professional: Employer, Job Title, Industry, Experience Level
+# Services
+# Bio
 
 class MentorProfileUpdate(BaseModel):
-    bio: Optional[str] = None
-    linkedin_url: Optional[HttpUrl] = None
-    phone_number: Optional[str] = None
-    employer: Optional[str] = None
-    job_title: Optional[str] = None
-    industry: Optional[str] = None
-    alma_mater: Optional[str] = None
-    county: Optional[str] = None
-    state: Optional[str] = None
-    service_types: Optional[List[ServiceTypeEnum]] = None
-    is_available: Optional[bool] = None
 
+    # Personal
+    full_name    : Optional[str] = None
+    phone_number : Optional[str] = None
+    county       : Optional[str] = None
+    state        : Optional[str] = None
+    linkedin_url : Optional[HttpUrl] = None
+    meeting_url  : Optional[str] = None
+    # Education
+    major        : Optional[str] = None
+    alma_mater   : Optional[str] = None
+    # Professional
+    employer     : Optional[str] = None
+    job_title    : Optional[str] = None
+    industry     : Optional[str] = None
+    experience   : Optional[str] = None
+    # Services
+    service_types : Optional[List[ServiceTypeEnum]] = None
+    # Bio
+    bio          : Optional[str] = None
+    
     @field_validator("service_types")
     @classmethod
     def validate_service_types(cls, v: list | None) -> list | None:
@@ -35,7 +49,10 @@ class MentorResponse(BaseModel):
     employer: Optional[str] = None
     job_title: Optional[str] = None
     industry: Optional[str] = None
+    meeting_url : Optional[str] = None  
     phone_number: Optional[str] = None
+    experience: Optional[str] = None
+    major: Optional[str] = None 
     alma_mater: Optional[str] = None
     county: Optional[str] = None
     state: Optional[str] = None

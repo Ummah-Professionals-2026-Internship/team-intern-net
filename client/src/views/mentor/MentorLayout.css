@@ -1,0 +1,326 @@
+@font-face {
+  font-family: "Kollektif";
+  src: url("../../fonts/kollektif-webfont/Kollektif.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Kollektif Bold";
+  src: url("../../fonts/kollektif-webfont/Kollektif-Bold.woff") format("woff");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+
+/* ============================================================
+   MentorLayout.css
+   All selectors namespaced with .ml- (mentor layout)
+   ============================================================ */
+
+/* ── Shell ── */
+.ml-shell {
+  --sidebar-width: 240px;
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  background: #f3f8fa;
+}
+
+/* ── Sidebar ── */
+.ml-sidebar {
+  width: var(--sidebar-width);
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(0deg, #8ACBDB 0%, #007CA6 38%, #00212C 100%);
+  position: relative;
+  align-items: flex-start;
+  overflow: hidden;
+  gap: 40px;
+  box-sizing: border-box;
+}
+
+/* ── Brand ── */
+.ml-brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  /* background-size: contain;
+  background-position: center; */
+  padding: 20px 0;
+  /* background-repeat: no-repeat; */
+}
+.ml-logo{
+  width: 193px;
+  height: auto;
+  object-fit: contain;
+}
+
+
+/* ── Nav ── */
+
+
+.ml-nav {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 10px;
+  padding: 0 16px;
+}
+
+.ml-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 16px;
+  border-radius: 10px;
+  text-decoration: none;
+  font-family: 'Kollektif', system-ui, -apple-system, sans-serif;
+  transition: background 0.15s, color 0.15s;
+  white-space: nowrap;
+  color: #ffffff;
+  font-size: 25px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.ml-nav-item:hover {
+  background: #ffffff18;
+  color: #ffffff;
+}
+
+.ml-nav-item--active {
+  color: #F5C842; 
+}
+
+.ml-nav-item--active:hover {
+  background: #f0c030;
+  color: #025571;
+}
+
+.ml-nav-icon {
+  width: 25px;
+  height: 25px;
+}
+
+.ml-nav-label {
+  font-family: 'Kollektif', system-ui, -apple-system, sans-serif;
+}
+
+/* ── Logout (pinned bottom) ── */
+.ml-sidebar-footer {
+  padding: 0 16px 16px;
+}
+
+.ml-logout {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 16px;
+  margin: 8px 16px 16px;
+  border-radius: 10px;
+  border: none;
+  background: transparent;
+  color: #FFFF;
+  font-size: 25px;
+  font-family: 'Kollektif', system-ui, -apple-system, sans-serif;
+  font-weight: 400;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  /* text-align: left; */
+  position: relative;
+  z-index: 1;
+}
+
+.ml-logout:hover {
+  background: #ffffff18;
+  color: #ffffff;
+}
+
+/* ── Decorative wave ── */
+.ml-sidebar-wave {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 120px;
+  background: #ffffff0d;
+  clip-path: ellipse(120% 100% at 50% 100%);
+  pointer-events: none;
+}
+
+/* ── Main content ── */
+.ml-main {
+  position: relative;
+  flex: 1;
+  overflow-y: auto;
+  padding: 36px 40px;
+  box-sizing: border-box;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-position: top left;
+}
+
+/* .ml-main-bgImage{
+  position: fixed;
+  top: 0;
+  left: var(--sidebar-width);
+  right: 0;
+  bottom: 0;
+  width: calc(100% - var(--sidebar-width));
+  height: 100%;
+  aspect-ratio: 129/100;
+  object-fit: contain;
+  object-position: left top;
+  z-index: 0;
+  pointer-events: none;
+} */
+
+/* .ml-main > *:not(.ml-main-bgImage) {
+  position: relative;
+  z-index: 1;
+} */
+
+/* Chrome/Safari scrollbar */
+.ml-main::-webkit-scrollbar {
+  width: 6px;
+}
+.ml-main::-webkit-scrollbar-track {
+  background: transparent;
+}
+.ml-main::-webkit-scrollbar-thumb {
+  background: #c0d9e0;
+  border-radius: 999px;
+}
+
+
+.ml-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.ml-modal {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 36px 40px;
+  width: 100%;
+  max-width: 380px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+}
+
+.ml-modal-svg{
+  margin: 0;
+}
+
+.ml-modal-title {
+  margin: 0;
+  font-size: 30px;
+  font-weight: 700;
+  color: #111827;
+  letter-spacing: 0.01rem;
+  font-family: 'Kollektif Bold', system-ui, sans-serif;
+}
+
+.ml-modal-subtitle {
+  margin: 0;
+  font-size: 14px;
+  color: #6b7280;
+  text-align: center;
+
+}
+
+.ml-modal-btns {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+}
+
+.ml-btn-cancel {
+  flex: 1;
+  padding: 11px;
+  background: #ffffff;
+  color: #374151;
+  border: 1.5px solid #d1d5db;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+  font-family: 'Kollektif', system-ui, sans-serif;
+}
+
+.ml-btn-cancel:hover {
+  background: #f3f4f6;
+}
+
+.ml-btn-logout {
+  flex: 1;
+  padding: 11px;
+  background: #dc2626;
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.15s;
+  font-family: 'Kollektif', system-ui, sans-serif;
+}
+
+.ml-btn-logout:hover {
+  background: #b91c1c;
+}
+
+
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .ml-sidebar {
+    width: 64px;
+  }
+  .ml-shell {
+    --sidebar-width: 64px;
+  }
+  .ml-brand-name,
+  .ml-nav-label {
+    display: none;
+  }
+
+  .ml-brand {
+    justify-content: center;
+    padding: 0 0 28px;
+  }
+
+  .ml-nav-item,
+  .ml-logout {
+    justify-content: center;
+    padding: 12px;
+  }
+
+  .ml-main {
+    padding: 24px 20px;
+  }
+}
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .ml-nav-item,
+  .ml-logout {
+    transition: none;
+  }
+}

@@ -4,7 +4,7 @@ from .student import StudentProfileUpdate, StudentResponse
 from .mentor import MentorProfileUpdate, MentorResponse
 from .student_intake_form import IntakeFormCreate, IntakeFormReturningCreate, IntakeFormStatusUpdate, IntakeFormResponse
 from .mentor_application import MentorApplicationCreate, MentorApplicationReview, MentorApplicationResponse, ReviewerInfo
-from .mentor_assignment import AssignmentCreate, AssignmentStatusUpdate, AssignmentResponse
+from .mentor_assignment import AssignmentCreate, AssignmentStatusUpdate, AssignmentResponse, AssignmentWithIntakeResponse
 from .availability_slot import AvailabilitySlotCreate, AvailabilitySlotBulkCreate, AvailabilitySlotResponse, AvailabilitySlotBulkResponse
 from .meeting import MeetingCreate, MeetingStatusUpdate, MeetingResponse
 
@@ -42,6 +42,7 @@ __all__ = [
     "AssignmentCreate",
     "AssignmentStatusUpdate",
     "AssignmentResponse",
+    "AssignmentWithIntakeResponse",
     # Availability
     "AvailabilitySlotCreate",
     "AvailabilitySlotBulkCreate",

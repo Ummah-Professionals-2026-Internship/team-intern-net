@@ -1,0 +1,319 @@
+@font-face {
+  font-family: "Kollektif";
+  src: url("../../fonts/kollektif-webfont/Kollektif.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Kollektif Bold";
+  src: url("../../fonts/kollektif-webfont/Kollektif-Bold.woff") format("woff");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+/* ============================================================
+   MentorDashboard.css
+   All selectors namespaced with .mdb- to avoid global bleed
+   ============================================================ */
+
+/* ---------- Page ---------- */
+.mdb-page {
+  padding: 8px 32px 32px;
+  box-sizing: border-box;
+  font-family: 'Kollektif', system-ui, -apple-system, sans-serif;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* ---------- Welcome ---------- */
+.mdb-welcome {
+  margin: 0;
+  font-size: clamp(35px, 2vw, 28px);
+  font-family: 'Kollektif Bold', system-ui, -apple-system, sans-serif;
+  font-weight: 700;
+  color: #111827;
+}
+
+/* ---------- Stat cards ---------- */
+.mdb-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.mdb-stat-card {
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
+  padding: 24px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25)
+}
+
+.mdb-stat-value {
+  font-size: clamp(28px, 3vw, 40px);
+  font-weight: 700;
+  color: #111827;
+  line-height: 1;
+}
+
+.mdb-stat-label {
+  font-size: clamp(18px, 1.1vw, 15px);
+  color: #000;
+  margin-top: 4px;
+}
+
+.mdb-stat-action {
+  margin-top: 12px;
+  background: none;
+  border: none;
+  color: #025571;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  font-family: 'Kollektif', system-ui, -apple-system, sans-serif;
+  transition: opacity 0.15s;
+}
+
+.mdb-stat-description {
+  font-size: 12px;
+  color: #9ca3af;
+  line-height: 1.4;
+  margin-top: 2px;
+}
+
+.mdb-stat-action:hover {
+  opacity: 0.75;
+  text-decoration: underline;
+}
+
+/* ---------- Sections ---------- */
+.mdb-section {
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
+  overflow: hidden;
+  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);}
+
+.mdb-section-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 18px 24px;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.mdb-section-icon {
+  font-size: 18px;
+}
+
+.mdb-section-title {
+  margin: 0;
+  font-size: 20px;
+  font-family: 'Kollektif Bold', system-ui, -apple-system, sans-serif;
+  font-weight: 700;
+  color: #111827;
+}
+
+/* ---------- Table ---------- */
+.mdb-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.mdb-th {
+  padding: 12px 20px;
+  text-align: left;
+  font-size: 16px;
+  font-weight: 600;
+  color: #6b7280;
+  background: #f9fafb;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.mdb-th--right {
+  text-align: right;
+}
+
+.mdb-row {
+  transition: background 0.12s;
+}
+
+.mdb-row:hover {
+  background: #f9fafb;
+}
+
+.mdb-row:not(:last-child) {
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.mdb-td {
+  padding: 14px 20px;
+  font-size: 14px;
+  color: #000;
+  vertical-align: middle;
+}
+
+.mdb-td--name {
+  font-weight: 600;
+  color: #111827;
+}
+
+.mdb-td--action {
+  text-align: right;
+}
+
+.mdb-td--empty {
+  text-align: center;
+  color: #9ca3af;
+  padding: 32px;
+  font-size: 14px;
+}
+
+/* ---------- Status badge ---------- */
+.mdb-badge {
+  display: inline-block;
+  padding: 8px 20px;
+  border-radius: 100px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.mdb-badge--scheduled {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.mdb-badge--pending {
+  background: #fef9c3;
+  color: #854d0e;
+}
+
+.mdb-badge--active {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.mdb-badge--declined {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.mdb-badge--completed {
+  background: #e0f2fe;
+  color: #075985;
+}
+
+.mdb-badge--cancelled {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+.mdb-badge--no_show {
+  background: #fee2e2;
+  color: #991b1b;
+}
+/* ---------- View button ---------- */
+.mdb-btn-view {
+  padding: 8px 20px;
+  background: #025571;
+  background: #ffffff;
+  color: #025571;
+  border: 1.5px solid #025571;
+  border-radius: 100px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+  font-family: 'Kollektif', system-ui, -apple-system, sans-serif;
+  white-space: nowrap;
+
+}
+
+.mdb-btn-view:hover {
+  background: #025571;
+  color: #ffffff;
+}
+
+
+.mdb-btn-link {
+  background: #ffffff;
+  padding: 8px 20px;
+  border: 1.5px solid #025571;
+  color: #025571;
+  font-size: 13px;
+  border-radius: 100px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: "Kollektif", system-ui, -apple-system, sans-serif;
+  transition: opacity 0.15s;
+}
+
+.mdb-btn-link:hover:not(:disabled) {
+  background: #025571;
+  color: #ffffff;
+}
+
+.mdb-btn-link:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ---------- Loading / error / empty ---------- */
+.mdb-loading {
+  display: flex;
+  justify-content: center;
+  padding: 40px;
+}
+
+.mdb-spinner {
+  width: 28px;
+  height: 28px;
+  border: 3px solid #e5e7eb;
+  border-top-color: #025571;
+  border-radius: 50%;
+  animation: mdb-spin 0.7s linear infinite;
+}
+
+@keyframes mdb-spin {
+  to { transform: rotate(360deg); }
+}
+
+.mdb-error {
+  margin: 0;
+  padding: 24px;
+  font-size: 14px;
+  color: #dc2626;
+}
+
+.mdb-empty {
+  margin: 0;
+  padding: 32px 24px;
+  font-size: 14px;
+  color: #9ca3af;
+  text-align: center;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 900px) {
+  .mdb-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .mdb-page {
+    padding: 20px 16px;
+  }
+
+  .mdb-stats {
+    grid-template-columns: 1fr;
+  }
+}

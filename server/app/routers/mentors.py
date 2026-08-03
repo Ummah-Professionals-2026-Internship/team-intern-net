@@ -18,17 +18,21 @@ from app.models.mentor import Mentor
 from app.models.enums import RoleEnum
 from app.core.security import hash_password
 from app.core.deps import require_admin
-from app.core.email import send_email
 from datetime import datetime, timezone
 import secrets
 import logging
+from app.core.deps import require_mentor
+from app.models.meeting import Meeting 
+from app.models.mentor_assignment import MentorAssignment
+from sqlalchemy.orm import selectinload
 
 logger = logging.getLogger(__name__)
 
 
-router = APIRouter()
+router = APIRouter(tags=["Mentor"])
 
-@router.post("/mentors/apply")
+
+@router.post("/mentor/apply")
 async def apply_mentor(form: MentorApplicationCreate, db: AsyncSession = Depends(get_db)):
     
    
@@ -96,6 +100,8 @@ async def apply_mentor(form: MentorApplicationCreate, db: AsyncSession = Depends
         state=form.state,
         phone_number=form.phone_number,
         service_types=form.service_types,
+        major=form.major,
+        experience=form.experience,
     )
     db.add(mentor)
 
@@ -136,7 +142,7 @@ async def apply_mentor(form: MentorApplicationCreate, db: AsyncSession = Depends
 
     return {"message": "Mentor application submitted successfully. Check your email for login credentials.", "application_id": application.id}
 
-@router.get("/mentors/applications")
+@router.get("/mentor/applications")
 async def get_mentor_applications(user=Depends(require_admin), db: AsyncSession = Depends(get_db)):
     result = await db.execute(
         select(MentorApplication).where(
@@ -147,6 +153,23 @@ async def get_mentor_applications(user=Depends(require_admin), db: AsyncSession 
 
 
 
+# @router.get("/mentor/meetings")
+# async def get_mentor_meetings(user=Depends(require_mentor), db: AsyncSession = Depends(get_db)):
+    
+#     mentor_id = int(user["sub"])
+#     result = await db.execute(
+#         select(Meeting)
+#         .join(MentorAssignment, Meeting.assignment_id == MentorAssignment.id)
+#         .where(MentorAssignment.mentor_id == mentor_id)
+#         .options(
+#             selectinload(Meeting.assignment),
+#             selectinload(Meeting.slot),
+#         )
+#         .order_by(Meeting.start_datetime)
+#     )
+
+#     return result.scalars().all()
+
 
 from app.models.user import User
 from app.models.mentor import Mentor
@@ -155,7 +178,7 @@ from app.core.security import hash_password
 from app.core.deps import require_admin
 import secrets
 
-@router.patch("/mentors/applications/{application_id}/review")
+@router.patch("/mentor/applications/{application_id}/review")
 async def review_mentor_application(
     application_id: int,
     payload: MentorApplicationReview,

@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from .student import Student
     from .mentor import Mentor
     from .refresh_token import RefreshToken
+    from .google_calendar_token import GoogleCalendarToken
 
 
 class User(Base):
@@ -30,6 +31,7 @@ class User(Base):
     student        : Mapped[Optional["Student"]]       = relationship(back_populates="user", uselist=False)
     mentor         : Mapped[Optional["Mentor"]]        = relationship(back_populates="user", uselist=False)
     refresh_tokens : Mapped[List["RefreshToken"]]      = relationship(back_populates="user", cascade="all, delete-orphan")
+    google_calendar_token: Mapped[Optional["GoogleCalendarToken"]] = relationship(back_populates="user", uselist=False, cascade="all, delete-orphan",)
     # reviewed_applications: Mapped[List["MentorApplication"]] = relationship(
     #     foreign_keys="MentorApplication.reviewed_by",
     #     back_populates="reviewer"
