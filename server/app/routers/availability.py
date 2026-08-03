@@ -92,7 +92,8 @@ async def book_meeting(
         slot_id=slot.id,
         start_datetime=slot.start_datetime,
         end_datetime=slot.end_datetime,
-        status=MeetingStatusEnum.scheduled
+        status=MeetingStatusEnum.scheduled,
+        student_notes=booking.student_notes  # 👈 This pulls the note from the front-end payload
     )
     db.add(meeting)
     slot.is_booked = True

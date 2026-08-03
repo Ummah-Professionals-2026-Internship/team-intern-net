@@ -89,12 +89,18 @@ async def get_student_profile(
         mentor_profile = mentor_profile_res.scalar_one_or_none()
 
         if mentor_user:
+            # Highlight: Added linkedin_url, alma_mater, state, county, and service_types fields to hydrate the profile modal!
             mentor_payload = {
                 "id": assignment.mentor_id,
                 "name": mentor_user.full_name,
                 "job_title": getattr(mentor_profile, "job_title", "Industry Professional"),
                 "employer": getattr(mentor_profile, "company", getattr(mentor_profile, "employer", "Expert Group")),
-                "industry": getattr(mentor_profile, "industry", "Technology")
+                "industry": getattr(mentor_profile, "industry", "Technology"),
+                "linkedin_url": getattr(mentor_profile, "linkedin_url", ""),
+                "alma_mater": getattr(mentor_profile, "alma_mater", ""),
+                "state": getattr(mentor_profile, "state", ""),
+                "county": getattr(mentor_profile, "county", ""),
+                "service_types": getattr(mentor_profile, "service_types", [])
             }
 
     # Formatting metadata variations safely
@@ -129,7 +135,6 @@ async def get_student_profile(
         "desired_career": getattr(intake_obj, "desired_career", "") or "Software Engineer",
         "service_requested": ui_service,
         "comments": getattr(intake_obj, "comments", ""),
-        # This will hydrate the React client state variable and advance the stepper
         "mentor": mentor_payload
     }
 
@@ -231,6 +236,8 @@ async def get_student_meetings(
             "end_datetime": meeting.end_datetime.isoformat(),
             "status": meeting.status.value,
             "meeting_url": meeting.meeting_url,
+            # Highlight: Expose student_notes so the UI can safely render it inside meeting tracking details
+            "student_notes": meeting.student_notes
         })
 
     return result
