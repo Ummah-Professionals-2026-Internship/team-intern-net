@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import "./StudentDashboard.css";
 
 const DAYS = ["Sun", "Mon", "Tues", "Wed", "Thurs", "Fri", "Sat"];
@@ -7,7 +7,6 @@ const MONTHS = [
   "July", "August", "September", "October", "November", "December",
 ];
 
-// Lock the app context tightly to Eastern Time
 const EST_TIMEZONE = "America/New_York";
 
 function toDateKey(year, month, day) {
@@ -16,16 +15,11 @@ function toDateKey(year, month, day) {
 
 function formatExternalUrl(url) {
   if (!url) return "";
-  if (/^https?:\/\//i.test(url)) {
-    return url;
-  }
-  if (url.startsWith("//")) {
-    return `https:${url}`;
-  }
+  if (/^https?:\/\//i.test(url)) return url;
+  if (url.startsWith("//")) return `https:${url}`;
   return `https://${url}`;
 }
 
-// Force time formatting to compute exclusively using the Eastern Time grid
 function formatTime(utcDatetime) {
   if (!utcDatetime) return "";
   return new Date(utcDatetime).toLocaleTimeString("en-US", {
@@ -38,50 +32,62 @@ function formatTime(utcDatetime) {
 
 function formatDateLong(dateStr) {
   if (!dateStr) return "";
-  return new Date(dateStr + "T00:00:00").toLocaleDateString("en-US", {
+  const [y, m, d] = dateStr.split("-").map(Number);
+  const utcDate = new Date(Date.UTC(y, m - 1, d));
+  return utcDate.toLocaleDateString("en-US", {
     weekday: "long",
     month: "long",
     day: "numeric",
-    year: "numeric"
+    year: "numeric",
+    timeZone: "UTC",
   });
 }
 
 export default function StudentDashboard() {
   const today = useMemo(() => new Date(), []);
   
-  // Application Dynamic States
+  // 1. Dashboard State
   const [studentProfile, setStudentProfile] = useState(null);
   const [mentor, setMentor] = useState(null);
   const [upcomingMeeting, setUpcomingMeeting] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showMentorModal, setShowMentorModal] = useState(false);
 
-  // Calendar Engine States
-  const [viewYear, setViewYear] = useState(today.getFullYear());
-  const [viewMonth, setViewMonth] = useState(today.getMonth());
+  // 2. Calendar State
+  const [viewYear, setViewYear] = useState(() => today.getFullYear());
+  const [viewMonth, setViewMonth] = useState(() => today.getMonth());
   const [selectedDate, setSelectedDate] = useState(null);
   const [availability, setAvailability] = useState({});
   const [loadingSlots, setLoadingSlots] = useState(false);
   const [selectedSlotId, setSelectedSlotId] = useState(null);
-  const [, setSelectedSlotDetails] = useState(null);
   
-  // Custom Notes State Variable
+  // 3. User Input & Modal State
   const [studentNotes, setStudentNotes] = useState("");
-
-  // Booking UI Status Flags
   const [showConfirmedModal, setShowConfirmedModal] = useState(false);
   const [bookingError, setBookingError] = useState("");
   const [booking, setBooking] = useState(false);
 
-  // 1. Load active student application data
+  const estTodayKey = useMemo(() => {
+    const parts = new Intl.DateTimeFormat("en-US", {
+      timeZone: EST_TIMEZONE,
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    }).formatToParts(new Date());
+
+    const m = parts.find((p) => p.type === "month").value;
+    const d = parts.find((p) => p.type === "day").value;
+    const y = parts.find((p) => p.type === "year").value;
+    return `${y}-${m}-${d}`;
+  }, []);
+
   useEffect(() => {
-    const fetchDashboardContextData = async () => {
+    const fetchDashboardData = async () => {
       try {
         const token = localStorage.getItem("token");
-        
-        const profileRes = await fetch("http://localhost:8000/student/profile", {
-          headers: { "Authorization": `Bearer ${token}` }
-        });
+        const headers = { Authorization: `Bearer ${token}` };
+
+        const profileRes = await fetch("http://localhost:8000/student/profile", { headers });
         if (!profileRes.ok) throw new Error("Failed to load profile context.");
         
         const profileData = await profileRes.json();
@@ -91,16 +97,14 @@ export default function StudentDashboard() {
         if (activeMentor) {
           setMentor({
             ...activeMentor,
-            name: activeMentor.name || activeMentor.full_name || "Assigned Mentor"
+            name: activeMentor.name || activeMentor.full_name || "Assigned Mentor",
           });
         }
 
-        const meetingsRes = await fetch("http://localhost:8000/student/meetings", {
-          headers: { "Authorization": `Bearer ${token}` }
-        });
+        const meetingsRes = await fetch("http://localhost:8000/student/meetings", { headers });
         if (meetingsRes.ok) {
           const meetings = await meetingsRes.json();
-          if (meetings && meetings.length > 0) {
+          if (meetings?.length > 0) {
             setUpcomingMeeting(meetings[0]);
           }
         }
@@ -111,46 +115,52 @@ export default function StudentDashboard() {
       }
     };
 
-    fetchDashboardContextData();
+    fetchDashboardData();
   }, []);
 
-  // 2. Fetch mentor slot availability windows dynamically
   const mentorId = mentor?.id;
   useEffect(() => {
     if (!mentorId || upcomingMeeting) return;
 
+    let isMounted = true;
     const fetchSlots = async () => {
       setLoadingSlots(true);
       try {
         const res = await fetch(`http://localhost:8000/mentors/${mentorId}/availability`);
+        if (!res.ok) throw new Error("Could not fetch availability slots.");
+        
         const data = await res.json();
         const grouped = {};
         
         data.forEach((slot) => {
-          // Standardize availability mapping to strictly match target calendar dates in Eastern Time
-          const estDateStr = new Date(slot.start_datetime).toLocaleDateString("en-US", {
+          const parts = new Intl.DateTimeFormat("en-US", {
             timeZone: EST_TIMEZONE,
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit'
-          });
-          const [m, d, y] = estDateStr.split("/");
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+          }).formatToParts(new Date(slot.start_datetime));
+
+          const m = parts.find((p) => p.type === "month").value;
+          const d = parts.find((p) => p.type === "day").value;
+          const y = parts.find((p) => p.type === "year").value;
           const dateKey = `${y}-${m}-${d}`;
           
           if (!grouped[dateKey]) grouped[dateKey] = [];
           grouped[dateKey].push(slot);
         });
-        setAvailability(grouped);
+
+        if (isMounted) setAvailability(grouped);
       } catch (err) {
-        console.error("Failed to query mentor calendar metrics:", err);
+        console.error("Failed to fetch mentor slots:", err);
       } finally {
-        setLoadingSlots(false);
+        if (isMounted) setLoadingSlots(false);
       }
     };
+
     fetchSlots();
+    return () => { isMounted = false; };
   }, [viewMonth, viewYear, mentorId, upcomingMeeting]);
 
-  // Compute Dynamic Application Steps
   const steps = useMemo(() => {
     if (upcomingMeeting) {
       return [
@@ -185,35 +195,33 @@ export default function StudentDashboard() {
     };
   }, [viewYear, viewMonth]);
 
-  const prevMonth = () => {
-    if (viewMonth === 0) { setViewMonth(11); setViewYear(y => y - 1); }
-    else setViewMonth(m => m - 1);
+  const prevMonth = useCallback(() => {
+    if (viewMonth === 0) {
+      setViewMonth(11);
+      setViewYear((y) => y - 1);
+    } else {
+      setViewMonth((m) => m - 1);
+    }
     setSelectedDate(null);
-  };
+  }, [viewMonth]);
 
-  const nextMonth = () => {
-    if (viewMonth === 11) { setViewMonth(0); setViewYear(y => y + 1); }
-    else setViewMonth(m => m + 1);
+  const nextMonth = useCallback(() => {
+    if (viewMonth === 11) {
+      setViewMonth(0);
+      setViewYear((y) => y + 1);
+    } else {
+      setViewMonth((m) => m + 1);
+    }
     setSelectedDate(null);
-  };
+  }, [viewMonth]);
 
-  const isToday = (day) => {
-    const estTodayStr = new Date().toLocaleDateString("en-US", { timeZone: EST_TIMEZONE });
-    const [m, d, y] = estTodayStr.split("/");
-    return day === parseInt(d) && (viewMonth + 1) === parseInt(m) && viewYear === parseInt(y);
-  };
-
+  const isToday = (day) => toDateKey(viewYear, viewMonth, day) === estTodayKey;
   const isSelected = (day) => selectedDate === toDateKey(viewYear, viewMonth, day);
-
-  const hasSlots = (day) => {
-    const key = toDateKey(viewYear, viewMonth, day);
-    return availability[key]?.length > 0;
-  };
+  const hasSlots = (day) => Boolean(availability[toDateKey(viewYear, viewMonth, day)]?.length);
 
   const handleDayClick = (day) => {
     setSelectedDate(toDateKey(viewYear, viewMonth, day));
     setSelectedSlotId(null);
-    setSelectedSlotDetails(null);
     setStudentNotes(""); 
     setBookingError("");
   };
@@ -227,36 +235,47 @@ export default function StudentDashboard() {
     }
     setBooking(true);
     setBookingError("");
+
     try {
       const token = localStorage.getItem("token");
-      const studentId = studentProfile?.id || studentProfile?.user_id;
-      
-      const res = await fetch(`http://localhost:8000/meetings?student_id=${studentId}`, {
-        method: "POST",
-        headers: { 
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
-        },
-        body: JSON.stringify({ 
-          slot_id: selectedSlotId,
-          student_notes: studentNotes 
-        }),
-      });
-      
-      const resData = await res.json();
-      
+
+      // NOTE: this hits the shared /google/student/meetings/book endpoint
+      // (owned by another dev). It takes slot_id as a query param, has no
+      // request body, and does not currently accept student_notes -- so
+      // studentNotes is collected in the UI but not persisted server-side
+      // until that endpoint supports it.
+      const res = await fetch(
+        `http://localhost:8000/google/student/meetings/book?slot_id=${selectedSlotId}`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`
+          },
+        }
+      );
+
+      const resData = await res.json().catch(() => ({}));
+
       if (!res.ok) {
         let errorMsg = "Failed to book meeting.";
         if (typeof resData.detail === "string") {
           errorMsg = resData.detail;
         } else if (Array.isArray(resData.detail) && resData.detail[0]?.msg) {
-          errorMsg = `${resData.detail[0].loc.join(" -> ")}: ${resData.detail[0].msg}`;
+          errorMsg = `${resData.detail[0].loc?.join(" -> ")}: ${resData.detail[0].msg}`;
         }
         setBookingError(errorMsg);
         return;
       }
-      
-      setUpcomingMeeting(resData);
+
+      // /google/student/meetings/book returns { message, meeting_id, meeting_url,
+      // start_datetime, end_datetime } -- normalize it to the shape the rest of
+      // this component expects (upcomingMeeting.id, .meeting_url, etc).
+      setUpcomingMeeting({
+        id: resData.meeting_id,
+        start_datetime: resData.start_datetime,
+        end_datetime: resData.end_datetime,
+        meeting_url: resData.meeting_url,
+      });
       setShowConfirmedModal(true);
       setSelectedSlotId(null);
       setStudentNotes("");
@@ -269,17 +288,13 @@ export default function StudentDashboard() {
 
   const handleCancelMeeting = async () => {
     if (!upcomingMeeting) return;
-    
-    const confirmCancel = window.confirm("Are you sure you want to cancel this mentorship session?");
-    if (!confirmCancel) return;
+    if (!window.confirm("Are you sure you want to cancel this mentorship session?")) return;
 
     try {
       const token = localStorage.getItem("token");
       const res = await fetch(`http://localhost:8000/meetings/${upcomingMeeting.id}`, {
         method: "DELETE",
-        headers: {
-          "Authorization": `Bearer ${token}`
-        }
+        headers: { Authorization: `Bearer ${token}` }
       });
 
       if (!res.ok) {
@@ -312,7 +327,7 @@ export default function StudentDashboard() {
         </div>
       </div>
 
-      {/* Dynamic Process Tracker Map */}
+      {/* Progress Tracker Map */}
       <div className="sd-progress">
         {steps.map((step, i) => (
           <div key={i} className="sd-step-wrap">
@@ -327,11 +342,9 @@ export default function StudentDashboard() {
         ))}
       </div>
 
-      {/* Content Canvas */}
+      {/* Main Body */}
       <div className="sd-body">
-        
-        {/* VIEW 1: Finding A Match */}
-        {!mentor && (
+        {!mentor ? (
           <div className="sd-matching-card">
             <div className="sd-illustration-search">
               <span className="sd-search-icon">🔍</span>
@@ -344,11 +357,9 @@ export default function StudentDashboard() {
               <span>⏳</span> Thank you for your patience.
             </div>
           </div>
-        )}
-
-        {mentor && (
+        ) : (
           <>
-            {/* Left Box Column: Active Profile Meta Card */}
+            {/* Left Column: Mentor Card */}
             <div className="sd-mentor-card">
               <p className="sd-mentor-label">👤 Your Mentor</p>
               <div className="sd-mentor-avatar">
@@ -359,7 +370,6 @@ export default function StudentDashboard() {
               <p className="sd-mentor-detail">{mentor.employer || "Industry Group"}</p>
               <p className="sd-mentor-detail">{mentor.industry || "Field Expert"}</p>
               
-              {/* LinkedIn Badge */}
               {(mentor.linkedin || mentor.linkedin_url) && (
                 <div style={{ display: 'flex', justifyContent: 'center', width: '100%', marginTop: '8px', marginBottom: '8px' }}>
                   <a 
@@ -387,9 +397,8 @@ export default function StudentDashboard() {
               <button onClick={() => setShowMentorModal(true)} className="sd-view-profile">View Profile</button>
             </div>
 
-            {/* Right Box Column: Booking Grid / Upcoming Meeting */}
+            {/* Right Column: Calendar / Session */}
             {upcomingMeeting ? (
-              /* VIEW 3: Meeting Scheduled Card */
               <div className="sd-calendar-card sd-final-dash-card">
                 <div className="sd-cal-header-row">
                   <h3 className="sd-cal-title">📅 Upcoming Meeting</h3>
@@ -399,17 +408,17 @@ export default function StudentDashboard() {
                   <div className="sd-session-details">
                     <p>📅 {formatDateLong(upcomingMeeting.start_datetime?.split("T")[0])}</p>
                     <p>⏰ {formatTime(upcomingMeeting.start_datetime)} – {formatTime(upcomingMeeting.end_datetime)} (Eastern Time)</p>
-                    <p>📹 Meeting Platform: Jitsi Meet</p>
+                    <p>📹 Meeting Platform: Google Meet</p>
                   </div>
                   <div className="sd-action-buttons-row" style={{ display: 'flex', gap: '12px', marginTop: '16px' }}>
                     <a 
-                      href={upcomingMeeting.meeting_url || "#"} 
+                      href={upcomingMeeting.meeting_url || upcomingMeeting.google_meet_link || "#"} 
                       target="_blank" 
                       rel="noreferrer" 
                       className="sd-join-btn"
                       style={{ flex: 1, textAlign: 'center', display: 'block' }}
                     >
-                      Join Meeting Link
+                      Join Google Meet
                     </a>
                     <button 
                       onClick={handleCancelMeeting}
@@ -431,13 +440,11 @@ export default function StudentDashboard() {
                 </div>
               </div>
             ) : (  
-              /* VIEW 2: Choose Time Booking Engine */
               <div className="sd-calendar-card">
                 <div className="sd-cal-header-row">
                   <h3 className="sd-cal-title">📅 Choose Meeting Time</h3>
                 </div>
                 
-                {/* Fixed operational warning block for out-of-zone users */}
                 <div className="sd-cal-info" style={{ backgroundColor: '#fffbeb', border: '1px solid #fef3c7', color: '#b45309' }}>
                   <span>⚠️</span>
                   <span><strong>Notice:</strong> All schedule windows are displayed in <strong>Eastern Time (EST/EDT)</strong>. Please manually adjust if you are booking from another timezone.</span>
@@ -447,14 +454,19 @@ export default function StudentDashboard() {
                   {loadingSlots && <div className="sd-loading"><div className="sd-spinner" /></div>}
 
                   <div className="sd-cal-nav">
-                    <button className="sd-nav-btn" onClick={prevMonth}
-                      disabled={viewMonth === today.getMonth() && viewYear === today.getFullYear()}>‹</button>
+                    <button 
+                      className="sd-nav-btn" 
+                      onClick={prevMonth}
+                      disabled={viewMonth === today.getMonth() && viewYear === today.getFullYear()}
+                    >
+                      ‹
+                    </button>
                     <span className="sd-month-title">{MONTHS[viewMonth].toUpperCase()} {viewYear}</span>
                     <button className="sd-nav-btn" onClick={nextMonth}>›</button>
                   </div>
 
                   <div className="sd-day-labels">
-                    {DAYS.map(d => <span key={d} className="sd-day-label">{d}</span>)}
+                    {DAYS.map((d) => <span key={d} className="sd-day-label">{d}</span>)}
                   </div>
 
                   <div className="sd-grid">
@@ -489,9 +501,7 @@ export default function StudentDashboard() {
                 {selectedDate && (
                   <div className="sd-slots-section">
                     <p className="sd-slots-date">
-                      {new Date(selectedDate + "T00:00:00").toLocaleDateString("en-US", {
-                        weekday: "long", month: "long", day: "numeric"
-                      })} (EST)
+                      {formatDateLong(selectedDate)} (EST)
                     </p>
                     {selectedSlots.length === 0 ? (
                       <p className="sd-no-slots">No available slots for this date.</p>
@@ -502,7 +512,6 @@ export default function StudentDashboard() {
                           className={`sd-slot ${selectedSlotId === slot.id ? "sd-slot--selected" : ""}`}
                           onClick={() => { 
                             setSelectedSlotId(slot.id); 
-                            setSelectedSlotDetails(slot);
                             setBookingError(""); 
                           }}
                         >
@@ -560,7 +569,7 @@ export default function StudentDashboard() {
         )}
       </div>
 
-      {/* CONFIRMED TRANSACTION POPUP MODAL SCREEN */}
+      {/* Confirmation Modal */}
       {showConfirmedModal && upcomingMeeting && (
         <div className="sd-modal-overlay">
           <div className="sd-modal-content">
@@ -571,10 +580,18 @@ export default function StudentDashboard() {
             <div className="sd-modal-receipt-box">
               <p>📅 {formatDateLong(upcomingMeeting.start_datetime?.split("T")[0])}</p>
               <p>⏰ {formatTime(upcomingMeeting.start_datetime)} – {formatTime(upcomingMeeting.end_datetime)} EST</p>
-              <p>📹 Meeting Platform: Jitsi Meet</p>
+              <p>📹 Meeting Platform: Google Meet</p>
+              {upcomingMeeting.meeting_url && (
+                <p style={{ wordBreak: 'break-all', marginTop: '6px' }}>
+                  🔗 <strong>Google Meet Link:</strong>{' '}
+                  <a href={upcomingMeeting.meeting_url} target="_blank" rel="noreferrer" style={{ color: '#0f766e' }}>
+                    {upcomingMeeting.meeting_url}
+                  </a>
+                </p>
+              )}
             </div>
             
-            <p className="sd-modal-footer-notice">Meeting details have been emailed to you.</p>
+            <p className="sd-modal-footer-notice">Google Meet invite details have been emailed to you.</p>
             <button className="sd-modal-close-btn" onClick={() => setShowConfirmedModal(false)}>
               View Dashboard
             </button>
@@ -582,11 +599,10 @@ export default function StudentDashboard() {
         </div>
       )}
 
-      {/* ================= MENTOR DETAILED BIO MODAL ================= */}
+      {/* Mentor Bio Modal */}
       {showMentorModal && mentor && (
         <div className="sd-modal-overlay" onClick={() => setShowMentorModal(false)}>
           <div className="sd-modal-content" onClick={(e) => e.stopPropagation()} style={{ textAlign: 'left', maxWidth: '500px' }}>
-            
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '20px' }}>
               <div style={{ width: '60px', height: '60px', borderRadius: '50%', backgroundColor: '#e5e7eb', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2rem' }}>
                 👤
@@ -598,7 +614,6 @@ export default function StudentDashboard() {
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', fontSize: '0.95rem', color: '#374151' }}>
-              
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <span style={{ fontSize: '1.1rem', width: '20px', display: 'inline-block', textAlign: 'center' }}>🏢</span>
                 <span><strong>Employer / Company:</strong> {mentor.employer || "N/A"}</span>
@@ -646,7 +661,7 @@ export default function StudentDashboard() {
                 </div>
               )}
 
-              {mentor.service_types && mentor.service_types.length > 0 && (
+              {mentor.service_types?.length > 0 && (
                 <div style={{ marginTop: '4px' }}>
                   <p style={{ fontWeight: '600', margin: '0 0 6px 0' }}>Expertise Offerings:</p>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>

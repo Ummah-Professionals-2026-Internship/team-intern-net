@@ -49,10 +49,6 @@ export const router = createBrowserRouter([
       { path: '/signin', element: <SignIn /> },
     ],
   },
-  {
-    path: '/availability/:mentorId',
-    element: <AvailabilityView mentorId="7" />,
-  },
   
   // Protected Dashboard Routes
   {
@@ -62,6 +58,11 @@ export const router = createBrowserRouter([
       {
         element: <RoleGuard allowedRoles={['student']} />,
         children: [
+          // Availability booking view protected for students
+          {
+            path: '/availability/:mentorId',
+            element: <AvailabilityView />,
+          },
           {
             element: <StudentLayout />,
             children: [

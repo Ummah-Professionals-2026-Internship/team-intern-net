@@ -23,8 +23,16 @@ function formatTime(utcDatetime) {
   });
 }
 
+// Convert UTC datetime to user's local YYYY-MM-DD
+function getLocalDateKey(utcDatetime) {
+  const d = new Date(utcDatetime);
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
 const MENTOR_ID = 7;
-const STUDENT_ID = 8;
 
 export default function AvailabilityView() {
   const today = new Date();
@@ -34,7 +42,7 @@ export default function AvailabilityView() {
   const [availability, setAvailability] = useState({});
   const [loading, setLoading] = useState(false);
   const [selectedSlotId, setSelectedSlotId] = useState(null);
-  const [bookingSuccess, setBookingSuccess] = useState(false);
+  const [bookedMeeting, setBookedMeeting] = useState(null);
   const [bookingError, setBookingError] = useState("");
   const [booking, setBooking] = useState(false);
 
@@ -43,10 +51,15 @@ export default function AvailabilityView() {
       setLoading(true);
       try {
         const res = await fetch(`http://localhost:8000/mentors/${MENTOR_ID}/availability`);
+        if (!res.ok) {
+          setAvailability({});
+          return;
+        }
         const data = await res.json();
         const grouped = {};
+        
         data.forEach((slot) => {
-          const dateKey = slot.start_datetime.split("T")[0];
+          const dateKey = getLocalDateKey(slot.start_datetime);
           if (!grouped[dateKey]) grouped[dateKey] = [];
           grouped[dateKey].push(slot);
         });
@@ -97,7 +110,7 @@ export default function AvailabilityView() {
     setSelectedDate(toDateKey(viewYear, viewMonth, day));
     setSelectedSlotId(null);
     setBookingError("");
-    setBookingSuccess(false);
+    setBookedMeeting(null);
   };
 
   const selectedSlots = selectedDate ? (availability[selectedDate] || []) : [];
@@ -115,19 +128,43 @@ export default function AvailabilityView() {
     }
     setBooking(true);
     setBookingError("");
+
     try {
-      const res = await fetch(`http://localhost:8000/meetings?student_id=${STUDENT_ID}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ slot_id: selectedSlotId }),
-      });
+      const token = localStorage.getItem("token") || localStorage.getItem("access_token");
+
+      // NOTE: this hits the shared /google/student/meetings/book endpoint
+      // (owned by another dev). It takes slot_id as a query param and has
+      // no request body -- there is currently no student_notes field on
+      // this view, so nothing is lost there.
+      const res = await fetch(
+        `http://localhost:8000/google/student/meetings/book?slot_id=${selectedSlotId}`,
+        {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+          },
+        }
+      );
+
       if (!res.ok) {
-        const data = await res.json();
+        const data = await res.json().catch(() => ({}));
         setBookingError(data.detail || "Failed to book meeting.");
         return;
       }
-      setBookingSuccess(true);
-      // Mark slot as booked in local state
+
+      const bookedData = await res.json();
+
+      // /google/student/meetings/book returns { message, meeting_id, meeting_url,
+      // start_datetime, end_datetime } -- normalize to the shape this component
+      // reads below (bookedMeeting.id, .meeting_url, etc).
+      setBookedMeeting({
+        id: bookedData.meeting_id,
+        meeting_url: bookedData.meeting_url,
+        start_datetime: bookedData.start_datetime,
+        end_datetime: bookedData.end_datetime,
+      });
+
+      // Remove the slot locally from state
       setAvailability((prev) => {
         const updated = (prev[selectedDate] || []).filter(s => s.id !== selectedSlotId);
         const next = { ...prev };
@@ -135,9 +172,10 @@ export default function AvailabilityView() {
         else next[selectedDate] = updated;
         return next;
       });
+
       setSelectedSlotId(null);
-      setTimeout(() => setBookingSuccess(false), 3000);
     } catch (err) {
+      console.error("Booking error:", err);
       setBookingError("Network error. Please try again.");
     } finally {
       setBooking(false);
@@ -148,7 +186,7 @@ export default function AvailabilityView() {
     setSelectedDate(null);
     setSelectedSlotId(null);
     setBookingError("");
-    setBookingSuccess(false);
+    setBookedMeeting(null);
   };
 
   return (
@@ -237,7 +275,26 @@ export default function AvailabilityView() {
               </div>
 
               {bookingError && <p className="sav-error">{bookingError}</p>}
-              {bookingSuccess && <div className="sav-toast">Meeting booked! Check your email for the link.</div>}
+              
+              {bookedMeeting && (
+                <div className="sav-toast">
+                  <p><strong>Meeting booked successfully!</strong></p>
+                  {bookedMeeting.meeting_url ? (
+                    <a 
+                      href={bookedMeeting.meeting_url} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="sav-meet-link"
+                    >
+                      Join Video Call
+                    </a>
+                  ) : (
+                    <p style={{ fontSize: "12px", color: "#666", marginTop: "4px" }}>
+                      Meeting details have been sent to your email.
+                    </p>
+                  )}
+                </div>
+              )}
 
               <div className="sav-side-footer">
                 <button className="sav-btn-cancel" onClick={closePanel}>Cancel</button>

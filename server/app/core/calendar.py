@@ -1,11 +1,11 @@
-import secrets
+""" import secrets
 import urllib.parse
 from datetime import datetime
 
 def generate_meet_link() -> str:
     """
-    Generates a secure, cryptographically random system-owned Jitsi meeting room link.
-    """
+"""     Generates a secure, cryptographically random system-owned Jitsi meeting room link.
+ """    """
     base_url = "https://meet.jit.si/"
     platform_prefix = "UmmahProfessionals-Session-"
     
@@ -23,6 +23,6 @@ async def create_meet_event(
     end_datetime: datetime
 ) -> str:
     """
-    Wrapper function to maintain backward compatibility with routers calling async event creation.
-    """
-    return generate_meet_link()
+"""     Wrapper function to maintain backward compatibility with routers calling async event creation.
+ """    """
+    return generate_meet_link() """
