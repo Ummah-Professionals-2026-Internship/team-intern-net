@@ -5,14 +5,18 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel # Automatically validates data coming in and formats data going out
 from typing import List # May be removed if not needed
+
 from app.routers import test
 from app.routers import dashboard
 from app.routers import matching
 from app.routers import auth
 from app.routers.student import router as student_router
+from app.routers import google_calendar
 from app.routers import intake
 from app.routers import mentors
 from app.routers import availability
+from app.routers import mentor_profile
+from app.routers import mentor_meetings
 from app.routers import mentor_assignments
 from sqlalchemy import text
 from fastapi import Depends
@@ -23,6 +27,7 @@ from app.models.enums import RoleEnum # Ignore for demo purpose
 
 from app.matching import rank_mentors #Matching algorithm
 
+from app.routers import mentor_dash_assignment
 
 app = FastAPI()
 
@@ -51,6 +56,10 @@ app.include_router(matching.router)
 app.include_router(intake.router)
 app.include_router(mentors.router)
 app.include_router(availability.router)
+app.include_router(mentor_dash_assignment.router)
+app.include_router(mentor_profile.router)
+app.include_router(mentor_meetings.router)
+app.include_router(google_calendar.router)
 app.include_router(mentor_assignments.router)
 
 @app.get("/")

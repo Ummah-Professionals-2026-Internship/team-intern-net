@@ -1,3 +1,4 @@
+# Mentor Application API Routing file
 import logging
 import secrets
 from datetime import datetime, timezone
@@ -9,22 +10,24 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from app.core.deps import require_admin
+from app.core.deps import require_admin, require_mentor
 from app.core.email import send_email
 from app.core.security import hash_password
 from app.db.database import get_db
 from app.models.enums import ApplicationStatusEnum, GenderEnum, RoleEnum, ServiceTypeEnum
+from app.models.meeting import Meeting
 from app.models.mentor import Mentor
 from app.models.mentor_application import MentorApplication
+from app.models.mentor_assignment import MentorAssignment
 from app.models.user import User
 from app.schemas.mentor import MentorResponse
 from app.schemas.mentor_application import MentorApplicationCreate, MentorApplicationReview
 
 logger = logging.getLogger(__name__)
-router = APIRouter()
+router = APIRouter(tags=["Mentor"])
 
 
-@router.post("/mentors/apply")
+@router.post("/mentor/apply")
 async def apply_mentor(form: MentorApplicationCreate, db: AsyncSession = Depends(get_db)):
     # 1. Check if email already exists in users
     existing_user = await db.execute(select(User).where(User.email == form.email))
@@ -86,6 +89,8 @@ async def apply_mentor(form: MentorApplicationCreate, db: AsyncSession = Depends
         state=form.state,
         phone_number=form.phone_number,
         service_types=form.service_types,
+        major=form.major,
+        experience=form.experience,
     )
     db.add(mentor)
 
@@ -122,7 +127,7 @@ async def apply_mentor(form: MentorApplicationCreate, db: AsyncSession = Depends
     return {"message": "Mentor application submitted successfully. Check your email for login credentials.", "application_id": application.id}
 
 
-@router.get("/mentors/applications")
+@router.get("/mentor/applications")
 async def get_mentor_applications(user=Depends(require_admin), db: AsyncSession = Depends(get_db)):
     result = await db.execute(
         select(MentorApplication).where(
@@ -132,7 +137,7 @@ async def get_mentor_applications(user=Depends(require_admin), db: AsyncSession 
     return result.scalars().all()
 
 
-@router.patch("/mentors/applications/{application_id}/review")
+@router.patch("/mentor/applications/{application_id}/review")
 async def review_mentor_application(
     application_id: int,
     payload: MentorApplicationReview,
@@ -213,7 +218,7 @@ async def review_mentor_application(
     }
 
 
-@router.get("/mentors", response_model=List[MentorResponse])
+@router.get("/mentor/list", response_model=List[MentorResponse])
 async def get_all_mentors(
     db: AsyncSession = Depends(get_db),
     user=Depends(require_admin)

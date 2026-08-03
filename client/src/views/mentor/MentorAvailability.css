@@ -1,0 +1,675 @@
+/* ============================================================
+   MentorAvailability.css
+   All selectors namespaced with .mav- to avoid global bleed
+   ============================================================ */
+
+/* ---------- Layout ---------- */
+@font-face {
+  font-family: "Kollektif";
+  src: url("../../fonts/kollektif-webfont/Kollektif.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Kollektif Bold";
+  src: url("../../fonts/kollektif-webfont/Kollektif-Bold.woff") format("woff");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+
+.mav-page{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 8px 32px 32px;
+    box-sizing: border-box;
+}
+
+.mav-title-section{
+    margin-bottom: 24px;
+}
+
+.mav-title {
+    margin: 0;
+    font-family: "Kollektif Bold", system-ui, -apple-system, sans-serif;
+    font-weight: 700;
+    font-size: 35px;
+    color: #000;
+    line-height: normal;
+    margin-bottom: 5px;
+}
+
+.mav-subtitle {
+    /* margin: 6px 0 0; */
+    font-family: "Kollektif", system-ui, -apple-system, sans-serif;
+    color: #363538;
+    line-height: 1.4;
+}
+
+.mav-container {
+  display: flex;
+  gap: 32px;
+  flex: 1;
+  font-family: "Kollektif", system-ui, -apple-system, sans-serif;
+  min-height: 0;
+}
+
+/* ---------- Calendar Panel ---------- */
+.mav-calendar-panel {
+  flex: 1;
+  background: #ffffff;
+  border-radius: 15px;
+  border: 1px solid #e5e7eb;
+  padding: 32px;
+  box-sizing: border-box;
+  min-width: 0;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+}
+
+
+
+.mav-loading {
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px;
+  z-index: 10;
+}
+
+.mav-spinner {
+  width: 28px;
+  height: 28px;
+  border: 3px solid #e5e7eb;
+  border-top-color: #025571;
+  border-radius: 50%;
+  animation: mav-spin 0.7s linear infinite;
+}
+
+@keyframes mav-spin {
+  to { transform: rotate(360deg); }
+}
+
+.mav-calendar-panel::-webkit-scrollbar {
+  width: 6px;
+}
+
+.mav-calendar-panel::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.mav-calendar-panel::-webkit-scrollbar-thumb {
+  background: #c0d9e0 transparent;
+  border-radius: 999px;
+}
+
+/* ---------- Calendar Header ---------- */
+.mav-calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.mav-month-title {
+  font-size: 24px;
+  font-weight: 700;
+  font-family: "Kollektif Bold", system-ui, -apple-system, sans-serif;
+  color: #111827;
+  margin: 0;
+  letter-spacing: 0.04em;
+}
+
+.mav-nav-btn {
+  width: 32px;
+  height: 32px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #374151;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, border-color 0.15s;
+  line-height: 1;
+}
+
+.mav-nav-btn:hover {
+  background: #f3f4f6;
+  border-color: #d1d5db;
+}
+
+.mav-nav-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* ---------- Day labels ---------- */
+.mav-day-labels {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  margin-bottom: 8px;
+}
+
+.mav-day-label {
+  text-align: center;
+  font-size: 18px;
+  font-family: "Kollektif Bold", system-ui, -apple-system, sans-serif;
+  color: black;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 4px 0;
+}
+
+/* ---------- Calendar Grid ---------- */
+.mav-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  /* gap: 4px; */
+}
+
+.mav-cell {
+  position: relative;
+  height: 110px;
+  aspect-ratio: unset;
+  display: flex;
+  font-family: "Kollektif Bold", system-ui, -apple-system, sans-serif;
+  font-size: 20px;
+  color: black;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.15s;
+  padding: 0;
+  gap: 2px;
+}
+
+.mav-cell:hover:not(.mav-cell--selected) {
+  background: #f0f9ff;
+}
+
+.mav-cell--empty {
+  pointer-events: none;
+  cursor: default;
+}
+
+.mav-cell--today .mav-cell-number {
+  color: #007CA6;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.mav-cell--selected {
+  background: #025571;
+}
+
+.mav-cell--available {
+  background: #ecfdf5;
+  border-color: #16a34a;
+}
+
+
+.mav-cell--selected .mav-cell-number {
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.mav-cell--selected .mav-dot {
+  background: #ffffff;
+  border: 1px solid #158025;
+  box-sizing: border-box;
+}
+
+.mav-cell--selected-available {
+  background: #15803D; /* dark green */
+  border-color: #15803D;
+}
+.mav-cell--selected-available .mav-dot{
+    background: white;
+    border-color: white;
+}
+
+.mav-cell--available .mav-cell-number {
+  color: #166534;
+}
+
+.mav-cell--selected-available .mav-cell-number {
+  color: white;
+}
+
+.mav-cell-number {
+  font-size: 20px;
+  color: black;
+  line-height: 1;
+}
+
+/* ---------- Availability dot ---------- */
+.mav-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #40AE50;
+  flex-shrink: 0;
+}
+
+.mav-slot-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin-top: 6px;
+}
+
+/* ---------- Right Side Panel ---------- */
+.mav-side-panel {
+  width: 380px;
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100vh;
+  flex-shrink: 0;
+  background: #ffffff;
+  border-radius: 15px 0 0 15px;
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  padding: 24px;
+  background: #FFF;
+  box-sizing: border-box;
+  display: flex;
+  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+  flex-direction: column;
+  gap: 20px;
+  z-index: 1000;
+  animation: slideInRight .25s ease;
+}
+
+
+.mav-empty-state {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #9ca3af;
+  font-size: 14px;
+  text-align: center;
+}
+
+.mav-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.25);
+    z-index: 999;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+
+/* ---------- Side Panel Header ---------- */
+.mav-side-header {
+  font-family: "Kollektif", system-ui, -apple-system, sans-serif;
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+}
+
+.mav-side-date {
+  margin: 0;
+  font-size: 24px;
+  text-align: center;
+  color: #111827;
+  font-family: "Kollektif Bold", system-ui, -apple-system, sans-serif;
+  line-height: normal;
+}
+
+.mav-side-title {
+  margin: 0;
+  font-size: 20px;
+  font-family: "Kollektif Bold", system-ui, -apple-system, sans-serif;
+  color: #111827;
+}
+
+/* ---------- Slots list ---------- */
+.mav-slots {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+}
+
+.mav-no-slots {
+  margin: 0;
+  font-size: 13px;
+  color: #9ca3af;
+}
+
+.mav-slot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 10px 14px;
+}
+
+.mav-slot-time {
+  font-size: 16px;
+  color: #111827;
+}
+
+.mav-slot-remove {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 15px;
+  color: #ef4444;
+  padding: 2px 4px;
+  border-radius: 4px;
+  transition: background 0.15s;
+  line-height: 1;
+}
+
+.mav-slot-remove:hover {
+  background: #fef2f2;
+}
+
+/* ---------- Add Slot ---------- */
+.mav-add-slot {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mav-time-inputs {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.mav-time-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.mav-time-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #6b7280;
+}
+
+.mav-time-input {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1.5px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 13px;
+  color: #111827;
+  background: #f9fafb;
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.15s;
+  font-family: "Kollektif", system-ui, -apple-system, sans-serif;
+}
+
+.mav-time-input:focus {
+  border-color: #025571;
+  background: #ffffff;
+}
+
+.mav-time-sep {
+  font-size: 16px;
+  color: #9ca3af;
+  padding-bottom: 8px;
+  flex-shrink: 0;
+}
+
+.mav-slot-error {
+  margin: 0;
+  font-size: 12px;
+  color: #dc2626;
+}
+
+.mav-btn-add {
+  width: 100%;
+  padding: 11px;
+  background: #025571;
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+  font-family: "Kollektif", system-ui, -apple-system, sans-serif;
+}
+
+.mav-btn-add:hover {
+  background: #024a62;
+}
+
+.mav-toast {
+  background: #16a34a;
+  color: #ffffff;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+  animation: mav-fade-in 0.2s ease;
+}
+
+
+/* ---------- Side Footer ---------- */
+.mav-side-footer {
+  display: flex;
+  gap: 10px;
+  margin-top: auto;
+}
+
+.mav-btn-cancel {
+  flex: 1;
+  padding: 10px;
+  border: 1.5px solid #d1d5db;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #DA1D37;
+  border: 1px solid #DA1D37;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  font-family: "Kollektif", system-ui, -apple-system, sans-serif;
+}
+
+.mav-btn-cancel:hover {
+  background: #f3f4f6;
+  border-color: #DA1D37;
+}
+
+.mav-btn-save {
+  flex: 1;
+  padding: 10px;
+  background: #40AE50;
+  border: 1px solid #40AE50;
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.mav-btn-save:hover {
+  background: #4b5563;
+}
+
+
+.mav-slot-booked {
+  font-size: 15px;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.mav-slot-wrapper {
+  font-family: "Kollektif", system-ui, -apple-system, sans-serif;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+
+.mav-confirm {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  padding: 8px 12px;
+  animation: mav-fade-in 0.15s ease;}
+
+.mav-confirm-text {
+  font-family: "Kollektif", system-ui, -apple-system, sans-serif;
+  font-size: 12px;
+  color: #dc2626;
+}
+
+.mav-confirm-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.mav-confirm-yes {
+  padding: 3px 8px;
+  background: #ef4444;
+  color: #ffffff;
+  border: none;
+  font-family: "Kollektif", system-ui, -apple-system, sans-serif;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.mav-confirm-yes:hover {
+  background: #dc2626;
+}
+
+.mav-confirm-no {
+  padding: 3px 8px;
+  background: #f3f4f6;
+  color: #374151;
+  font-family: "Kollektif", system-ui, -apple-system, sans-serif;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.mav-confirm-no:hover {
+  background: #e5e7eb;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 768px) {
+  .mav-container {
+    flex-direction: column;
+    padding: 16px;
+  }
+
+  .mav-side-panel {
+    width: 100%;
+  }
+}
+
+@keyframes mav-fade-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+
+.mav-confirm-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.25);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  z-index: 20;
+}
+
+.mav-discard-box {
+  width: 280px;
+  background: white;
+  font-family: "Kollektif", system-ui, -apple-system, sans-serif;
+  border-radius: 12px;
+  padding: 20px;
+
+  box-shadow: 0 8px 30px rgba(0,0,0,.2);
+}
+
+.mav-discard-box h4 {
+  margin: 0 0 10px;
+  font-family: "Kollektif Bold", sans-serif;
+}
+
+.mav-discard-box p {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.mav-discard-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.mav-discard-cancel,
+.mav-discard-confirm {
+  flex: 1;
+  padding: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.mav-discard-cancel {
+  background: white;
+  color: black;
+  font-family: "Kollektif", system-ui, -apple-system, sans-serif;
+  border: 1px solid #d1d5db;
+}
+
+.mav-discard-confirm {
+  background: #DA1D37;
+  color: white;
+  border: none;
+  font-family: "Kollektif", system-ui, -apple-system, sans-serif;
+
+}

@@ -13,6 +13,12 @@ class Settings(BaseSettings):
     JWT_SECRET_KEY: str
     JWT_ALGORITHM: str = "HS256" #Added for auth & security &deps
 
+    #OAuth configuration
+    GOOGLE_CLIENT_ID: str
+    GOOGLE_CLIENT_SECRET: str
+    GOOGLE_REDIRECT_URI: str = "http://localhost:8000/google/callback"
+
+
     #Email configuration
     MAIL_USERNAME: str | None = None
     MAIL_PASSWORD: str | None = None

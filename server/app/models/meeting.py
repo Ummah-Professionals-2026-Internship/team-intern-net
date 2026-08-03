@@ -36,8 +36,8 @@ class Meeting(Base):
     id               : Mapped[int]                  = mapped_column(primary_key=True, autoincrement=True)
     assignment_id    : Mapped[int]                  = mapped_column(ForeignKey("mentor_assignments.id", ondelete="RESTRICT"))
     slot_id          : Mapped[int]                  = mapped_column(ForeignKey("availability_slots.id", ondelete="RESTRICT"), unique=True)
-    start_datetime   : Mapped[datetime]             = mapped_column()   # denormalised for email generation
-    end_datetime     : Mapped[datetime]             = mapped_column()   # denormalised for email generation
+    start_datetime   : Mapped[datetime]             = mapped_column(DateTime(timezone=True))
+    end_datetime     : Mapped[datetime]             = mapped_column(DateTime(timezone=True))
     meeting_url      : Mapped[Optional[str]]        = mapped_column(Text, nullable=True)
     status           : Mapped[MeetingStatusEnum]    = mapped_column(SAEnum(MeetingStatusEnum, name="meeting_status_enum"), nullable=False, 
                                                                     server_default=MeetingStatusEnum.scheduled.value,

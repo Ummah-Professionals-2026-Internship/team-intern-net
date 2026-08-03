@@ -149,7 +149,7 @@ export default function MentorApplicationForm() {
     setServerError("");
 
     try {
-    const response = await fetch("http://localhost:8000/mentors/apply", {
+    const response = await fetch("http://localhost:8000/mentor/apply", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
