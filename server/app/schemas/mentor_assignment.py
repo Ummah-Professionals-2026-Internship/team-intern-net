@@ -10,7 +10,7 @@ from app.schemas.student_intake_form import IntakeFormResponse
 
 class AssignmentCreate(BaseModel):
     mentor_id      : int
-    student_id     : int
+    student_id     : Optional[int] = None
     intake_form_id : int
 
 
@@ -41,8 +41,9 @@ class AssignmentWithIntakeResponse(BaseModel):
     status       : AssignmentStatusEnum
     assigned_at  : datetime
     completed_at : Optional[datetime] = None
+    mentor       : MentorResponse
     student      : StudentResponse
-    intake_form  : IntakeFormResponse
+    intake_form  : Optional[IntakeFormResponse] = None
 
     model_config = {"from_attributes": True}
 
