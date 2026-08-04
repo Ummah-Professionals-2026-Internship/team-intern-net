@@ -39,7 +39,7 @@ class MentorAssignment(Base):
     intake_form_id : Mapped[int]                      = mapped_column(ForeignKey("student_intake_forms.id", ondelete="RESTRICT"))
     assigned_by    : Mapped[int]                      = mapped_column(ForeignKey("users.id", ondelete="RESTRICT"))
     status         : Mapped[AssignmentStatusEnum]     = mapped_column(SAEnum(AssignmentStatusEnum, name="assignment_status_enum"),
-                                                                      server_default=AssignmentStatusEnum.active.value)
+                                                                      server_default=AssignmentStatusEnum.pending.value)
     assigned_at    : Mapped[datetime]                 = mapped_column(DateTime(timezone=True), server_default=func.now())
     completed_at   : Mapped[Optional[datetime]]       = mapped_column(nullable=True)
 

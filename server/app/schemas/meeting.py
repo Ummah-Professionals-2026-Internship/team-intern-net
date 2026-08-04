@@ -3,7 +3,7 @@ from typing import Optional
 from pydantic import BaseModel
 from app.models.enums import MeetingStatusEnum
 from app.schemas.availability_slot import AvailabilitySlotResponse
-
+from app.schemas.mentor_assignment import AssignmentWithIntakeResponse
 
 # Student books a meeting
 
@@ -45,6 +45,7 @@ class MeetingResponse(BaseModel):
     updated_at       : datetime
 
     # Nested slot info
-    slot : AvailabilitySlotResponse
+    slot             : AvailabilitySlotResponse
+    assignment       : AssignmentWithIntakeResponse
 
     model_config = {"from_attributes": True}

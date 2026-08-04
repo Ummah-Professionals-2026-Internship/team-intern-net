@@ -7,17 +7,18 @@ from app.db.database import get_db # SQL Async imported and database too
 
 from sqlalchemy import select # Selecting is imported from SQL
 from app.models.user import User #User imported from models
+from app.schemas.auth import LoginRequest, LoggedInUser
+
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 @router.post("/login") #Asks & Receives login req:email & password
 async def login(
-    email: str,
-    password: str,
+    payload: LoginRequest,
     db: AsyncSession = Depends(get_db)
 ):
     result = await db.execute(
-    select(User).where(User.email == email) #Searches user via email in users in db
+    select(User).where(User.email == payload.email) #Searches user via email in users in db
 )
 
     user = result.scalar_one_or_none() 
@@ -28,12 +29,14 @@ async def login(
             detail = "No user found!"
         ) #If no user match found, error
     
-    if not verify_password(password, user.password_hash):
+    if not verify_password(payload.password, user.password_hash):
         raise HTTPException(
             status_code=401,
             detail="Invalid credentials!"
         ) #If password (gets hashed) doesn't match with stored hashed_password, error
-
+    
+    if not user.is_active:
+        raise HTTPException(status_code=403, detail="Account is inactive")
 
     token = create_token(
     {"sub": str(user.id), "role": user.role.value, }
@@ -41,6 +44,8 @@ async def login(
 
     return {
         "access_token": token,
-        "token_type": "bearer"
+        "token_type": "bearer",
+        "refresh_token" : None,
+        "user" : LoggedInUser.model_validate(user)
     } #Returns the token
 

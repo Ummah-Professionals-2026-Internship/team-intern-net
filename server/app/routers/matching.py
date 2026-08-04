@@ -3,6 +3,8 @@ from fastapi import APIRouter, Depends
 from app.core.matching import recommend_mentors
 from app.db.database import get_db
 
+from app.matching import rank_mentors
+
 
 router = APIRouter(
     prefix="/matching",

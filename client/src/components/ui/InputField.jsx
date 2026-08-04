@@ -1,5 +1,3 @@
-import React from 'react';
-
 const InputField = ({ label, id, type = 'text', value, onChange, placeholder, className, rightIcon, ...props }) => {
   return (
     <div className={`input-field-container ${className || ''}`}>

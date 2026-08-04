@@ -46,10 +46,11 @@ class IntakeFormStatusEnum(str, enum.Enum):
 
 
 class AssignmentStatusEnum(str, enum.Enum):
-    active = "active"
+    pending   = "pending"
+    active    = "active"
+    declined  = "declined"
     completed = "completed"
     cancelled = "cancelled"
-
 
 class MeetingStatusEnum(str, enum.Enum):
     scheduled = "scheduled"

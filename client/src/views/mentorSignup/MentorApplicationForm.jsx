@@ -149,7 +149,7 @@ export default function MentorApplicationForm() {
     setServerError("");
 
     try {
-    const response = await fetch("http://localhost:8000/mentors/apply", {
+    const response = await fetch("http://localhost:8000/mentor/apply", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -208,9 +208,7 @@ export default function MentorApplicationForm() {
           <div className="caa-success-icon">✓</div>
           <h2 className="caa-success-title">Application Submitted</h2>
           <p className="caa-success-body">
-            Thank you for signing up, <strong>{form.fullName}</strong>. Your application
-            will be reviewed by Ummah Professionals and login credentials will be emailed to <strong>{form.email}</strong>
-            after approval.
+            Thank you for signing up, <strong>{form.fullName}</strong>. Your application has been submitted successfully. Login credentials will be emailed to <strong>{form.email}</strong>
           </p>
           <button
             className="caa-btn-submit"
@@ -447,10 +445,6 @@ export default function MentorApplicationForm() {
           <button className="caa-btn-submit" onClick={handleSubmit} disabled={loading}>
             {loading ? "Submitting..." : "Submit Application"}
           </button>
-          <p className="caa-footer-note">
-            <span className="caa-footer-icon">ⓘ</span>
-            Application will be reviewed by Ummah Professionals. Login credentials will be emailed after approval.
-          </p>
         </div>
       </div>
     </div>

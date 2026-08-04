@@ -4,6 +4,7 @@ from sqlalchemy import  DateTime, func, Text, ForeignKey, Enum as SAEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.db.base import Base
 from .enums import EducationLevelEnum, AcademicStandingEnum
+from .student_tag import StudentTag #Importing student tags for tag logic
 
 if TYPE_CHECKING:
     from .user import User

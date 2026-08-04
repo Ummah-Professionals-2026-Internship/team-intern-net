@@ -22,7 +22,8 @@ from .refresh_token import RefreshToken
 from .tag import Tag
 from .student_tag import StudentTag
 from .mentor_tag import MentorTag
-from .mentor_recommendation import MentorRecommendation
+from .mentor_recommendation import (MentorRecommendation,RecommendationStatus,)
+from .google_calendar_token import GoogleCalendarToken
 
 __all__ = [
     "Base",
@@ -48,4 +49,6 @@ __all__ = [
     "StudentTag",
     "MentorTag",
     "MentorRecommendation",
+    "RecommendationStatus",
+    "GoogleCalendarToken",
 ]

@@ -6,7 +6,6 @@ from typing import TYPE_CHECKING
 from app.db.base import Base
 
 
-
 if TYPE_CHECKING:
     from .user import User
 

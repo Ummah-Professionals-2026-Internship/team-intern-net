@@ -1,0 +1,495 @@
+/* ============================================================
+   MentorProfile.css
+   All selectors namespaced with .mp- to avoid global bleed
+   ============================================================ */
+
+@font-face {
+  font-family: "Kollektif";
+  src: url("../../fonts/kollektif-webfont/Kollektif.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Kollektif Bold";
+  src: url("../../fonts/kollektif-webfont/Kollektif-Bold.woff") format("woff");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ---------- Page ---------- */
+.mp-page {
+  font-family: 'Kollektif', system-ui, -apple-system, sans-serif;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  padding: 8px 32px 32px;
+  gap: 0;
+}
+
+/* ---------- Header ---------- */
+.mp-header {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 20px;
+}
+
+.mp-title {
+  margin: 0;
+  font-family: "Kollektif Bold", system-ui, sans-serif;
+  font-weight: 700;
+  font-size: clamp(24px, 2.4vw, 35px);
+  color: #000;
+  line-height: normal;
+}
+
+.mp-subtitle {
+  margin: 0;
+  font-family: "Kollektif", system-ui, sans-serif;
+  color: #363538;
+  /* font-size: 14px; */
+  font-size: clamp(14px, 2.4vw, 18px);
+  line-height: 1.4;
+}
+
+/* ---------- Container ---------- */
+.mp-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ---------- Card ---------- */
+.mp-card {
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
+  padding: 24px 28px;
+  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+}
+
+.mp-card-header{
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  margin-bottom: 15px;
+  
+}
+
+.mp-card-title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: #111827;
+  font-family: "Kollektif Bold", system-ui, sans-serif;
+}
+
+.mp-card-1{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+
+}
+
+.mp-card-2{
+  min-width: 300px;
+  background: #ffffff;
+  padding: 24px 28px;
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
+  /* border: 1px solid rgba(0, 0, 0, 0.25); */
+  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+  flex: 1;
+
+}
+
+/* ---------- Identity card ---------- */
+.mp-card--identity {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.mp-avatar {
+  /* width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: #8acbdb; */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* .mp-avatar-initials {
+  font-size: 28px;
+  font-weight: 700;
+  color: #025571;
+  font-family: "Kollektif Bold", system-ui, sans-serif;
+} */
+
+.mp-identity-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.mp-identity-name {
+  margin: 0;
+  font-size: clamp(18px, 1.6vw, 28px);
+  font-weight: 700;
+  color: #111827;
+  font-family: "Kollektif Bold", system-ui, sans-serif;
+}
+
+.mp-identity-email {
+  margin: 0;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.mp-role-badge {
+  display: inline-block;
+  padding: 3px 12px;
+  background: rgba(138, 203, 219, 0.20);
+  color: #007CA6;
+  border-radius: 7px;
+  font-size: 14px;
+  font-weight: 700;
+  width: fit-content;
+  font-family: "Kollektif", system-ui, sans-serif;
+
+}
+
+/* ---------- Grid ---------- */
+.mp-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 10px 10px;
+}
+
+/* ---------- Field ---------- */
+.mp-field {
+  display: flex;
+  flex-direction: column;
+  /* gap: 6px; */
+}
+
+.mp-field--full {
+  grid-column: 1 / -1;
+}
+
+.mp-field-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.mp-field-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: #111827;
+}
+
+/* ---------- Inputs ---------- */
+.mp-input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1.5px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 16px;
+  color: #111827;
+  background: #f9fafb;
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.15s, background 0.15s;
+  font-family: 'Kollektif', system-ui, sans-serif;
+}
+
+.mp-input:focus {
+  border-color: #025571;
+  background: #ffffff;
+}
+
+.mp-input--disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  background: #f3f4f6;
+}
+
+.mp-input--meeting {
+  flex: 1;
+}
+
+.mp-select {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1.5px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #111827;
+  background: #f9fafb;
+  box-sizing: border-box;
+  outline: none;
+  appearance: none;
+  cursor: pointer;
+  transition: border-color 0.15s;
+  font-family: 'Kollektif', system-ui, sans-serif;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b7280' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 38px;
+}
+
+.mp-select:focus {
+  border-color: #025571;
+}
+
+.mp-textarea {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1.5px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 16px;
+  color: #111827;
+  background: #f9fafb;
+  box-sizing: border-box;
+  outline: none;
+  resize: vertical;
+  line-height: 1.5;
+  transition: border-color 0.15s;
+  font-family: 'Kollektif', system-ui, sans-serif;
+}
+
+.mp-textarea:focus {
+  border-color: #025571;
+  background: #ffffff;
+}
+
+/* ---------- Bio display ---------- */
+.mp-bio-text {
+  margin: 0;
+  font-size: 16px;
+  color: #374151;
+  line-height: 1.6;
+}
+
+/* ---------- Service tags ---------- */
+.mp-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.mp-tag {
+  padding: 7px 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+  background: #ffffff;
+  font-size: 16px;
+  font-weight: 500;
+  color: #374151;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+  font-family: 'Kollektif', system-ui, sans-serif;
+}
+
+.mp-tag:hover {
+  border-color: #007CA6;
+  color: #024a62;
+}
+
+.mp-tag--active:hover{
+  background: #024a62;
+  color: #ffffff;
+  border: none;
+}
+
+.mp-tag--active {
+  background: #007CA6;
+  border: none;
+  color: #ffffff;
+}
+
+.mp-tag--readonly {
+  cursor: default;
+  pointer-events: none;
+}
+
+/* ---------- Meeting link ---------- */
+.mp-meeting-desc {
+  margin: 0 0 16px;
+  font-size: 13px;
+  color: #6b7280;
+  line-height: 1.5;
+}
+
+.mp-meeting-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.mp-btn-open {
+  padding: 10px 20px;
+  border: 1.5px solid #025571;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #025571;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s;
+  font-family: 'Kollektif', system-ui, sans-serif;
+}
+
+.mp-btn-open:hover:not(:disabled) {
+  background: #f0f9ff;
+}
+
+.mp-btn-open:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ---------- Footer ---------- */
+.mp-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 8px;
+}
+
+.mp-btn-edit {
+  padding: 12px 24px;
+  background: #007CA6;
+  max-width: 283px;
+  width: 100%;
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s;
+  font-family: 'Kollektif Bold', system-ui, sans-serif;
+}
+
+.mp-btn-edit:hover {
+  background: #024a62;
+}
+
+.mp-btn-save {
+  padding: 12px 24px;
+  background: #007CA6;
+  color: #ffffff;
+  border: none;
+  max-width: 283px;
+  width: 100%;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s;
+  font-family: 'Kollektif Bold', system-ui, sans-serif;
+}
+
+.mp-btn-save:hover:not(:disabled) {
+  background: #024a62;
+}
+
+.mp-btn-save:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.mp-btn-cancel {
+  padding: 12px 24px;
+  background: #ffffff;
+  color: #363538;
+  max-width: 283px;
+  width: 100%;
+  border: 1px solid #363538;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s;
+  font-family: 'Kollektif Bold', system-ui, sans-serif;
+}
+
+.mp-btn-cancel:hover {
+  background: #f3f4f6;
+}
+
+/* ---------- States ---------- */
+.mp-loading {
+  display: flex;
+  justify-content: center;
+  padding: 80px;
+}
+
+.mp-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid #e5e7eb;
+  border-top-color: #025571;
+  border-radius: 50%;
+  animation: mp-spin 0.7s linear infinite;
+}
+
+@keyframes mp-spin {
+  to { transform: rotate(360deg); }
+}
+
+.mp-error {
+  color: #dc2626;
+  font-size: 14px;
+  padding: 24px;
+}
+
+.mp-save-error {
+  margin: 0;
+  font-size: 13px;
+  color: #dc2626;
+  text-align: right;
+}
+
+.mp-toast {
+  background: #16a34a;
+  color: #ffffff;
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+  animation: mp-fade-in 0.2s ease;
+}
+
+@keyframes mp-fade-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 768px) {
+  .mp-page {
+    padding: 8px 16px 24px;
+  }
+
+  .mp-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .mp-meeting-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

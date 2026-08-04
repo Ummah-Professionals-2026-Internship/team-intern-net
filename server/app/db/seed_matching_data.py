@@ -669,4 +669,63 @@ async def seed():
 
 
 if __name__ == "__main__":
+        tag_lookup = {}
+
+        for skill in SKILLS:
+
+            result = await db.execute(
+                select(Tag).where(Tag.name == skill)
+            )
+
+            tag = result.scalar_one_or_none()
+
+            if tag is None:
+                tag = Tag(
+                    name=skill,
+                    category="skill"
+                )
+                db.add(tag)
+                await db.flush()
+
+            tag_lookup[skill] = tag.id
+
+        for student_id, skills in STUDENT_SKILLS.items():
+
+            for skill in skills:
+
+                exists = await db.get(
+                    StudentTag,
+                    (student_id, tag_lookup[skill])
+                )
+
+                if exists is None:
+                    db.add(
+                        StudentTag(
+                            student_user_id=student_id,
+                            tag_id=tag_lookup[skill]
+                        )
+                    )
+
+        for mentor_id, skills in MENTOR_SKILLS.items():
+
+            for skill in skills:
+
+                exists = await db.get(
+                    MentorTag,
+                    (mentor_id, tag_lookup[skill])
+                )
+
+                if exists is None:
+                    db.add(
+                        MentorTag(
+                            mentor_user_id=mentor_id,
+                            tag_id=tag_lookup[skill]
+                        )
+                    )
+
+        await db.commit()
+
+
+if __name__ == "__main__":
+    import asyncio
     asyncio.run(seed())

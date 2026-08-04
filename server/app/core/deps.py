@@ -1,7 +1,7 @@
 from fastapi import Depends, HTTPException
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from jose import jwt, JWTError
-
+from app.models.enums import RoleEnum
 from app.core.config import settings
 
 security = HTTPBearer()
@@ -29,9 +29,19 @@ def get_current_user(
         return payload
 
     except JWTError as e:
-        print("JWT ERROR:", e)
 
         raise HTTPException(
             status_code=401,
             detail="Invalid or expired token"
         )
+    
+def require_role(*roles: RoleEnum):
+    def guard(user=Depends(get_current_user)):
+        if user["role"] not in [r.value for r in roles]:
+            raise HTTPException(status_code=403, detail="Forbidden")
+        return user
+    return guard
+
+require_admin   = require_role(RoleEnum.admin)
+require_mentor  = require_role(RoleEnum.mentor)
+require_student = require_role(RoleEnum.student)

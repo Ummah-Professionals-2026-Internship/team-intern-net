@@ -6,14 +6,15 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
 from .enums import ServiceTypeEnum, GenderEnum
+from .mentor_tag import MentorTag #Importing student tags for tag logic
 
 
 if TYPE_CHECKING:
     from .user import User
     from .availability_slot import AvailabilitySlot
     from .mentor_assignment import MentorAssignment
-    from .mentor_tag import MentorTag
- 
+    from .mentor_tag import MentorTag #Type checking the import
+
 class Mentor(Base):
     __tablename__ = "mentors"
 
@@ -23,6 +24,9 @@ class Mentor(Base):
     linkedin_url         : Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     employer             : Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     job_title            : Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    major                : Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    experience           : Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    meeting_url          : Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     industry             : Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     alma_mater           : Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     county               : Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
