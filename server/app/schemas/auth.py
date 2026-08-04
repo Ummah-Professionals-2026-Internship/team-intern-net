@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, Field
 from app.models.enums import RoleEnum
 
 
@@ -34,3 +34,10 @@ class RefreshTokenRequest(BaseModel):
 
 # Resolve forward reference
 TokenResponse.model_rebuild()
+
+
+
+class ChangePasswordRequest(BaseModel):
+    current_password: str = Field(min_length=1)
+    new_password: str = Field(min_length=8)
+    confirm_new_password: str = Field(min_length=8)

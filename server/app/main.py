@@ -29,7 +29,7 @@ from app.models.enums import RoleEnum # Ignore for demo purpose
 from app.matching import rank_mentors #Matching algorithm
 
 from app.routers import mentor_dash_assignment
-
+from app.routers import change_password
 app = FastAPI()
 
 origins = [
@@ -63,6 +63,7 @@ app.include_router(mentor_meetings.router)
 
 app.include_router(google_calendar.router)
 app.include_router(mentor_assignments.router)
+app.include_router(change_password.router)
 
 @app.get("/")
 async def root():

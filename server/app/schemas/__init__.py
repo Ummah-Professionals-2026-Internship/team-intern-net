@@ -1,4 +1,4 @@
-from .auth import LoginRequest, TokenResponse, LoggedInUser, RefreshTokenRequest
+from .auth import LoginRequest, TokenResponse, LoggedInUser, RefreshTokenRequest, ChangePasswordRequest
 from .user import UserResponse
 from .student import StudentProfileUpdate, StudentResponse
 from .mentor import MentorProfileUpdate, MentorResponse
@@ -20,6 +20,7 @@ __all__ = [
     "TokenResponse",
     "LoggedInUser",
     "RefreshTokenRequest",
+    ChangePasswordRequest,
     # User
     "UserResponse",
     # Student
