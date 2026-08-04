@@ -8,6 +8,7 @@ const MONTHS = [
 ];
 
 const EST_TIMEZONE = "America/New_York";
+const MIN_BOOKING_LEAD_HOURS = 24;
 
 function toDateKey(year, month, day) {
   return `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
@@ -131,8 +132,14 @@ export default function StudentDashboard() {
         
         const data = await res.json();
         const grouped = {};
-        
+
+        // Slots less than 24 hours out (or already in the past) can't be booked,
+        // so they shouldn't show up as bookable on the calendar at all.
+        const earliestBookable = new Date(Date.now() + MIN_BOOKING_LEAD_HOURS * 60 * 60 * 1000);
+
         data.forEach((slot) => {
+          if (new Date(slot.start_datetime) < earliestBookable) return;
+
           const parts = new Intl.DateTimeFormat("en-US", {
             timeZone: EST_TIMEZONE,
             year: "numeric",
@@ -233,6 +240,16 @@ export default function StudentDashboard() {
       setBookingError("Please select a time slot first.");
       return;
     }
+
+    // Guard against the slot having slid inside the 24hr window while this
+    // page was sitting open (e.g. left open overnight).
+    const chosenSlot = selectedSlots.find((s) => s.id === selectedSlotId);
+    const earliestBookable = new Date(Date.now() + MIN_BOOKING_LEAD_HOURS * 60 * 60 * 1000);
+    if (chosenSlot && new Date(chosenSlot.start_datetime) < earliestBookable) {
+      setBookingError("This slot must be booked at least 24 hours in advance. Please choose another time.");
+      return;
+    }
+
     setBooking(true);
     setBookingError("");
 
