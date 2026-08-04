@@ -2,6 +2,19 @@ import { useState, useEffect } from "react";
 import { useAuth } from "../../context/useAuth"; 
 import "./StudentProfile.css";
 
+const INDUSTRY_OPTIONS = [
+  "Architecture",
+  "Business",
+  "Education",
+  "Engineering",
+  "Finance",
+  "Healthcare",
+  "Information Technology",
+  "Law",
+  "Social Services",
+  "Other",
+];
+
 export default function StudentProfile() {
   const { user } = useAuth(); 
   const [isEditMode, setIsEditMode] = useState(false);
@@ -160,16 +173,14 @@ export default function StudentProfile() {
             </div>
             <div className="sp-field">
               <label>Major</label>
-              {isEditMode ? (
-                <select name="major" value={formData.major} onChange={handleChange}>
-                  <option value="Computer Science">Computer Science</option>
-                  <option value="Information Systems">Information Systems</option>
-                  <option value="Business Administration">Business Administration</option>
-                  <option value="Other">Other</option>
-                </select>
-              ) : (
-                <input type="text" value={formData.major} disabled />
-              )}
+              <input
+                type="text"
+                name="major"
+                value={formData.major}
+                onChange={handleChange}
+                disabled={!isEditMode}
+                placeholder="e.g. Computer Science"
+              />
             </div>
             <div className="sp-field">
               <label>Graduation Year</label>
@@ -210,9 +221,10 @@ export default function StudentProfile() {
               <label>Industry</label>
               {isEditMode ? (
                 <select name="industry" value={formData.industry} onChange={handleChange}>
-                  <option value="Technology">Technology</option>
-                  <option value="Healthcare">Healthcare</option>
-                  <option value="Finance">Finance</option>
+                  <option value="">Select industry...</option>
+                  {INDUSTRY_OPTIONS.map((o) => (
+                    <option key={o} value={o}>{o}</option>
+                  ))}
                 </select>
               ) : (
                 <input type="text" value={formData.industry} disabled />
@@ -220,15 +232,14 @@ export default function StudentProfile() {
             </div>
             <div className="sp-field">
               <label>Desired Career</label>
-              {isEditMode ? (
-                <select name="desired_career" value={formData.desired_career} onChange={handleChange}>
-                  <option value="Software Engineer">Software Engineer</option>
-                  <option value="Data Analyst">Data Analyst</option>
-                  <option value="Product Manager">Product Manager</option>
-                </select>
-              ) : (
-                <input type="text" value={formData.desired_career} disabled />
-              )}
+              <input
+                type="text"
+                name="desired_career"
+                value={formData.desired_career}
+                onChange={handleChange}
+                disabled={!isEditMode}
+                placeholder="e.g. Software Engineer"
+              />
             </div>
             <div className="sp-field full-width">
               <label>Comments/Goals</label>
@@ -256,7 +267,14 @@ export default function StudentProfile() {
               <div className="sp-action-box">
                 <span className="sp-action-icon">📄</span>
                 <span className="sp-action-text">Submitted Career Form</span>
-                <button type="button" className="sp-btn-view-form">View</button>
+                <button
+                  type="button"
+                  className="sp-btn-view-form"
+                  disabled
+                  title="Viewing your submitted Career Form isn't available yet"
+                >
+                  View
+                </button>
               </div>
             </div>
           </div>

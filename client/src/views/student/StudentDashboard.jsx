@@ -9,6 +9,7 @@ const MONTHS = [
 
 const EST_TIMEZONE = "America/New_York";
 const MIN_BOOKING_LEAD_HOURS = 24;
+const MIN_CANCELLATION_LEAD_HOURS = 24;
 
 function toDateKey(year, month, day) {
   return `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
@@ -235,17 +236,18 @@ export default function StudentDashboard() {
 
   const selectedSlots = selectedDate ? (availability[selectedDate] || []) : [];
 
+  const selectedSlotObj = selectedSlots.find((s) => s.id === selectedSlotId);
+  const earliestBookableNow = new Date(Date.now() + MIN_BOOKING_LEAD_HOURS * 60 * 60 * 1000);
+  const selectedSlotUnbookable = Boolean(
+    selectedSlotObj && new Date(selectedSlotObj.start_datetime) < earliestBookableNow
+  );
+
   const handleBook = async () => {
     if (!selectedSlotId) {
       setBookingError("Please select a time slot first.");
       return;
     }
-
-    // Guard against the slot having slid inside the 24hr window while this
-    // page was sitting open (e.g. left open overnight).
-    const chosenSlot = selectedSlots.find((s) => s.id === selectedSlotId);
-    const earliestBookable = new Date(Date.now() + MIN_BOOKING_LEAD_HOURS * 60 * 60 * 1000);
-    if (chosenSlot && new Date(chosenSlot.start_datetime) < earliestBookable) {
+    if (selectedSlotUnbookable) {
       setBookingError("This slot must be booked at least 24 hours in advance. Please choose another time.");
       return;
     }
@@ -303,8 +305,16 @@ export default function StudentDashboard() {
     }
   };
 
+  const meetingCancellable = upcomingMeeting
+    ? new Date(upcomingMeeting.start_datetime).getTime() - Date.now() > MIN_CANCELLATION_LEAD_HOURS * 60 * 60 * 1000
+    : false;
+
   const handleCancelMeeting = async () => {
     if (!upcomingMeeting) return;
+    if (!meetingCancellable) {
+      alert(`This meeting can no longer be cancelled -- it's within ${MIN_CANCELLATION_LEAD_HOURS} hours of the scheduled start time.`);
+      return;
+    }
     if (!window.confirm("Are you sure you want to cancel this mentorship session?")) return;
 
     try {
@@ -315,7 +325,8 @@ export default function StudentDashboard() {
       });
 
       if (!res.ok) {
-        alert("Failed to cancel the meeting. Please try again.");
+        const data = await res.json().catch(() => ({}));
+        alert(data.detail || "Failed to cancel the meeting. Please try again.");
         return;
       }
 
@@ -440,18 +451,20 @@ export default function StudentDashboard() {
                     <button 
                       onClick={handleCancelMeeting}
                       className="sd-dashboard-cancel-btn"
+                      disabled={!meetingCancellable}
+                      title={meetingCancellable ? undefined : `Cannot cancel within ${MIN_CANCELLATION_LEAD_HOURS} hours of the meeting`}
                       style={{
                         flex: 1,
-                        backgroundColor: '#ff4d4d',
+                        backgroundColor: meetingCancellable ? '#ff4d4d' : '#d1d5db',
                         color: 'white',
                         border: 'none',
                         borderRadius: '6px',
-                        cursor: 'pointer',
+                        cursor: meetingCancellable ? 'pointer' : 'not-allowed',
                         fontWeight: '600',
                         padding: '10px'
                       }}
                     >
-                      Cancel / Reschedule
+                      {meetingCancellable ? "Cancel / Reschedule" : "Cancellation Window Closed"}
                     </button>
                   </div>
                 </div>
@@ -574,7 +587,11 @@ export default function StudentDashboard() {
 
                     {bookingError && <p className="sd-error">{bookingError}</p>}
                     {selectedSlots.length > 0 && (
-                      <button className="sd-confirm-btn" onClick={handleBook} disabled={booking || !selectedSlotId}>
+                      <button
+                        className="sd-confirm-btn"
+                        onClick={handleBook}
+                        disabled={booking || !selectedSlotId || selectedSlotUnbookable}
+                      >
                         {booking ? "Booking..." : "Confirm Meeting"}
                       </button>
                     )}
@@ -632,6 +649,11 @@ export default function StudentDashboard() {
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', fontSize: '0.95rem', color: '#374151' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{ fontSize: '1.1rem', width: '20px', display: 'inline-block', textAlign: 'center' }}>💼</span>
+                <span><strong>Job Title:</strong> {mentor.job_title || "N/A"}</span>
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <span style={{ fontSize: '1.1rem', width: '20px', display: 'inline-block', textAlign: 'center' }}>🏢</span>
                 <span><strong>Employer / Company:</strong> {mentor.employer || "N/A"}</span>
               </div>
@@ -641,6 +663,11 @@ export default function StudentDashboard() {
                 <span><strong>Focus Industry:</strong> {mentor.industry || "N/A"}</span>
               </div>
 
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{ fontSize: '1.1rem', width: '20px', display: 'inline-block', textAlign: 'center' }}>🧑</span>
+                <span><strong>Gender:</strong> {mentor.gender || "N/A"}</span>
+              </div>
+
               {mentor.alma_mater && (
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <span style={{ fontSize: '1.1rem', width: '20px', display: 'inline-block', textAlign: 'center' }}>🎓</span>
@@ -648,15 +675,6 @@ export default function StudentDashboard() {
                 </div>
               )}
 
-              {(mentor.county || mentor.state) && (
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <span style={{ fontSize: '1.1rem', width: '20px', display: 'inline-block', textAlign: 'center' }}>📍</span>
-                  <span>
-                    <strong>Location:</strong> {mentor.county ? `${mentor.county}, ` : ""}{mentor.state || ""}
-                  </span>
-                </div>
-              )}
-              
               {(mentor.linkedin || mentor.linkedin_url) && (
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <div style={{ width: '20px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>

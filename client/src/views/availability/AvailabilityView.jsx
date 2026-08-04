@@ -122,6 +122,12 @@ export default function AvailabilityView() {
 
   const selectedSlots = selectedDate ? (availability[selectedDate] || []) : [];
 
+  const selectedSlotObj = selectedSlots.find((s) => s.id === selectedSlotId);
+  const earliestBookableNow = new Date(Date.now() + MIN_BOOKING_LEAD_HOURS * 60 * 60 * 1000);
+  const selectedSlotUnbookable = Boolean(
+    selectedSlotObj && new Date(selectedSlotObj.start_datetime) < earliestBookableNow
+  );
+
   const selectedLabel = selectedDate
     ? new Date(selectedDate + "T00:00:00").toLocaleDateString("en-US", {
         weekday: "long", month: "long", day: "numeric",
@@ -133,12 +139,7 @@ export default function AvailabilityView() {
       setBookingError("Please select a time slot first.");
       return;
     }
-
-    // Guard against the slot having slid inside the 24hr window while this
-    // page was sitting open (e.g. left open overnight).
-    const chosenSlot = selectedSlots.find((s) => s.id === selectedSlotId);
-    const earliestBookable = new Date(Date.now() + MIN_BOOKING_LEAD_HOURS * 60 * 60 * 1000);
-    if (chosenSlot && new Date(chosenSlot.start_datetime) < earliestBookable) {
+    if (selectedSlotUnbookable) {
       setBookingError("This slot must be booked at least 24 hours in advance. Please choose another time.");
       return;
     }
@@ -315,7 +316,11 @@ export default function AvailabilityView() {
 
               <div className="sav-side-footer">
                 <button className="sav-btn-cancel" onClick={closePanel}>Cancel</button>
-                <button className="sav-btn-book" onClick={handleBook} disabled={booking || !selectedSlotId}>
+                <button
+                  className="sav-btn-book"
+                  onClick={handleBook}
+                  disabled={booking || !selectedSlotId || selectedSlotUnbookable}
+                >
                   {booking ? "Booking..." : "Book Meeting"}
                 </button>
               </div>
