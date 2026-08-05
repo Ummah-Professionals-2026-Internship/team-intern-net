@@ -9,7 +9,6 @@ import FullMentorMatchPanel from "../../components/admin/FullMentorMatchPanel";
 import MeetingsPanel from "../../components/admin/MeetingsPanel";
 import MentorProfile from "../../components/admin/MentorProfile";
 import MentorApplicationsPanel from "../../components/admin/MentorApplicationsPanel";
-import AssignmentsPanel from "../../components/admin/AssignmentsPanel";
 
 import StatCard from "../../components/ui/StatCard";
 import Icon from "../../components/ui/Icon";

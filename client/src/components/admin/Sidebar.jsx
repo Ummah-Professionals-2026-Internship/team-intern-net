@@ -17,14 +17,7 @@ const NAV_ITEMS = [
       { key: "applications", label: "Advisor Applications" },
     ],
   },
-  {
-    key: "match",
-    label: "Match",
-    children: [
-      { key: "match", label: "Find Match" },
-      { key: "assignments", label: "Assignments" },
-    ],
-  },
+  { key: "match", label: "Match", },
   { key: "meetings", label: "Meetings" },
   { key: "capacity", label: "Capacity" },
 ];

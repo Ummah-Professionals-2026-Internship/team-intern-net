@@ -287,8 +287,9 @@ export default function CareerPrep() {
       <div className="career-prep-page">
         <div className="caa-bg-image" style={{ backgroundImage: `url(${appBg})` }} />
         <div className="career-prep-card career-prep-success">
-          <h2>Request Submitted</h2>
-          <p>
+          <div className="career-prep-success-icon">✓</div>
+          <h2 className="career-prep-success-title">Request Submitted</h2>
+          <p className="career-prep-success-body">
             Thank you for applying to Career Prep, <strong>{form.fullName}</strong>. Your login
             credentials will be emailed to <strong>{form.email}</strong> upon completion of your application.
           </p>
