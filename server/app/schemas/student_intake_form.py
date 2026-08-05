@@ -27,10 +27,12 @@ class IntakeFormCreate(BaseModel):
     education_level   : EducationLevelEnum
     academic_standing : Optional[AcademicStandingEnum] = None  # only for undergraduates
     major             : Optional[str] = None
+    industry          : Optional[str] = None
     # Request fields
     phone             : Optional[str] = None
     service_type      : ServiceTypeEnum
     desired_career    : Optional[str] = None
+    referral_source   : Optional[str] = None
     comments          : Optional[str] = None
 
     @field_validator("phone")
@@ -84,12 +86,27 @@ class IntakeFormResponse(BaseModel):
     full_name      : Optional[str] = None
     email          : Optional[str] = None
     phone          : Optional[str] = None
+    gender          : Optional[GenderEnum] = None
     service_type   : ServiceTypeEnum
     desired_career : Optional[str] = None
     major          : Optional[str] = None
+    industry        : Optional[str] = None
+    referral_source : Optional[str] = None
     comments       : Optional[str] = None
     status         : IntakeFormStatusEnum
     created_at     : datetime
     updated_at     : datetime
 
     model_config = {"from_attributes": True}
+
+
+class IntakeStudentSummary(BaseModel):
+    education_level   : Optional[EducationLevelEnum] = None
+    academic_standing : Optional[AcademicStandingEnum] = None
+    resume_url        : Optional[str] = None
+ 
+    model_config = {"from_attributes": True}
+ 
+
+class IntakeFormAdminResponse(IntakeFormResponse):
+    student: Optional[IntakeStudentSummary] = None

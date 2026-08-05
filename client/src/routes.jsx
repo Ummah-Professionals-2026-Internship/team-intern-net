@@ -1,6 +1,8 @@
 // src/routes.jsx
 import { createBrowserRouter } from 'react-router-dom';
 import SignIn from './views/onboarding/SignIn';
+import ForgotPassword from './views/onboarding/ForgotPassword';
+import ResetPassword from './views/onboarding/ResetPassword';
 
 
 import MentorApplicationForm from './views/mentorSignup/MentorApplicationForm';
@@ -43,8 +45,9 @@ export const router = createBrowserRouter([
     element: <PublicRoute />,
     children: [
       { path: '/signin', element: <SignIn /> },
+      { path: '/forgot-password', element: <ForgotPassword /> },
+      { path: '/reset-password', element: <ResetPassword /> },
     ],
-    
   },
 
   // Role-protected routes

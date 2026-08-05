@@ -465,7 +465,58 @@
 }
 
 /* ==========================================================================
-   9. MEDIA RESPONSIVE BREAKPOINTS
+   9. SUCCESS STATE
+   Mirrors MentorApplicationForm.css's .caa-success-* layout (checkmark
+   badge + centered title/body + button), using CareerPrep's own design
+   tokens for color/type consistency with the rest of this form.
+   ========================================================================== */
+.career-prep-success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(48px, 9vw, 80px) clamp(24px, 6vw, 48px);
+  text-align: center;
+  gap: 16px;
+}
+
+.career-prep-success-icon {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: var(--color-white);
+  font-size: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+  font-family: var(--font-bold);
+}
+
+.career-prep-success-title {
+  margin: 0;
+  font-size: clamp(22px, 3vw, 26px);
+  font-weight: 700;
+  color: var(--color-dark-heading);
+  font-family: var(--font-bold);
+}
+
+.career-prep-success-body {
+  margin: 0;
+  font-size: clamp(14px, 1.6vw, 15px);
+  color: var(--color-text);
+  max-width: 420px;
+  line-height: 1.6;
+  font-family: var(--font-base);
+}
+
+.career-prep-success .submit-button {
+  margin-top: 8px;
+}
+
+/* ==========================================================================
+   10. MEDIA RESPONSIVE BREAKPOINTS
    ========================================================================== */
 
 /* ── Tablet / Mobile Landscape (680px and below) ── */
@@ -525,5 +576,9 @@
 
   .submit-button {
     max-width: 100%;
+  }
+
+  .career-prep-success {
+    padding: 40px 20px;
   }
 }

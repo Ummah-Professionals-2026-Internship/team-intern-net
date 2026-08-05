@@ -1,0 +1,326 @@
+/* ---------- Logout confirmation modal (Sidebar) ---------- */
+/* The admin Sidebar.jsx uses ml-modal-* / ml-btn-* class names
+   (copied from MentorLayout for visual parity). Since MentorLayout.css
+   is NOT imported in the admin context, those rules are defined here
+   alongside the legacy sb-* aliases, so only one file needs loading. */
+
+.sb-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.sb-modal {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 36px 40px;
+  width: 100%;
+  max-width: 380px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+}
+
+.sb-modal-svg {
+  margin: 0;
+}
+
+.sb-modal-title {
+  margin: 0;
+  font-size: 30px;
+  font-weight: 700;
+  color: #111827;
+  letter-spacing: 0.01rem;
+  font-family: 'Kollektif Bold', system-ui, sans-serif;
+}
+
+.sb-modal-subtitle {
+  margin: 0;
+  font-size: 14px;
+  color: #6b7280;
+  text-align: center;
+}
+
+.sb-modal-btns {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+}
+
+.sb-btn-cancel {
+  flex: 1;
+  padding: 11px;
+  background: #ffffff;
+  color: #374151;
+  border: 1.5px solid #d1d5db;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+  font-family: 'Kollektif', system-ui, sans-serif;
+}
+
+.sb-btn-cancel:hover {
+  background: #f3f4f6;
+}
+
+.sb-btn-logout {
+  flex: 1;
+  padding: 11px;
+  background: #dc2626;
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.15s;
+  font-family: 'Kollektif', system-ui, sans-serif;
+}
+
+.sb-btn-logout:hover {
+  background: #b91c1c;
+}
+
+/* ---------- ml-modal aliases (used directly by Sidebar.jsx) ---------- */
+.ml-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.ml-modal {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 36px 40px;
+  width: 90%;
+  max-width: 380px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+}
+
+.ml-modal-svg {
+  margin: 0;
+}
+
+.ml-modal-title {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 700;
+  color: #111827;
+  font-family: 'Kollektif Bold', system-ui, sans-serif;
+}
+
+.ml-modal-subtitle {
+  margin: 0;
+  font-size: 14px;
+  color: #6b7280;
+  text-align: center;
+}
+
+.ml-modal-btns {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+}
+
+.ml-btn-cancel {
+  flex: 1;
+  padding: 11px;
+  background: #ffffff;
+  color: #374151;
+  border: 1.5px solid #d1d5db;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+  font-family: 'Kollektif', system-ui, sans-serif;
+}
+
+.ml-btn-cancel:hover {
+  background: #f3f4f6;
+}
+
+.ml-btn-logout {
+  flex: 1;
+  padding: 11px;
+  background: #dc2626;
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.15s;
+  font-family: 'Kollektif', system-ui, sans-serif;
+}
+
+.ml-btn-logout:hover {
+  background: #b91c1c;
+}
+
+/* ---------- Shared admin modal (delete confirm, application review) ---------- */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 16px;
+}
+
+.modal-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 28px 32px;
+  width: 90%;
+  max-width: 460px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
+}
+
+.modal-card h3 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.modal-card p {
+  margin: 0;
+  font-size: 14px;
+  color: #4b5563;
+  line-height: 1.6;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 4px;
+  flex-wrap: wrap;
+}
+
+/* Global admin secondary button (cancel, back, etc.) */
+.btn-secondary {
+  background: #ffffff;
+  border: 1.5px solid var(--admin-primary, #007ca6);
+  color: var(--admin-primary, #007ca6);
+  padding: 9px 20px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+
+.btn-secondary:hover {
+  background: var(--admin-primary, #007ca6);
+  color: #ffffff;
+}
+
+/* Global admin danger button (delete, etc.) */
+.btn-danger {
+  background: #dc2626;
+  color: #ffffff;
+  border: none;
+  padding: 9px 20px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  font-family: inherit;
+}
+
+.btn-danger:hover {
+  background: #b91c1c;
+}
+
+.btn-danger:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ---------- Options dropdown menu (⋮ button in tables) ---------- */
+.options-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  min-width: 160px;
+  z-index: 200;
+  overflow: hidden;
+}
+
+.dropdown-item {
+  display: block;
+  width: 100%;
+  padding: 10px 16px;
+  background: none;
+  border: none;
+  text-align: left;
+  font-size: 14px;
+  font-family: inherit;
+  color: #111827;
+  cursor: pointer;
+  transition: background 0.12s ease;
+}
+
+.dropdown-item:hover {
+  background: #f3f4f6;
+}
+
+.dropdown-item.delete-item {
+  color: #dc2626;
+}
+
+.dropdown-item.delete-item:hover {
+  background: #fef2f2;
+}
+
+/* Mobile adjustments for modals */
+@media (max-width: 479px) {
+  .ml-modal,
+  .modal-card {
+    padding: 24px 20px;
+  }
+
+  .ml-modal-title {
+    font-size: 22px;
+  }
+
+  .ml-modal-btns,
+  .modal-actions {
+    flex-direction: column;
+  }
+
+  .ml-btn-cancel,
+  .ml-btn-logout,
+  .btn-secondary,
+  .btn-danger {
+    width: 100%;
+    text-align: center;
+  }
+}

@@ -17,7 +17,7 @@ export const registerTokenGetter = (fn) => {
 
 // Attach bearer token dynamically if present
 api.interceptors.request.use((config) => {
-  const token = _getToken();
+  const token = _getToken() || localStorage.getItem('token');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }

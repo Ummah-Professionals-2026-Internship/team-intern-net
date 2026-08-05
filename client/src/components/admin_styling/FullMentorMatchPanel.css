@@ -1,0 +1,402 @@
+/* ==========================================================================
+   FULL MENTOR MATCH PANEL — Consistent with AdminDash.css design tokens
+   Three-tier breakpoints: ≤1023px tablet · ≤767px mobile · ≤479px compact
+   ========================================================================== */
+
+.match-panel-container {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+/* ── Applicant Summary Card ── */
+.match-applicant-card {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-md);
+  background: #fff;
+  border: 1px solid var(--admin-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-md) var(--space-lg);
+  box-shadow: var(--shadow-card);
+  position: relative;
+  flex-wrap: wrap;
+}
+
+.match-applicant-avatar {
+  width: clamp(52px, 6vw, 80px);
+  height: clamp(52px, 6vw, 80px);
+  border-radius: 50%;
+  background: var(--admin-primary);
+  color: #fff;
+  font-weight: 700;
+  font-size: clamp(18px, 2.2vw, 26px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.match-applicant-main {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.match-applicant-name-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.match-applicant-name {
+  font-weight: 700;
+  font-size: clamp(18px, 2vw, 28px);
+  color: #000;
+}
+
+.match-pending-pill {
+  background: var(--admin-accent);
+  border: 1px solid #fff;
+  border-radius: var(--radius-sm);
+  padding: 4px 12px;
+  color: #fff;
+  font-weight: 700;
+  font-size: clamp(11px, 1vw, 13px);
+  white-space: nowrap;
+}
+
+.match-applicant-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 24px;
+  font-size: clamp(13px, 1.2vw, 15px);
+  color: #1f2937;
+}
+
+.match-applied-date {
+  color: #4b5563;
+  font-size: clamp(12px, 1.1vw, 14px);
+  white-space: nowrap;
+}
+
+/* ── Info Banner ── */
+.match-info-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(0, 124, 166, 0.10);
+  border-radius: var(--radius-sm);
+  padding: var(--space-xs) var(--space-sm);
+}
+
+.match-info-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.match-info-banner p {
+  margin: 0;
+  font-size: clamp(13px, 1.2vw, 14px);
+  color: #374151;
+}
+
+/* ── Mentor List Container ── */
+.match-mentor-list {
+  background: var(--admin-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+/* Desktop: 4-column grid — mentor info | score | capacity | actions */
+.match-list-header {
+  display: grid;
+  grid-template-columns: minmax(180px, 2fr) 110px 130px 190px;
+  gap: var(--space-sm);
+  background: #fff;
+  border-bottom: 1px solid var(--admin-border);
+  padding: var(--space-sm) var(--space-md);
+  font-weight: 700;
+  font-size: clamp(13px, 1.3vw, 16px);
+  color: #111827;
+}
+
+.match-mentor-list .muted {
+  padding: var(--space-md);
+}
+
+.match-mentor-row {
+  display: grid;
+  grid-template-columns: minmax(180px, 2fr) 110px 130px 190px;
+  gap: var(--space-sm);
+  align-items: center;
+  background: #fff;
+  border-bottom: 1px solid var(--admin-border);
+  padding: var(--space-md);
+}
+
+/* ── Mentor Info Cell ── */
+.match-mentor-info {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  min-width: 0;
+}
+
+.match-mentor-avatar {
+  width: clamp(40px, 4.5vw, 64px);
+  height: clamp(40px, 4.5vw, 64px);
+  border-radius: 50%;
+  background: var(--admin-primary);
+  color: #fff;
+  font-weight: 700;
+  font-size: clamp(14px, 1.6vw, 20px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.match-mentor-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.match-mentor-name {
+  font-weight: 700;
+  font-size: clamp(14px, 1.5vw, 18px);
+  color: #111827;
+  word-break: break-word;
+}
+
+.match-mentor-role {
+  font-size: clamp(12px, 1.1vw, 14px);
+  color: #4b5563;
+}
+
+.match-mentor-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 2px;
+}
+
+.badge {
+  display: inline-block;
+  background: #fff;
+  border-radius: 4px;
+  padding: 2px 8px;
+  font-size: clamp(11px, 1vw, 13px);
+  border-width: 1px;
+  border-style: solid;
+  white-space: nowrap;
+}
+
+.badge-gender  { color: #ff8e9d; border-color: #ff8e9d; }
+.badge-industry { color: #a8cc60; border-color: #a8cc60; }
+
+/* ── Score / Capacity Cells ── */
+.match-mentor-score,
+.match-mentor-capacity {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  border: 1px solid var(--admin-border);
+  border-radius: var(--radius-sm);
+  height: 100%;
+  min-height: 80px;
+  padding: var(--space-xs);
+  gap: 4px;
+}
+
+.match-score-value,
+.match-capacity-value {
+  font-weight: 700;
+  font-size: clamp(22px, 2.8vw, 44px);
+  color: #111827;
+  line-height: 1;
+}
+
+.match-capacity-label {
+  font-size: clamp(11px, 1vw, 13px);
+  color: #6b7280;
+  text-align: center;
+}
+
+/* ── Action Buttons ── */
+.match-mentor-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.match-view-btn,
+.match-assign-btn {
+  border-radius: var(--radius-sm);
+  padding: 8px 14px;
+  font-weight: 700;
+  font-size: clamp(12px, 1.2vw, 14px);
+  cursor: pointer;
+  white-space: nowrap;
+  font-family: inherit;
+  transition: all 0.15s ease;
+}
+
+.match-view-btn {
+  background: #fff;
+  border: 1.5px solid var(--admin-accent);
+  color: var(--admin-accent);
+}
+
+.match-view-btn:hover {
+  background: var(--admin-accent);
+  color: #fff;
+}
+
+.match-assign-btn {
+  background: var(--admin-primary);
+  border: none;
+  color: #fff;
+}
+
+.match-assign-btn:hover:not(:disabled) {
+  background: var(--admin-dark);
+}
+
+.match-assign-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ── Browse All Button ── */
+.match-browse-all-btn {
+  align-self: flex-end;
+  background: #fff;
+  border: 1.5px solid var(--admin-border);
+  border-radius: var(--radius-sm);
+  padding: 6px 18px;
+  font-size: clamp(13px, 1.2vw, 15px);
+  color: #374151;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s ease;
+}
+
+.match-browse-all-btn:hover {
+  color: var(--admin-primary);
+  border-color: var(--admin-primary);
+}
+
+/* ==========================================================================
+   RESPONSIVE BREAKPOINTS — matching AdminDash.css three-tier system
+   ========================================================================== */
+
+/* ── Tablet (≤1023px): compress grid to 3 columns, wrap actions ── */
+@media (max-width: 1023px) {
+  .match-list-header,
+  .match-mentor-row {
+    grid-template-columns: 1fr 90px 110px;
+  }
+
+  /* Hide the actions column header on tablet — actions still show in rows */
+  .match-list-header > *:last-child {
+    display: none;
+  }
+
+  .match-mentor-actions {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+  }
+
+  .match-view-btn,
+  .match-assign-btn {
+    font-size: 12px;
+    padding: 6px 10px;
+  }
+}
+
+/* ── Mobile (≤767px): stack mentor rows vertically ── */
+@media (max-width: 767px) {
+  .match-applicant-card {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: var(--space-md);
+    gap: var(--space-sm);
+  }
+
+  .match-applied-date {
+    position: static;
+  }
+
+  /* Hide the list header — labels are self-evident in stacked layout */
+  .match-list-header {
+    display: none;
+  }
+
+  /* Each mentor row becomes a vertical card */
+  .match-mentor-row {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-sm);
+    padding: var(--space-md);
+  }
+
+  /* Score + Capacity go side-by-side as a row */
+  .match-mentor-score,
+  .match-mentor-capacity {
+    flex-direction: row;
+    justify-content: space-between;
+    min-height: auto;
+    width: 100%;
+    padding: var(--space-xs) var(--space-sm);
+  }
+
+  /* Action buttons span full width */
+  .match-mentor-actions {
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%;
+    gap: var(--space-xs);
+  }
+
+  .match-view-btn,
+  .match-assign-btn {
+    flex: 1;
+    text-align: center;
+    justify-content: center;
+  }
+
+  .match-browse-all-btn {
+    align-self: stretch;
+    text-align: center;
+  }
+}
+
+/* ── Compact Mobile (≤479px): tightest spacing ── */
+@media (max-width: 479px) {
+  .match-applicant-card {
+    padding: var(--space-sm);
+  }
+
+  .match-mentor-row {
+    padding: var(--space-sm);
+  }
+
+  .match-view-btn,
+  .match-assign-btn {
+    font-size: 13px;
+    padding: 8px 10px;
+  }
+}
