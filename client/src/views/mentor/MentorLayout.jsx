@@ -11,6 +11,7 @@ import ProfileIcon from "../../assets/icons/person.svg";
 import ClockIcon from "../../assets/icons/clock.svg";
 import SettingIcon from "../../assets/icons/settings.svg";
 import LogOutIcon from "../../assets/icons/signout.svg";
+import sideBgSwirl from "../../assets/horizontal-swirl.svg";
 import { useState } from "react";
 
 
@@ -65,6 +66,7 @@ export default function MentorLayout() {
 
         </div>
 
+        <img src={sideBgSwirl} className="sidebar-bg-swirl" alt="" />
 
       </aside>
 

@@ -212,15 +212,19 @@ export default function AdminDash() {
 
       await api.post("/mentor-assignments", payload);
 
-      alert(`Successfully assigned mentor to ${applicant.full_name || "student"}!`);
       await fetchApplicants();
       await fetchMentorsAndCapacity();
       await fetchAssignments();
-      setActiveTab("assignments");
+      
     } catch (err) {
       console.error("Failed to assign mentor:", err);
       alert(err.response?.data?.detail || "Failed to assign mentor. Please try again.");
     }
+  };
+
+  const handleAssignSuccessDone = () => {
+    setViewedProfileMentor(null);
+    setActiveTab("applicants"); // pick whatever tab should show after assigning
   };
 
   const handleDeleteApplicant = async (applicantToDelete) => {
@@ -292,33 +296,34 @@ export default function AdminDash() {
             }}
           />
         ) : /* 4. ASSIGNMENTS VIEW */
-        activeTab === "assignments" ? (
-          <AssignmentsPanel
-            loading={loadingAssignments}
-            assignments={assignments}
-            onRefresh={() => {
-              fetchAssignments();
-              fetchApplicants();
-              fetchMentorsAndCapacity();
-            }}
-            onReassign={(intakeForm) => {
-              const targetId = intakeForm.id || intakeForm.intake_form_id;
-              const fullIntake = applicants.find((a) => a.id === targetId) || {
-                ...intakeForm,
-                id: targetId,
-                student_id: intakeForm.student_id,
-              };
-              setSelectedApplicant(fullIntake);
-              setActiveTab("match");
-            }}
-          />
-        ) : /* 5. MENTOR MATCHING VIEW */
+        // activeTab === "assignments" ? (
+        //   <AssignmentsPanel
+        //     loading={loadingAssignments}
+        //     assignments={assignments}
+        //     onRefresh={() => {
+        //       fetchAssignments();
+        //       fetchApplicants();
+        //       fetchMentorsAndCapacity();
+        //     }}
+        //     onReassign={(intakeForm) => {
+        //       const targetId = intakeForm.id || intakeForm.intake_form_id;
+        //       const fullIntake = applicants.find((a) => a.id === targetId) || {
+        //         ...intakeForm,
+        //         id: targetId,
+        //         student_id: intakeForm.student_id,
+        //       };
+        //       setSelectedApplicant(fullIntake);
+        //       setActiveTab("match");
+        //     }}
+        //   />
+        // ) : /* 5. MENTOR MATCHING VIEW */
         activeTab === "match" ? (
           viewedProfileMentor ? (
             <MentorProfile
               mentor={viewedProfileMentor}
               onBack={() => setViewedProfileMentor(null)}
               onAssignMentor={(mentor) => handleAssignMentor(selectedApplicant, mentor)}
+              onAssignSuccessDone={handleAssignSuccessDone} 
             />
           ) : (
             <FullMentorMatchPanel
@@ -329,6 +334,7 @@ export default function AdminDash() {
               onBack={() => setActiveTab("applicants")}
               onBrowseAllMentors={() => setActiveTab("mentors")}
               onAssignMentor={handleAssignMentor}
+              onAssignSuccessDone={handleAssignSuccessDone}
               onViewMentor={setViewedProfileMentor}
               onSelectApplicant={setSelectedApplicant}
             />

@@ -65,6 +65,22 @@ const ICONS = {
       <path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0018 8a6 6 0 00-12 0c0 1.6.64 2.83 1.5 3.5.76.76 1.23 1.52 1.41 2.5" />
     </>
   ),
+  about: (
+    <>
+      <circle cx="12" cy="8" r="4" />
+      <path d="M4 21v-1a8 8 0 0116 0v1" />
+    </>
+  ),
+  clipboard: (
+    <>
+      <rect x="6" y="4" width="12" height="17" rx="2" />
+      <path d="M9 4V3a1 1 0 011-1h4a1 1 0 011 1v1" />
+      <line x1="9" y1="10" x2="15" y2="10" />
+      <line x1="9" y1="14" x2="15" y2="14" />
+      <line x1="9" y1="18" x2="13" y2="18" />
+    </>
+  ),
+
 };
 
 export default function Icon({ name, className = "nav-icon" }) {

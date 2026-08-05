@@ -2,6 +2,11 @@
    APPLICANT DETAILS VIEW (SCOPED & ISOLATED)
    ========================================================================== */
 
+.applicant-details-container .badge-yellow { background-color: #F9F3BD; }
+.applicant-details-container .badge-green  { background-color: #D9F9BD; }
+.applicant-details-container .badge-purple { background-color: #CABDF9; }
+.applicant-details-container .badge-pink   { background-color: #FBB8E6; }
+
 /* Main Page Canvas Container */
 .applicant-details-container {
   position: relative;
@@ -143,11 +148,23 @@
   margin: 0;
 }
 
-.applicant-details-container .card-icon {
-  width: clamp(18px, 1.6vw, 22px);
-  height: clamp(18px, 1.6vw, 22px);
+.applicant-details-container .icon-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: clamp(36px, 3.2vw, 44px);
+  height: clamp(36px, 3.2vw, 44px);
+  border-radius: 50%;
   flex-shrink: 0;
+  color: #1D2026; /* icon stroke color via currentColor */
 }
+
+.applicant-details-container .icon-badge svg {
+  width: 55%;
+  height: 55%;
+}
+
+
 
 /* Key-Value Pair Data Rows */
 .applicant-details-container .info-list {
@@ -251,26 +268,44 @@
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  gap: var(--space-sm);
+  gap: 12px;
   margin-top: var(--space-xs);
   width: 100%;
 }
 
-.applicant-details-container .btn-secondary {
-  background: #ffffff;
+.applicant-details-container .details-actions button.btn-secondary,
+.applicant-details-container .details-actions button.btn-primary {
   border: 1.5px solid var(--admin-primary);
-  color: var(--admin-primary);
   padding: 8px 20px;
   border-radius: var(--radius-sm);
   font-weight: 700;
   font-size: clamp(12px, 1.1vw, 14px);
+  line-height: 1.4;
   cursor: pointer;
   transition: all 0.15s ease;
+  width: auto;
+  height: auto;
+  box-sizing: border-box;
+  min-width: 0;
 }
 
-.applicant-details-container .btn-secondary:hover {
+.applicant-details-container .details-actions button.btn-secondary {
+  background: #ffffff;
+  color: var(--admin-primary);
+}
+
+.applicant-details-container .details-actions button.btn-secondary:hover {
   background: var(--admin-primary);
   color: #ffffff;
+}
+
+.applicant-details-container .details-actions button.btn-primary {
+  background-color: var(--admin-primary);
+  color: #ffffff;
+}
+
+.applicant-details-container .details-actions button.btn-primary:hover {
+  background-color: var(--admin-dark);
 }
 
 /* 8. Resume Frame Overlay Modal (Outside main container, handled globally or scoped via wrapper if rendered inside) */
@@ -356,6 +391,52 @@
   justify-content: center;
   white-space: nowrap;
   padding: 6px 14px;
+}
+
+/* Status Pill Badge */
+.applicant-details-container .status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: clamp(11px, 1vw, 13px);
+  font-weight: 600;
+  width: fit-content;
+  line-height: 1.4;
+}
+
+.applicant-details-container .status-pill::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: currentColor;
+  flex-shrink: 0;
+}
+
+/* Status color variants */
+.applicant-details-container .status-pill.submitted {
+  background-color: #E0F2FE;
+  color: #0369A1;
+}
+
+.applicant-details-container .status-pill.pending-match {
+  background-color: #FEF3C7;
+  color: #B45309;
+}
+
+.applicant-details-container .status-pill.matched,
+.applicant-details-container .status-pill.accepted {
+  background-color: #D1FAE5;
+  color: #047857;
+}
+
+.applicant-details-container .status-pill.rejected,
+.applicant-details-container .status-pill.declined {
+  background-color: #FEE2E2;
+  color: #B91C1C;
 }
 
 /* ==========================================================================

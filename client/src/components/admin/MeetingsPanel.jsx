@@ -1,7 +1,6 @@
 import { useMemo, useState } from "react";
 import api from "../../api/api";
 import "../admin_styling/MeetingsPanel.css";
-import "../admin_styling/AssignmentsPanel.css";
 
 const ITEMS_PER_PAGE = 8;
 
@@ -401,7 +400,7 @@ export default function MeetingsPanel({ title, loading, data = [], assignments =
                               disabled={deletingId === m.assignmentId}
                               onClick={() => handleDeleteAssignment(m.assignmentId)}
                             >
-                              Remove
+                              {deletingId === m.assignmentId ? "Removing..." : "Remove"}
                             </button>
                           )}
                         </div>

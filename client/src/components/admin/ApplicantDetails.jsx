@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "../admin_styling/ApplicantDetails.css";
+import Icon from "../ui/Icon";
 
 // Dynamic API Base URL
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
@@ -219,7 +220,9 @@ export default function ApplicantDetails({ applicant, onBackToList, onFindMatche
         {/* Personal Information */}
         <div className="card details-card">
           <div className="card-header">
-            <span className="card-icon home-icon">🏠</span>
+            <span className="icon-badge badge-yellow">
+              <Icon name="personal" />
+            </span>
             <h3>Personal Information</h3>
           </div>
           <div className="info-list">
@@ -249,7 +252,9 @@ export default function ApplicantDetails({ applicant, onBackToList, onFindMatche
         {/* Career Information */}
         <div className="card details-card">
           <div className="card-header">
-            <span className="card-icon career-icon">💼</span>
+            <span className="icon-badge badge-green">
+              <Icon name="briefcase" />
+            </span>
             <h3>Career Information</h3>
           </div>
           <div className="info-list">
@@ -275,7 +280,9 @@ export default function ApplicantDetails({ applicant, onBackToList, onFindMatche
         {/* Uploaded Resume */}
         <div className="card details-card resume-card">
           <div className="card-header">
-            <span className="card-icon file-icon">📄</span>
+            <span className="icon-badge badge-purple">
+              <Icon name="file" />
+            </span>
             <h3>Uploaded Resume</h3>
           </div>
           <div className="resume-preview-box">
@@ -301,7 +308,9 @@ export default function ApplicantDetails({ applicant, onBackToList, onFindMatche
       {/* 3. COMMENTS / GOALS CARD */}
       <div className="card comments-card">
         <div className="card-header">
-          <span className="card-icon bulb-icon">💡</span>
+          <span className="icon-badge badge-pink">
+            <Icon name="bulb" />
+          </span>
           <h3>Comments/Goals</h3>
         </div>
         <p className="comments-text">
