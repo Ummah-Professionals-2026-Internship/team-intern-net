@@ -89,6 +89,7 @@ app.include_router(mentor_meetings.router)
 app.include_router(google_calendar.router)
 app.include_router(mentor_assignments.router)
 app.include_router(change_password.router)
+app.include_router(student_router)
 
 @app.get("/")
 async def root():
