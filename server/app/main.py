@@ -30,14 +30,19 @@ from app.matching import rank_mentors #Matching algorithm
 
 from app.routers import mentor_dash_assignment
 from app.routers import change_password
+import os
+
 app = FastAPI()
 
 origins = [
     "http://localhost:5173",
-    "http://127.0.0.1:5173"
+    "http://127.0.0.1:5173",
+    os.getenv("FRONTEND_URL")
     # Add more origins (i.e Ummah Professional links when needed)
 ]
 
+# filter out None in case FRONTEND_URL is not set
+origins = [o for o in origins if o]
 
 # React dev server
 app.add_middleware(

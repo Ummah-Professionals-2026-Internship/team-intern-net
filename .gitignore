@@ -5,6 +5,7 @@
 *.local
 *.pem
 *.key
+.env.*.local
 secrets.toml
 
 # PYTHON BACKEND
