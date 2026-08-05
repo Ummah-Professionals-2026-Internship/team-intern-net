@@ -168,7 +168,7 @@ export default function MentorApplicationForm() {
         other_info: form.otherInfo,
         service_types: form.volunteeringFor,
       });
-    const data = await response.json();
+    const data = await response.data;
     if (!response.ok) {
       console.log("Backend error:", data);
       if (data.detail && Array.isArray(data.detail)) {

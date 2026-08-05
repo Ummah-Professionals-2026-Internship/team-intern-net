@@ -191,7 +191,7 @@ export default function CareerPrep() {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
 
-      const data = await res.json();
+      const data = await res.data;
 
       if (!res.ok) {
         // FIX HERE: Safely parse detail if it's a Pydantic validation array or object
