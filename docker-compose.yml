@@ -13,21 +13,22 @@ services:
     build: ./server
     ports:
       - "8000:8000"
-    environment:
-      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
-      SECRET_KEY: ${SECRET_KEY}
-      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS}
+    env_file:
+      - .env
     depends_on:
       - db
     restart: always
 
   frontend:
-    build: ./client
-    ports:
-      - "80:80"
-    depends_on:
-      - backend
-    restart: always
+      build:
+        context: ./client
+        args:
+          VITE_API_BASE_URL: ${VITE_API_BASE_URL}
+      ports:
+        - "80:80"
+      depends_on:
+        - backend
+      restart: always
 
 volumes:
   postgres_data:
