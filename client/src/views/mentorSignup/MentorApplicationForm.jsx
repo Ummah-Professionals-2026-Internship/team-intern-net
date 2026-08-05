@@ -1,6 +1,8 @@
 import "./MentorApplicationForm.css";
 import bgImage from "../../assets/images/mentor-app-bg.png";
 import umIcon from "../../assets/images/um-small-logo.png";
+import api from '../../api/api';
+
 
 import { useState } from "react";
 
@@ -149,10 +151,7 @@ export default function MentorApplicationForm() {
     setServerError("");
 
     try {
-    const response = await fetch("http://localhost:8000/mentor/apply", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
+      const response = await api.post("/mentor/apply", {
         full_name: form.fullName,
         phone_number: form.phoneNumber,
         email: form.email,
@@ -168,9 +167,7 @@ export default function MentorApplicationForm() {
         state: form.state,
         other_info: form.otherInfo,
         service_types: form.volunteeringFor,
-      }),
-
-    });
+      });
     const data = await response.json();
     if (!response.ok) {
       console.log("Backend error:", data);

@@ -9,6 +9,8 @@ import userVoice from "../../assets/images/user-voice.svg";
 import appBg from "../../assets/horizontal-swirl.svg";
 import uploadIcon from "../../assets/images/upload.svg";
 import "./CareerPrep.css";
+import api from '../../api/api';
+
 
 // 1. Updated enum values to match backend GenderEnum ('male', 'female')
 const GENDER_OPTIONS = [
@@ -185,9 +187,8 @@ export default function CareerPrep() {
     if (resume) formData.append("resume", resume);
 
     try {
-      const res = await fetch("http://localhost:8000/intake/apply", {
-        method: "POST",
-        body: formData,
+      const res = await api.post("/intake/apply", formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
       });
 
       const data = await res.json();
