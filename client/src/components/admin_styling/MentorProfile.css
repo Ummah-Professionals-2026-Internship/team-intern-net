@@ -3,6 +3,9 @@
    Three-tier breakpoints: ≤1023px tablet · ≤767px mobile · ≤479px compact
    ========================================================================== */
 
+.mentor-profile-container .badge-purple { background-color: #CABDF9; }
+.mentor-profile-container .badge-pink   { background-color: #FBB8E6; }
+
 .mentor-profile-container {
   position: relative;
   z-index: 2;
@@ -131,8 +134,16 @@
   gap: 10px;
 }
 
-.mentor-profile-info-icon {
-  font-size: clamp(16px, 1.5vw, 20px);
+.mentor-profile-container .mentor-profile-icon {
+  width: clamp(20px, 1.8vw, 26px);
+  height: clamp(20px, 1.8vw, 26px);
+  flex-shrink: 0;
+  color: #0E7C96;
+}
+
+.mentor-profile-container .icon-badge svg {
+  width: 55%;
+  height: 55%;
 }
 
 .mentor-profile-about-text {
@@ -180,24 +191,28 @@
   display: flex;
   justify-content: center;
   z-index: 3;
+  width: 100%;
 }
 
 .mentor-profile-assign-btn {
-  background: var(--admin-primary);
+  background-color: var(--admin-primary);
   color: #fff;
   border: none;
-  border-radius: var(--radius-sm);
-  padding: 12px 48px;
+  border-radius: var(--radius-sm, 8px);
+  padding: 14px 24px;
   font-weight: 700;
-  font-size: clamp(15px, 1.6vw, 20px);
+  font-size: clamp(15px, 1.6vw, 18px);
   cursor: pointer;
-  width: min(100%, 520px);
+  width: 50%;
+  max-width: 400px;
+  text-align: center;
   font-family: inherit;
-  transition: background 0.15s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.15s ease;
 }
 
 .mentor-profile-assign-btn:hover {
-  background: var(--admin-dark);
+  background-color: var(--admin-dark);
 }
 
 /* ==========================================================================

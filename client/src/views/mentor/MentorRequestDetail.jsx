@@ -1,7 +1,10 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import "./MentorRequests.css";
+import "/src/components/admin_styling/ApplicantDetails.css";
 import api from "../../api/api";
+
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
 
 const SERVICE_LABELS = {
   mock_interview: "Mock Interview",
@@ -41,6 +44,7 @@ export default function MentorRequestDetail() {
   const [declining, setDeclining] = useState(false);
   const [showDeclineModal, setShowDeclineModal] = useState(false);
   const [successAction, setSuccessAction] = useState(null); // "accepted" | "declined"
+  const [showPreviewModal, setShowPreviewModal] = useState(false);
 
   useEffect(() => {
     const fetchRequest = async () => {
@@ -73,7 +77,7 @@ export default function MentorRequestDetail() {
       setAccepting(false);
     }
   };
-  
+
   const handleDecline = async () => {
     setDeclining(true);
     setActionError("");
@@ -89,7 +93,6 @@ export default function MentorRequestDetail() {
     }
   };
 
-  
   if (successAction) {
     return (
       <div className="mrq-page">
@@ -121,8 +124,6 @@ export default function MentorRequestDetail() {
     );
   }
 
-
-
   if (loading) {
     return (
       <div className="mrq-page">
@@ -142,6 +143,77 @@ export default function MentorRequestDetail() {
   const student = request?.student;
   const intake = request?.intake_form;
   const isPending = request?.status === "pending";
+
+  // --- Resume Helpers (ported from ApplicantDetails.jsx) ---
+  const rawResumePath = intake?.resume_url || student?.resume_url;
+
+  const getFullResumeUrl = (path) => {
+    if (!path) return null;
+    const normalized = path.replace(/\\/g, "/");
+    if (normalized.startsWith("http://") || normalized.startsWith("https://")) {
+      return normalized;
+    }
+    const cleanBase = API_BASE_URL.replace(/\/+$/, "");
+    const cleanPath = normalized.startsWith("/") ? normalized.slice(1) : normalized;
+    return `${cleanBase}/${cleanPath}`;
+  };
+
+  const finalResumeUrl = getFullResumeUrl(rawResumePath);
+  const displayResumeName =
+    intake?.resume_name ||
+    (rawResumePath ? rawResumePath.split(/[\/\\]/).pop() : "No File Uploaded");
+  const displayName = student?.user?.full_name || "Applicant";
+
+  const isPdf = Boolean(finalResumeUrl?.toLowerCase().endsWith(".pdf"));
+  const isWordDoc = Boolean(
+    finalResumeUrl &&
+      (finalResumeUrl.toLowerCase().endsWith(".doc") ||
+        finalResumeUrl.toLowerCase().endsWith(".docx"))
+  );
+
+  const isLocalhost = Boolean(
+    API_BASE_URL.includes("localhost") || API_BASE_URL.includes("127.0.0.1")
+  );
+
+  const frameSourceUrl = isPdf
+    ? finalResumeUrl
+    : isWordDoc && !isLocalhost
+    ? `https://docs.google.com/gview?url=${encodeURIComponent(finalResumeUrl)}&embedded=true`
+    : null;
+
+  const handleOpenNewTab = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!finalResumeUrl) return;
+
+    if (isPdf) {
+      const newTab = window.open("about:blank", "_blank");
+      if (newTab) {
+        newTab.opener = null;
+        newTab.location.href = finalResumeUrl;
+      } else {
+        alert("Popup blocked! Please allow popups for this site to view the resume.");
+      }
+    } else if (isWordDoc && !isLocalhost) {
+      const officeUrl = `https://view.officeapps.live.com/op/view.aspx?src=${encodeURIComponent(
+        finalResumeUrl
+      )}`;
+      const newTab = window.open("about:blank", "_blank");
+      if (newTab) {
+        newTab.location.href = officeUrl;
+      } else {
+        alert("Popup blocked! Please allow popups for this site to view the resume.");
+      }
+    } else {
+      const link = document.createElement("a");
+      link.href = finalResumeUrl;
+      link.setAttribute("download", displayResumeName || "resume");
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  };
 
   return (
     <div className="mrq-page">
@@ -173,7 +245,6 @@ export default function MentorRequestDetail() {
               />
             </g>
           </svg>
-          {/* <span className="mrq-section-icon">👤</span> */}
           <h2>Applicant Information</h2>
         </div>
         <div className="mrq-info-grid">
@@ -210,7 +281,6 @@ export default function MentorRequestDetail() {
               <path d="M10.5001 15.75H17.5001" stroke="#1D2026" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             </g>
           </svg>
-          {/* <span className="mrq-section-icon">💬</span> */}
           <h2>Comments / Goals</h2>
         </div>
         <div className="mrq-comments">
@@ -227,13 +297,22 @@ export default function MentorRequestDetail() {
               <path d="M18.8742 6.625L7.48445 16.5497C7.07422 16.9014 6.84375 17.3783 6.84375 17.8756C6.84375 18.3729 7.07422 18.8498 7.48445 19.2014C7.89469 19.553 8.45109 19.7506 9.03125 19.7506C9.61141 19.7506 10.1678 19.553 10.578 19.2014L24.1553 7.40165C24.5616 7.05343 24.8838 6.64003 25.1037 6.18506C25.3235 5.73009 25.4367 5.24246 25.4367 4.75C25.4367 4.25754 25.3235 3.76991 25.1037 3.31494C24.8838 2.85997 24.5615 2.44657 24.1553 2.09835C23.749 1.75013 23.2667 1.47391 22.7359 1.28545C22.2051 1.097 21.6362 1 21.0617 1C20.4872 1 19.9183 1.097 19.3875 1.28545C18.8567 1.47391 18.3744 1.75013 17.9681 2.09835L4.39086 13.8981C3.16015 14.953 2.46875 16.3837 2.46875 17.8756C2.46875 19.3674 3.16015 20.7982 4.39086 21.853C5.62157 22.9079 7.29077 23.5006 9.03125 23.5006C10.7717 23.5006 12.4409 22.9079 13.6716 21.853L24.8898 12.25" stroke="#1D2026" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
            </g>
           </svg>
-          {/* <span className="mrq-section-icon">📎</span> */}
           <h2>Resume</h2>
         </div>
         <div className="mrq-resume">
-          <button className="mrq-resume-link" disabled>
-            view resume
-          </button>
+          {finalResumeUrl ? (
+            <button
+              type="button"
+              className="mrq-resume-link"
+              onClick={() => setShowPreviewModal(true)}
+            >
+              view resume
+            </button>
+          ) : (
+            <button className="mrq-resume-link" disabled>
+              view resume
+            </button>
+          )}
         </div>
       </div>
 
@@ -248,6 +327,7 @@ export default function MentorRequestDetail() {
           </button>
         </div>
       )}
+
       {showDeclineModal && (
         <div className="mrq-modal-overlay" onClick={() => setShowDeclineModal(false)}>
           <div className="mrq-modal" onClick={(e) => e.stopPropagation()}>
@@ -293,6 +373,7 @@ export default function MentorRequestDetail() {
           </div>
         </div>
       )}
+
       {/* Accept confirmation modal */}
       {showModal && (
         <div className="mrq-modal-overlay" onClick={() => setShowModal(false)}>
@@ -303,7 +384,6 @@ export default function MentorRequestDetail() {
               <path d="M36.7812 43.8125V21.5469C36.7812 19.9929 37.3986 18.5025 38.4974 17.4037C39.5963 16.3048 41.0866 15.6875 42.6406 15.6875C44.1946 15.6875 45.685 16.3048 46.7838 17.4037C47.8827 18.5025 48.5 19.9929 48.5 21.5469V41.4688" stroke="#007CA6" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
               <path d="M48.5 61.3906C48.5 58.2826 49.7347 55.3019 51.9323 53.1042C54.13 50.9065 57.1107 49.6719 60.2188 49.6719V43.8125C60.2188 42.2585 60.8361 40.7681 61.9349 39.6693C63.0338 38.5705 64.5241 37.9531 66.0781 37.9531C67.6321 37.9531 69.1225 38.5705 70.2213 39.6693C71.3202 40.7681 71.9375 42.2585 71.9375 43.8125V55.5312C71.9375 61.7473 69.4682 67.7087 65.0728 72.1041C60.6774 76.4994 54.716 78.9688 48.5 78.9688C42.284 78.9688 36.3226 76.4994 31.9272 72.1041C27.5318 67.7087 25.0625 61.7473 25.0625 55.5312V33.2656C25.0625 31.7116 25.6798 30.2213 26.7787 29.1224C27.8775 28.0236 29.3679 27.4062 30.9219 27.4062C32.4759 27.4062 33.9662 28.0236 35.0651 29.1224C36.1639 30.2213 36.7812 31.7116 36.7812 33.2656V43.8125" stroke="#007CA6" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
-            {/* <div className="mrq-modal-icon">🤚</div> */}
             <h2 className="mrq-modal-title">Accept Assignment?</h2>
             <p className="mrq-modal-subtitle">You are about to accept this mentorship request.</p>
 
@@ -336,6 +416,56 @@ export default function MentorRequestDetail() {
               <button className="mrq-btn-accept-confirm" onClick={handleAccept} disabled={accepting}>
                 {accepting ? "Accepting..." : "Accept"}
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Resume Preview Modal (ported from ApplicantDetails.jsx) */}
+      {showPreviewModal && (
+        <div className="resume-modal-backdrop" onClick={() => setShowPreviewModal(false)}>
+          <div className="resume-modal-container" onClick={(e) => e.stopPropagation()}>
+            <div className="resume-modal-header">
+              <h3>{displayResumeName}</h3>
+              <div className="modal-header-actions">
+                <button
+                  type="button"
+                  className="btn-secondary modal-download-btn"
+                  onClick={handleOpenNewTab}
+                >
+                  {isPdf ? "Open in New Tab" : "Download File"}
+                </button>
+                <button
+                  type="button"
+                  className="close-modal-btn"
+                  onClick={() => setShowPreviewModal(false)}
+                >
+                  ✕
+                </button>
+              </div>
+            </div>
+
+            <div className="resume-modal-body">
+              {frameSourceUrl ? (
+                <iframe
+                  src={frameSourceUrl}
+                  title={`Resume Preview - ${displayName}`}
+                  className="resume-iframe"
+                />
+              ) : (
+                <div style={{ padding: "40px 20px", textAlign: "center" }}>
+                  <p style={{ marginBottom: "16px", color: "#64748b" }}>
+                    In-browser iframe preview for Word documents (<code>.docx</code>) requires a public production domain.
+                  </p>
+                  <button
+                    type="button"
+                    className="btn-primary"
+                    onClick={handleOpenNewTab}
+                  >
+                    Download File
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>
