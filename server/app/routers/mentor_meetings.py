@@ -9,7 +9,7 @@ from app.models.mentor_assignment import MentorAssignment
 from app.models.availability_slot import AvailabilitySlot
 from app.models.mentor import Mentor
 from app.models.enums import MeetingStatusEnum, AssignmentStatusEnum
-from app.core.deps import require_mentor
+from app.core.deps import require_mentor, require_admin
 from app.schemas.meeting import MeetingResponse
 from app.models.student import Student
 
@@ -17,6 +17,29 @@ import logging
 logger = logging.getLogger(__name__)
 
 router = APIRouter(tags=["Mentor"])
+
+@router.get("/meetings", response_model=list[MeetingResponse])
+async def get_all_meetings(
+    user=Depends(require_admin),
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    Fetch all scheduled meetings for admin oversight.
+    """
+    result = await db.execute(
+        select(Meeting)
+        .options(
+            selectinload(Meeting.assignment).options(
+                selectinload(MentorAssignment.student).selectinload(Student.user),
+                selectinload(MentorAssignment.mentor).selectinload(Mentor.user),
+                selectinload(MentorAssignment.intake_form),
+            ),
+            selectinload(Meeting.slot),
+        )
+        .order_by(Meeting.start_datetime.desc())
+    )
+    meetings = result.scalars().all()
+    return meetings
 
 @router.get("/mentor/meetings", response_model=list[MeetingResponse])
 async def get_mentor_meetings(
@@ -32,6 +55,7 @@ async def get_mentor_meetings(
         .options(
             selectinload(Meeting.assignment).options(
                 selectinload(MentorAssignment.student).selectinload(Student.user),
+                selectinload(MentorAssignment.mentor).selectinload(Mentor.user),
                 selectinload(MentorAssignment.intake_form),
             ),
             selectinload(Meeting.slot),

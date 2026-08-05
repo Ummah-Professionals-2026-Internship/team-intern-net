@@ -1,0 +1,33 @@
+.declined-row {
+  background-color: #fef2f2;
+}
+
+.btn-danger-outline {
+  background-color: transparent;
+  color: #ef4444;
+  border: 1px solid #fca5a5;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-danger-outline:hover {
+  background-color: #ef4444;
+  color: #ffffff;
+  border-color: #ef4444;
+}
+
+.btn-danger-outline:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 767px) {
+  .btn-danger-outline {
+    padding: 5px 8px;
+    font-size: 12px;
+  }
+}

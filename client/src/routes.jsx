@@ -4,6 +4,8 @@ import RoleGuard from './routes/RoleGuard';
 import PublicRoute from './routes/PublicRoute';
 import LandingPage from './views/landingpage/landingPage';
 import SignIn from './views/onboarding/SignIn';
+import ForgotPassword from './views/onboarding/ForgotPassword';
+import ResetPassword from './views/onboarding/ResetPassword';
 
 import MentorApplicationForm from './views/mentorSignup/MentorApplicationForm';
 import CareerPrep from './views/onboarding/CareerPrep';
@@ -25,6 +27,7 @@ import MentorAvailability from './views/mentor/MentorAvailability';
 import MentorRequests from './views/mentor/MentorRequests';
 import MentorRequestDetail from './views/mentor/MentorRequestDetail';
 import MentorMeetings from './views/mentor/MentorMeetings';
+import MentorSettings from './views/mentor/MentorSettings';
 import MentorProfile from './views/mentor/MentorProfile';
 
 export const router = createBrowserRouter([
@@ -47,6 +50,8 @@ export const router = createBrowserRouter([
     element: <PublicRoute />,
     children: [
       { path: '/signin', element: <SignIn /> },
+      { path: '/forgot-password', element: <ForgotPassword /> },
+      { path: '/reset-password', element: <ResetPassword /> },
     ],
   },
   
@@ -71,6 +76,14 @@ export const router = createBrowserRouter([
               { path: '/student/meetings', element: <StudentMeetings /> },
             ],
           },
+          { index: true, element: <MentorDashboard /> },
+          { path: "dashboard", element: <MentorDashboard /> }, // optional
+          { path: "availability", element: <MentorAvailability /> },
+          { path: "requests", element: <MentorRequests /> },
+          { path: "requests/:id", element: <MentorRequestDetail /> },
+          { path: "meetings", element: <MentorMeetings /> },
+          { path: "profile", element: <MentorProfile /> },
+          { path: "settings", element: <MentorSettings />},
         ],
       },
       

@@ -9,7 +9,7 @@ import ReqIcon from "../../assets/icons/requests.svg";
 import MeetingIcon from "../../assets/icons/meeting.svg";
 import ProfileIcon from "../../assets/icons/person.svg";
 import ClockIcon from "../../assets/icons/clock.svg";
-// import SettingIcon from "../../assets/icons/settings.svg";
+import SettingIcon from "../../assets/icons/settings.svg";
 import LogOutIcon from "../../assets/icons/signout.svg";
 import { useState } from "react";
 
@@ -21,7 +21,7 @@ const NAV_ITEMS = [
   { label: "Meetings",  to: "/mentor/meetings",   icon: MeetingIcon},
   { label: "Availability", to: "/mentor/availability", icon: ClockIcon},
   { label: "Profile",   to: "/mentor/profile",    icon: ProfileIcon },
-  // { label: "Settings",  to: "/mentor/settings",   icon: SettingIcon },
+  { label: "Settings",  to: "/mentor/settings",   icon: SettingIcon },
 ];
 
 export default function MentorLayout() {

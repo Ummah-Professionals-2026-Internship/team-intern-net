@@ -51,6 +51,10 @@ class StudentIntakeForm(Base):
 
     desired_career : Mapped[Optional[str]]             = mapped_column(Text, nullable=True)
     major          : Mapped[Optional[str]]             = mapped_column(Text, nullable=True)
+
+    industry       : Mapped[Optional[str]]             = mapped_column(String(100), nullable=True)  # NEW: was collected by the frontend but never persisted
+    referral_source: Mapped[Optional[str]]             = mapped_column(String(100), nullable=True)  # NEW: was collected by the frontend but never persisted
+    
     comments       : Mapped[Optional[str]]             = mapped_column(Text, nullable=True)
     status         : Mapped[IntakeFormStatusEnum]      = mapped_column(
                                                              SAEnum(IntakeFormStatusEnum, name="intake_form_status_enum"),

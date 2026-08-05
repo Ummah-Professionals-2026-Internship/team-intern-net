@@ -49,7 +49,7 @@ class MeetingResponse(BaseModel):
     updated_at       : datetime
 
     # Nested slot info
-    slot             : AvailabilitySlotResponse
+    slot             : Optional[AvailabilitySlotResponse] = None
     assignment       : AssignmentWithIntakeResponse
 
     model_config = {"from_attributes": True}

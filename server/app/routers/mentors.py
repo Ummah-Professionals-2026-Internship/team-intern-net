@@ -230,3 +230,23 @@ async def get_all_mentors(
         select(Mentor).options(selectinload(Mentor.user))
     )
     return result.scalars().all()
+
+
+@router.get("/mentors/{mentor_id}", response_model=MentorResponse)
+async def get_mentor_by_id(
+    mentor_id: int,
+    db: AsyncSession = Depends(get_db),
+    user=Depends(require_admin)
+):
+    """
+    Fetch a single registered mentor by user_id with user details.
+    """
+    result = await db.execute(
+        select(Mentor)
+        .where(Mentor.user_id == mentor_id)
+        .options(selectinload(Mentor.user))
+    )
+    mentor = result.scalar_one_or_none()
+    if not mentor:
+        raise HTTPException(status_code=404, detail="Mentor not found")
+    return mentor
