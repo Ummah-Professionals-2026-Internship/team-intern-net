@@ -76,14 +76,6 @@ export const router = createBrowserRouter([
               { path: '/student/meetings', element: <StudentMeetings /> },
             ],
           },
-          { index: true, element: <MentorDashboard /> },
-          { path: "dashboard", element: <MentorDashboard /> }, // optional
-          { path: "availability", element: <MentorAvailability /> },
-          { path: "requests", element: <MentorRequests /> },
-          { path: "requests/:id", element: <MentorRequestDetail /> },
-          { path: "meetings", element: <MentorMeetings /> },
-          { path: "profile", element: <MentorProfile /> },
-          { path: "settings", element: <MentorSettings />},
         ],
       },
       
@@ -102,6 +94,8 @@ export const router = createBrowserRouter([
               { path: 'requests/:id', element: <MentorRequestDetail /> },
               { path: 'meetings', element: <MentorMeetings /> },
               { path: 'profile', element: <MentorProfile /> },
+              { path: "settings", element: <MentorSettings />},
+
             ],
           },
         ],
