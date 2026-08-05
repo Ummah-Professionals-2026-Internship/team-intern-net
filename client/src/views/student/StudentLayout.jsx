@@ -13,7 +13,7 @@ import RequestsIcon from "../../assets/icons/requests.svg";
 // Fixed to match the exact paths configured in routes.jsx
 const NAV_ITEMS = [
   { label: "Dashboard", to: "/student/dashboard", icon: DashIcon },
-  { label: "Career Form", to: "/student/career-form", icon: RequestsIcon },
+  { label: "Career Form", to: "/prep", icon: RequestsIcon },
   { label: "Meetings", to: "/student/meetings", icon: MeetingIcon },
   { label: "Profile", to: "/student/profile", icon: ProfileIcon },
 ];
