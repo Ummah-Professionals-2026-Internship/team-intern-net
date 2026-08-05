@@ -44,6 +44,7 @@ class Meeting(Base):
                                                                     default=MeetingStatusEnum.scheduled,)
     cancelled_reason : Mapped[Optional[str]]        = mapped_column(Text, nullable=True)
     meeting_notes    : Mapped[Optional[str]]        = mapped_column(Text, nullable=True)
+    student_notes    : Mapped[Optional[str]]        = mapped_column(Text, nullable=True) # Highlight: Added for booking intent
     created_at       : Mapped[datetime]             = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at       : Mapped[datetime]             = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 

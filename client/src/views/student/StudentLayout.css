@@ -1,0 +1,108 @@
+@font-face {
+  font-family: "Kollektif";
+  src: url("../../fonts/kollektif-webfont/Kollektif.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Kollektif Bold";
+  src: url("../../fonts/kollektif-webfont/Kollektif-Bold.woff") format("woff");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+.sl-shell {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  background: #f3f8fa;
+}
+
+.sl-sidebar {
+  width: 240px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(0deg, #8ACBDB 0%, #007CA6 38%, #00212C 100%);
+  align-items: flex-start;
+  overflow: hidden;
+  gap: 40px;
+  box-sizing: border-box;
+}
+
+.sl-brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 20px 0;
+}
+
+.sl-logo {
+  width: 193px;
+  height: auto;
+  object-fit: contain;
+}
+
+.sl-nav {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 10px;
+  padding: 0 16px;
+}
+
+.sl-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 16px;
+  border-radius: 10px;
+  text-decoration: none;
+  font-family: 'Kollektif', system-ui, sans-serif;
+  color: #ffffff;
+  font-size: 25px;
+  font-weight: 400;
+  transition: background 0.15s;
+  white-space: nowrap;
+}
+
+.sl-nav-item:hover { background: #ffffff18; }
+.sl-nav-item--active { color: #F5C842; }
+.sl-nav-item--active:hover { background: #f0c030; color: #025571; }
+
+.sl-sidebar-footer { padding: 0 16px 16px; }
+
+.sl-logout {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 16px;
+  margin: 8px 16px 16px;
+  border-radius: 10px;
+  border: none;
+  background: transparent;
+  color: #fff;
+  font-size: 25px;
+  font-family: 'Kollektif', system-ui, sans-serif;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.sl-logout:hover { background: #ffffff18; }
+
+.sl-main {
+  flex: 1;
+  overflow-y: auto;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  padding: 36px 40px;
+  box-sizing: border-box;
+}

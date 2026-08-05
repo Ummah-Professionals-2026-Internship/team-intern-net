@@ -48,7 +48,7 @@ api.interceptors.response.use(
  * @param {(progress: number) => void} [onProgress] - Optional upload progress callback (0-100).
  */
 export const submitIntakeForm = async (formData, onProgress) => {
-  const response = await api.post('/intake', formData, {
+  const response = await api.post('/intake/apply', formData, {
     headers: {
       'Content-Type': 'multipart/form-data', // Auto-overrides JSON header for file uploads
     },

@@ -1,0 +1,115 @@
+@font-face {
+  font-family: "Kollektif";
+  src: url("../../fonts/kollektif-webfont/Kollektif.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Kollektif Bold";
+  src: url("../../fonts/kollektif-webfont/Kollektif-Bold.woff") format("woff");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+.sm-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  font-family: "Kollektif", system-ui, sans-serif;
+}
+
+.sm-title {
+  font-family: "Kollektif Bold", system-ui, sans-serif;
+  font-size: 32px;
+  margin: 0;
+  color: #000;
+}
+
+.sm-subtitle {
+  margin: 0;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.sm-state {
+  text-align: center;
+  padding: 2rem;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.sm-state--error { color: #dc2626; }
+
+.sm-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sm-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px 24px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sm-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.sm-mentor {
+  font-family: "Kollektif Bold", system-ui, sans-serif;
+  font-size: 16px;
+  color: #025571;
+  margin: 0 0 4px;
+}
+
+.sm-date {
+  font-size: 14px;
+  color: #111827;
+  margin: 0 0 2px;
+}
+
+.sm-time {
+  font-size: 13px;
+  color: #6b7280;
+  margin: 0;
+}
+
+.sm-badge {
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.sm-badge--scheduled { background: #dbeafe; color: #1d4ed8; }
+.sm-badge--completed { background: #dcfce7; color: #16a34a; }
+.sm-badge--cancelled { background: #fee2e2; color: #dc2626; }
+.sm-badge--noshow { background: #fef3c7; color: #d97706; }
+
+.sm-link {
+  color: #025571;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  border: 1.5px solid #025571;
+  border-radius: 8px;
+  padding: 8px 16px;
+  display: inline-block;
+  width: fit-content;
+  transition: background 0.15s;
+}
+
+.sm-link:hover {
+  background: #f0f9ff;
+}

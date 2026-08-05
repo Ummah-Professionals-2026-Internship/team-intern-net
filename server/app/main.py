@@ -2,6 +2,23 @@ import logging
 from pathlib import Path
 from fastapi import Depends, FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel # Automatically validates data coming in and formats data going out
+from typing import List # May be removed if not needed
+
+from app.routers import test
+from app.routers import dashboard
+from app.routers import matching
+from app.routers import auth
+from app.routers.student import router as student_router
+from app.routers import google_calendar
+from app.routers import intake
+from app.routers import mentors
+from app.routers import availability
+from app.routers import mentor_profile
+from app.routers import mentor_meetings
+from app.routers import mentor_assignments
+from sqlalchemy import text
+from fastapi import Depends
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy.ext.asyncio import AsyncSession

@@ -76,7 +76,7 @@ const SignIn = () => {
             <InputField
               label="Password"
               id="password"
-              type={showPassword ? 'text' : 'password'}
+              type={showPassword ? 'text' : 'Password'}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required

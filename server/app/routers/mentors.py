@@ -1,54 +1,45 @@
-#Mentor Application API Routing file
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
-from sqlalchemy.orm import selectinload
-from app.schemas.mentor import MentorResponse
-from pydantic import BaseModel, EmailStr
-from typing import Optional, List
-from app.db.database import get_db
-from app.models.mentor_application import MentorApplication
-from app.models.enums import ServiceTypeEnum, GenderEnum, ApplicationStatusEnum
-from app.schemas.mentor_application import MentorApplicationCreate, MentorApplicationReview
-from app.core.email import send_email
-from app.core.deps import require_admin
-from datetime import datetime
-from app.models.user import User
-from app.models.mentor import Mentor
-from app.models.enums import RoleEnum
-from app.core.security import hash_password
-from app.core.deps import require_admin
-from datetime import datetime, timezone
-import secrets
+# Mentor Application API Routing file
 import logging
-from app.core.deps import require_mentor
-from app.models.meeting import Meeting 
-from app.models.mentor_assignment import MentorAssignment
+import secrets
+from datetime import datetime, timezone
+from typing import List, Optional
+
+from fastapi import APIRouter, Depends, HTTPException, status
+from pydantic import BaseModel, EmailStr
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
+
+from app.core.deps import require_admin, require_mentor
+from app.core.email import send_email
+from app.core.security import hash_password
+from app.db.database import get_db
+from app.models.enums import ApplicationStatusEnum, GenderEnum, RoleEnum, ServiceTypeEnum
+from app.models.meeting import Meeting
+from app.models.mentor import Mentor
+from app.models.mentor_application import MentorApplication
+from app.models.mentor_assignment import MentorAssignment
+from app.models.user import User
+from app.schemas.mentor import MentorResponse
+from app.schemas.mentor_application import MentorApplicationCreate, MentorApplicationReview
 
 logger = logging.getLogger(__name__)
-
-
 router = APIRouter(tags=["Mentor"])
 
 
 @router.post("/mentor/apply")
 async def apply_mentor(form: MentorApplicationCreate, db: AsyncSession = Depends(get_db)):
-    
-   
     # 1. Check if email already exists in users
     existing_user = await db.execute(select(User).where(User.email == form.email))
     if existing_user.scalar_one_or_none():
         raise HTTPException(status_code=400, detail="An account with this email already exists.")
     
-
     # 2. Check if application already submitted
     existing_app = await db.execute(select(MentorApplication).where(MentorApplication.email == form.email))
     if existing_app.scalar_one_or_none():
         raise HTTPException(status_code=400, detail="An application has already been submitted using this email address.")
 
-
-
+    # 3. Write basic Application entry
     application = MentorApplication(
         full_name=form.full_name,
         email=form.email,
@@ -70,7 +61,6 @@ async def apply_mentor(form: MentorApplicationCreate, db: AsyncSession = Depends
     db.add(application)
     await db.flush()  # get application.id
 
-
     # 4. Auto generate temp password
     temp_password = secrets.token_urlsafe(10)
 
@@ -85,7 +75,6 @@ async def apply_mentor(form: MentorApplicationCreate, db: AsyncSession = Depends
     )
     db.add(new_user)
     await db.flush()  # get new_user.id
-
 
     # 6. Create Mentor profile
     mentor = Mentor(
@@ -115,32 +104,28 @@ async def apply_mentor(form: MentorApplicationCreate, db: AsyncSession = Depends
         await send_email(
             subject="Thank You for Your Application - Ummah Professionals",
             recipient=form.email,
-            body=f""" <p>Assalamu Alaikum, {form.full_name} </p>
-                <p>Thank you for your interest in becoming a Career Advisor with Ummah Professionals. We have received your application. Your account has been created and you should be receiving your credentials in separate email.</p>
-                <p>In the meantime, if you have any questions, feel free to reach out to us.</p>
-                <p>We appreciate your willingness to give back to the community and look forward to potentially welcoming you to our network of volunteers.</p>
-                <p>Jazakum Allahu Khayran,<br>The Ummah Professionals Team</p>
-                """
+            body=f"""<p>Assalamu Alaikum, {form.full_name}</p>
+            <p>Thank you for your interest in becoming a Career Advisor with Ummah Professionals. We have received your application. Your account has been created and you should be receiving your credentials in a separate email.</p>
+            <p>In the meantime, if you have any questions, feel free to reach out to us.</p>
+            <p>We appreciate your willingness to give back to the community and look forward to potentially welcoming you to our network of volunteers.</p>
+            <p>Jazakum Allahu Khayran,<br>The Ummah Professionals Team</p>"""
         )
         await send_email(
             subject="Welcome to the Platform! - Ummah Professionals",
             recipient=form.email,
-            body=f""" <p>Assalamu Alaikum, {form.full_name} </p>
-                <p>Thank you for again for your interest in becoming a Career Advisor with Ummah Professionals.</p>
-                <p> Here are your login credentials </p>
-                <p>Email: {form.email}</p>
-                <p>Password: {temp_password} </p>
-                <p>Please log in and change your password after your first login.</p>
-                <p>Jazakum Allahu Khayran,<br>The Ummah Professionals Team</p>
-                """
+            body=f"""<p>Assalamu Alaikum, {form.full_name}</p>
+            <p>Thank you again for your interest in becoming a Career Advisor with Ummah Professionals.</p>
+            <p>Here are your login credentials:</p>
+            <p><strong>Email:</strong> {form.email}</p>
+            <p><strong>Password:</strong> {temp_password}</p>
+            <p>Please log in and change your password after your first login.</p>
+            <p>Jazakum Allahu Khayran,<br>The Ummah Professionals Team</p>"""
         )
-
-
     except Exception as e:
         logger.error(f"Failed to send email to {form.email}: {e}")
 
-
     return {"message": "Mentor application submitted successfully. Check your email for login credentials.", "application_id": application.id}
+
 
 @router.get("/mentor/applications")
 async def get_mentor_applications(user=Depends(require_admin), db: AsyncSession = Depends(get_db)):
@@ -151,32 +136,6 @@ async def get_mentor_applications(user=Depends(require_admin), db: AsyncSession 
     )
     return result.scalars().all()
 
-
-
-# @router.get("/mentor/meetings")
-# async def get_mentor_meetings(user=Depends(require_mentor), db: AsyncSession = Depends(get_db)):
-    
-#     mentor_id = int(user["sub"])
-#     result = await db.execute(
-#         select(Meeting)
-#         .join(MentorAssignment, Meeting.assignment_id == MentorAssignment.id)
-#         .where(MentorAssignment.mentor_id == mentor_id)
-#         .options(
-#             selectinload(Meeting.assignment),
-#             selectinload(Meeting.slot),
-#         )
-#         .order_by(Meeting.start_datetime)
-#     )
-
-#     return result.scalars().all()
-
-
-from app.models.user import User
-from app.models.mentor import Mentor
-from app.models.enums import RoleEnum, ApplicationStatusEnum
-from app.core.security import hash_password
-from app.core.deps import require_admin
-import secrets
 
 @router.patch("/mentor/applications/{application_id}/review")
 async def review_mentor_application(
@@ -204,18 +163,14 @@ async def review_mentor_application(
 
     # 3. If approved — create user + mentor account
     if payload.status == ApplicationStatusEnum.approved:
-
-        # Check if account already exists
         existing = await db.execute(
             select(User).where(User.email == application.email)
         )
         if existing.scalar_one_or_none():
             raise HTTPException(status_code=400, detail="An account with this email already exists")
 
-        # Auto-generate temp password
         temp_password = secrets.token_urlsafe(10)
 
-        # Create User
         new_user = User(
             email=application.email,
             full_name=application.full_name,
@@ -225,9 +180,8 @@ async def review_mentor_application(
             is_active=True,
         )
         db.add(new_user)
-        await db.flush()  # get new_user.id
+        await db.flush() 
 
-        # Create Mentor profile — copy fields from application
         mentor = Mentor(
             user_id=new_user.id,
             gender=application.gender,
@@ -243,34 +197,18 @@ async def review_mentor_application(
         )
         db.add(mentor)
 
-        # Link created user back to application
         application.created_user_id = new_user.id
-
         await db.commit()
 
-        # Send credentials email
         try:
             await send_email(
                 recipient=application.email,
                 subject="Your Mentor Account Has Been Approved",
-                body=f"""
-Hi {application.full_name},
-
-Congratulations! Your mentor application has been approved.
-
-Here are your login credentials:
-
-Email: {application.email}
-Password: {temp_password}
-
-Please log in and change your password after your first login.
-                """
+                body=f"Hi {application.full_name},\n\nCongratulations! Your mentor application has been approved.\n\nHere are your login credentials:\n\nEmail: {application.email}\nPassword: {temp_password}\n\nPlease log in and change your password after your first login."
             )
         except Exception as e:
             logger.error(f"Failed to send approval email to {application.email}: {e}")
-
     else:
-        # Rejected — just commit the status update
         await db.commit()
 
     return {
@@ -280,7 +218,7 @@ Please log in and change your password after your first login.
     }
 
 
-@router.get("/mentors", response_model=List[MentorResponse])
+@router.get("/mentor/list", response_model=List[MentorResponse])
 async def get_all_mentors(
     db: AsyncSession = Depends(get_db),
     user=Depends(require_admin)

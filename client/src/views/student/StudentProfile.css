@@ -1,0 +1,318 @@
+/* Layout Container Wrapper */
+.sp-container {
+  padding: 2.5rem;
+  max-width: 1100px;
+  margin: 0 auto;
+  font-family: 'Inter', system-ui, sans-serif;
+  color: #333;
+  position: relative;
+  z-index: 5; /* Pushes profile layout on top of any absolute layout background waves */
+}
+
+.sp-header-title {
+  margin-bottom: 2rem;
+}
+
+.sp-header-title h1 {
+  font-size: 1.85rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 0.25rem 0;
+}
+
+.sp-header-title p {
+  color: #64748b;
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+/* Meta Profile Identity Banner Block */
+.sp-identity-card {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 1.75rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.05);
+  border: 1px solid #e2e8f0;
+  margin-bottom: 2rem;
+  position: relative;
+  backdrop-filter: blur(8px);
+}
+
+.sp-avatar-circle {
+  width: 75px;
+  height: 75px;
+  background: #f1f5f9;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.25rem;
+  margin-right: 1.5rem;
+  border: 1px solid #e2e8f0;
+}
+
+.sp-identity-meta h2 {
+  font-size: 1.35rem;
+  margin: 0 0 0.35rem 0;
+  color: #0f172a;
+  font-weight: 600;
+}
+
+.sp-meta-email {
+  margin: 0 0 0.5rem 0;
+  color: #475569;
+  font-size: 0.9rem;
+}
+
+.sp-badge-applicant {
+  background: #e0f2fe;
+  color: #0369a1;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.35rem 0.85rem;
+  border-radius: 50px;
+  display: inline-block;
+}
+
+.sp-btn-photo {
+  position: absolute;
+  right: 1.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #fff;
+  border: 1px solid #cbd5e1;
+  padding: 0.5rem 1.25rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  font-weight: 600;
+  color: #475569;
+  transition: all 0.2s;
+}
+
+.sp-btn-photo:hover {
+  background: #f8fafc;
+  border-color: #94a3b8;
+}
+
+/* Forms and Core Sections Styling */
+.sp-form-section {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 2.25rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.05);
+  border: 1px solid #e2e8f0;
+  margin-bottom: 2rem;
+  backdrop-filter: blur(8px);
+}
+
+.sp-form-section h3 {
+  font-size: 1.25rem;
+  margin: 0 0 1.5rem 0;
+  color: #0f172a;
+  border-bottom: 2px solid #f1f5f9;
+  padding-bottom: 0.75rem;
+  font-weight: 600;
+}
+
+.sp-section-subtext {
+  font-size: 0.875rem;
+  color: #64748b;
+  margin: -0.75rem 0 1.75rem 0;
+  line-height: 1.5;
+}
+
+/* Two-Column Responsive Data Grid */
+.sp-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.75rem;
+}
+
+@media (max-width: 768px) {
+  .sp-form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.sp-field {
+  display: flex;
+  flex-direction: column;
+}
+
+.sp-field.full-width {
+  grid-column: span 2;
+}
+
+@media (max-width: 768px) {
+  .sp-field.full-width {
+    grid-column: span 1;
+  }
+}
+
+.sp-field label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #334155;
+  margin-bottom: 0.5rem;
+}
+
+.sp-field input,
+.sp-field select,
+.sp-field textarea {
+  padding: 0.75rem 1rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  background-color: #fff;
+  color: #1e293b;
+  width: 100%;
+  box-sizing: border-box;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.sp-field input:focus,
+.sp-field select:focus,
+.sp-field textarea:focus {
+  outline: none;
+  border-color: #0284c7;
+  box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+}
+
+.sp-field input:disabled,
+.sp-field select:disabled,
+.sp-field textarea:disabled {
+  background-color: #f8fafc;
+  color: #64748b;
+  border-color: #e2e8f0;
+  cursor: not-allowed;
+}
+
+/* Locked Inputs UI Indicating Read-Only */
+.sp-input-locked {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.sp-lock-icon {
+  position: absolute;
+  right: 1rem;
+  color: #94a3b8;
+  font-size: 0.9rem;
+}
+
+/* Embedded Intake Form Link Container Box */
+.sp-view-form-container {
+  justify-content: flex-end;
+}
+
+.sp-action-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  padding: 0.85rem 1.25rem;
+  border-radius: 10px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.sp-action-icon {
+  font-size: 1.25rem;
+}
+
+.sp-action-text {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #166534;
+  flex-grow: 1;
+  margin-left: 0.75rem;
+}
+
+.sp-btn-view-form {
+  background: #fff;
+  border: 1px solid #bbf7d0;
+  color: #166534;
+  padding: 0.45rem 1.25rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.sp-btn-view-form:hover {
+  background: #dcfce7;
+  border-color: #86efac;
+}
+
+/* Toast Form Notification Overlays */
+.sp-error-banner {
+  background: #fef2f2;
+  color: #991b1b;
+  padding: 0.85rem 1.25rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+  border: 1px solid #fee2e2;
+}
+
+.sp-success-banner {
+  background: #f0fdf4;
+  color: #166534;
+  padding: 0.85rem 1.25rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+  border: 1px solid #dcfce7;
+}
+
+/* Lower Control Action Toolbar Row */
+.sp-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.sp-btn-edit,
+.sp-btn-save {
+  background: #0284c7;
+  color: white;
+  border: none;
+  padding: 0.75rem 2rem;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.sp-btn-edit:hover,
+.sp-btn-save:hover {
+  background: #0369a1;
+}
+
+.sp-btn-cancel {
+  background: #fff;
+  border: 1px solid #cbd5e1;
+  color: #475569;
+  padding: 0.75rem 2rem;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.sp-btn-cancel:hover {
+  background: #f8fafc;
+  color: #1e293b;
+  border-color: #94a3b8;
+}

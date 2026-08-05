@@ -39,7 +39,7 @@ const LandingPage = () => {
                             If you have an existing account, sign in below
                         </div>
                         <div> 
-                            <button className="lp-btn" onClick={() => navigate("/signin")}> Sigin</button>
+                            <button className="lp-btn" onClick={() => navigate("/signin")}> SignIn</button>
                         </div>
 
                     </div>
