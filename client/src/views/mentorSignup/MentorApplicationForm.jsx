@@ -140,18 +140,17 @@ export default function MentorApplicationForm() {
   };
 
   const handleSubmit = async () => {
-    console.log(genderMap[form.gender])
+    console.log(genderMap[form.gender]);
     const next = validate();
     if (Object.keys(next).length > 0) {
       setErrors(next);
       return;
     }
-    
     setLoading(true);
     setServerError("");
 
     try {
-      const response = await api.post("/mentor/apply", {
+      await api.post("/mentor/apply", {
         full_name: form.fullName,
         phone_number: form.phoneNumber,
         email: form.email,
@@ -168,11 +167,10 @@ export default function MentorApplicationForm() {
         other_info: form.otherInfo,
         service_types: form.volunteeringFor,
       });
-    const data = await response.data;
-    if (!response.ok) {
-      console.log("Backend error:", data);
-      if (data.detail && Array.isArray(data.detail)) {
-        // map FastAPI validation errors back to form fields
+      setSubmitted(true);
+    } catch (err) {
+      const data = err.response?.data;
+      if (data?.detail && Array.isArray(data.detail)) {
         const backendErrors = {};
         data.detail.forEach((err) => {
           const snakeField = err.loc[1];
@@ -181,20 +179,13 @@ export default function MentorApplicationForm() {
         });
         setErrors(backendErrors);
       } else {
-        // fallback for non-validation errors
-        setServerError(data.detail || "Something went wrong. Please try again.");
+        setServerError(data?.detail || "Something went wrong. Please try again.");
       }
-    } else {
-      setSubmitted(true);
+    } finally {
+      setLoading(false);
     }
-  } catch (err) {
-    setServerError("Network error. Please check your connection and try again.");
-    console.log(err)
-  } finally {
-    setLoading(false);
-  }
-  
   };
+
 
   if (submitted) {
     return (

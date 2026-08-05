@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { FileText } from "lucide-react";
 
 import FileUpload from "../../components/ui/FileUpload";
@@ -187,34 +187,28 @@ export default function CareerPrep() {
     if (resume) formData.append("resume", resume);
 
     try {
-      const res = await api.post("/intake/apply", formData, {
+      await api.post("/intake/apply", formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
-
-      const data = await res.data;
-
-      if (!res.ok) {
-        // FIX HERE: Safely parse detail if it's a Pydantic validation array or object
-        if (typeof data.detail === "string") {
-          setServerError(data.detail);
-        } else if (Array.isArray(data.detail)) {
-          // Formats FastAPI validation errors into a clean human-readable string
-          const errorMessages = data.detail
-            .map((err) => `${err.loc?.[1] || "field"}: ${err.msg}`)
-            .join(", ");
-          setServerError(errorMessages);
-        } else {
-          setServerError("Failed to submit request. Please check your inputs.");
-        }
-      } else {
-        setSubmitted(true);
-      }
+      setSubmitted(true);
     } catch (err) {
-      setServerError("Network error. Please check your connection and try again.");
+      const data = err.response?.data;
+      if (typeof data?.detail === "string") {
+        setServerError(data.detail);
+      } else if (Array.isArray(data?.detail)) {
+        const errorMessages = data.detail
+          .map((err) => `${err.loc?.[1] || "field"}: ${err.msg}`)
+          .join(", ");
+        setServerError(errorMessages);
+      } else {
+        setServerError("Failed to submit request. Please check your inputs.");
+      }
     } finally {
       setLoading(false);
     }
   };
+
+
 
   if (submitted) {
     return (

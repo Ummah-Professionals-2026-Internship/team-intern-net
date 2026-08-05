@@ -78,7 +78,7 @@ export default function MentorRequestDetail() {
     setDeclining(true);
     setActionError("");
     try {
-      await api.patch(`/mentors/requests/${id}/decline`);
+      await api.patch(`/mentor/requests/${id}/decline`);
       setRequest((prev) => ({ ...prev, status: "declined" }));
       setShowDeclineModal(false);
       setSuccessAction("declined");
