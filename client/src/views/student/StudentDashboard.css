@@ -522,9 +522,28 @@
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
   text-align: center;
   max-width: 450px;
+  font-family: "Kollektif", system-ui, sans-serif;
   width: 90%;
 }
+.sd-modal-h2{
+  color: #000;
+  line-height: normal;
+  font-weight: 700;
+  font-family: "Kollektif Bold", system-ui, sans-serif;
+  
+}
 
+
+.sd-modal-close-btn{
+  font-family: "Kollektif", system-ui, sans-serif;
+  border-radius: 12px;
+  border: 1px solid #007CA6;
+  background: #007CA6;
+  width: 274px;
+  height: 35px;
+  justify-content: center;
+  align-items: center;
+}
 
 /* Dashboard-specific cancel button layout */
 .sd-dashboard-cancel-btn {

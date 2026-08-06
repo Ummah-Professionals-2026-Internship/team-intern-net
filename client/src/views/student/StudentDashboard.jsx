@@ -4,6 +4,8 @@ import api from '../../api/api'; // adjust path as needed
 import RequestIcon from '../../assets/icons/Check.svg'
 import SearchIcon from '../../assets/icons/search.svg'
 import HandWavingIcon from '../../assets/icons/HandWaving.svg'
+import CircleCheckIcon from '../../assets/icons/CheckCircle.svg'
+
 const DAYS = ["Sun", "Mon", "Tues", "Wed", "Thurs", "Fri", "Sat"];
 const MONTHS = [
   "January", "February", "March", "April", "May", "June",
@@ -616,17 +618,16 @@ export default function StudentDashboard() {
       {showConfirmedModal && upcomingMeeting && (
         <div className="sd-modal-overlay">
           <div className="sd-modal-content">
-            <div className="sd-modal-success-icon">✓</div>
-            <h2>Meeting Confirmed!</h2>
+            <img src={CircleCheckIcon} alt="Confirmed!"/>
+            <h2 className="sd-modal-h2">Meeting Confirmed!</h2>
             <p className="sd-modal-subtext">Your Career Advice session with <strong>{mentor?.name}</strong> has been scheduled.</p>
-
             <div className="sd-modal-receipt-box">
-              <p>📅 {formatDateLong(upcomingMeeting.start_datetime?.split("T")[0])}</p>
-              <p>⏰ {formatTime(upcomingMeeting.start_datetime)} – {formatTime(upcomingMeeting.end_datetime)} EST</p>
-              <p>📹 Meeting Platform: Google Meet</p>
+              <p>{formatDateLong(upcomingMeeting.start_datetime?.split("T")[0])}</p>
+              <p>{formatTime(upcomingMeeting.start_datetime)} – {formatTime(upcomingMeeting.end_datetime)} EST</p>
+              <p>Meeting Platform: Google Meet</p>
               {upcomingMeeting.meeting_url && (
                 <p style={{ wordBreak: 'break-all', marginTop: '6px' }}>
-                  🔗 <strong>Google Meet Link:</strong>{' '}
+                  <strong>Google Meet Link:</strong>{' '}
                   <a href={upcomingMeeting.meeting_url} target="_blank" rel="noreferrer" style={{ color: '#0f766e' }}>
                     {upcomingMeeting.meeting_url}
                   </a>
@@ -637,7 +638,7 @@ export default function StudentDashboard() {
             <p className="sd-modal-footer-notice">Google Meet invite details have been emailed to you.</p>
             <button className="sd-modal-close-btn" onClick={() => setShowConfirmedModal(false)}>
               View Dashboard
-            </button>
+            </button>s
           </div>
         </div>
       )}
