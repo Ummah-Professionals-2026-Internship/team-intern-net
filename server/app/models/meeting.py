@@ -35,7 +35,7 @@ class Meeting(Base):
 
     id               : Mapped[int]                  = mapped_column(primary_key=True, autoincrement=True)
     assignment_id    : Mapped[int]                  = mapped_column(ForeignKey("mentor_assignments.id", ondelete="RESTRICT"))
-    slot_id          : Mapped[int]                  = mapped_column(ForeignKey("availability_slots.id", ondelete="RESTRICT"), unique=True)
+    slot_id          : Mapped[Optional[int]]        = mapped_column(ForeignKey("availability_slots.id", ondelete="RESTRICT"), nullable=True, unique=True)
     start_datetime   : Mapped[datetime]             = mapped_column(DateTime(timezone=True))
     end_datetime     : Mapped[datetime]             = mapped_column(DateTime(timezone=True))
     meeting_url      : Mapped[Optional[str]]        = mapped_column(Text, nullable=True)
@@ -44,9 +44,10 @@ class Meeting(Base):
                                                                     default=MeetingStatusEnum.scheduled,)
     cancelled_reason : Mapped[Optional[str]]        = mapped_column(Text, nullable=True)
     meeting_notes    : Mapped[Optional[str]]        = mapped_column(Text, nullable=True)
+    student_notes    : Mapped[Optional[str]]        = mapped_column(Text, nullable=True) # Highlight: Added for booking intent
     created_at       : Mapped[datetime]             = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at       : Mapped[datetime]             = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
     # Relationships
     assignment : Mapped["MentorAssignment"] = relationship(back_populates="meetings")
-    slot       : Mapped["AvailabilitySlot"] = relationship(back_populates="meeting")
+    slot       : Mapped[Optional["AvailabilitySlot"]] = relationship(back_populates="meeting")

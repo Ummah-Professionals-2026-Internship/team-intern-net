@@ -66,7 +66,35 @@ ehthumbs.db
 ehthumbs_vista.db
 [Dd]esktop.ini
 
-# LOCAL DEV SCRIPTS
+# LOCAL DEV SCRIPTS AND SCRATCH FILES
+scratch/
+/scratch/
+.scratch/
+*.scratch
+tmp/
+/tmp/
+*.tmp
+*.temp
+*.bak
+.system_generated/
+/test_out/
 /server/app/create_admin.py
 /server/app/delete_admin.py
 server/app/demo_capacity_seed.py
+
+# UPLOADED USER FILES & STORAGE
+uploads/
+/uploads/
+/server/uploads/
+resumes/
+/resumes/
+/server/uploads/resumes/
+*.pdf
+*.docx
+*.doc
+
+# BUILD & DEV TOOL CACHES
+.vite/
+/client/.vite/
+
+

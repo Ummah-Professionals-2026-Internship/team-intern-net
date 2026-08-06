@@ -1,0 +1,68 @@
+.meeting-status-pill {
+  display: inline-block;
+  border-radius: 5px;
+  padding: 4px 14px;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+  min-width: 100px;
+  border-width: 1px;
+  border-style: solid;
+  white-space: nowrap;
+}
+
+.meeting-status-upcoming {
+  border-color: var(--admin-primary);
+  color: var(--admin-primary);
+  background-color: rgba(138, 203, 219, 0.2);
+}
+
+.meeting-status-completed {
+  border-color: #11a135;
+  color: #11a135;
+  background-color: rgba(52, 199, 89, 0.16);
+}
+
+.meeting-status-cancelled {
+  border-color: #da1d37;
+  color: #da1d37;
+  background-color: rgba(255, 56, 60, 0.16);
+}
+
+.meeting-status-missed {
+  border-color: #ff8d28;
+  color: #ff8d28;
+  background-color: rgba(253, 187, 55, 0.16);
+}
+
+/* Danger Outline Button for Actions (e.g., Remove) */
+.btn-danger-outline {
+  background-color: #da1d37;
+  color: #ffffff;
+  border: 1px solid #da1d3766;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  white-space: nowrap;
+}
+
+.btn-danger-outline:hover:not(:disabled) {
+  background-color: #8b0000;
+  border-color: #da1d37;
+}
+
+.btn-danger-outline:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 767px) {
+  .meeting-status-pill {
+    min-width: 80px;
+    padding: 4px 10px;
+    font-size: 12px;
+  }
+}

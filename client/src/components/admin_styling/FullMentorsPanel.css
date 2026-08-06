@@ -1,0 +1,102 @@
+/* ==========================================================================
+   FULL MENTORS PANEL — Consistent with AdminDash.css design tokens
+   Shared figma-table / figma-filter-bar classes handled by AdminDash.css.
+   This file scopes only panel-specific overrides and pill variants.
+   ========================================================================== */
+
+/* ── Services Cell ── */
+.mentor-services-cell,
+.service-pill-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.mentor-services-cell {
+  max-width: 220px;
+}
+
+/* ── Service Pills ── */
+.service-pill,
+.service-pill-empty {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  padding: 4px 12px;
+  font-family: var(--font-main);
+  font-weight: 700;
+  font-size: clamp(11px, 1vw, 13px);
+  white-space: nowrap;
+  background: rgba(138, 203, 219, 0.18);
+  border: 1px solid var(--admin-primary);
+  color: var(--admin-primary);
+}
+
+/* ── Status Pills for Mentor table ── */
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  padding: 4px 14px;
+  font-family: var(--font-main);
+  font-weight: 700;
+  font-size: clamp(11px, 1vw, 13px);
+  white-space: nowrap;
+  border-width: 1px;
+  border-style: solid;
+}
+
+.status-pill.available {
+  background: rgba(52, 199, 89, 0.14);
+  border-color: #34c759;
+  color: #11a135;
+}
+
+.status-pill.booked {
+  background: rgba(255, 56, 60, 0.14);
+  border-color: #fd788a;
+  color: #da1d37;
+}
+
+.status-pill.cooldown {
+  background-color: #fef3c7;
+  border-color: var(--admin-accent);
+  color: #92600b;
+}
+
+.status-pill.inactive {
+  background-color: #f3f4f6;
+  border-color: #9ca3af;
+  color: #4b5563;
+}
+
+/* ==========================================================================
+   RESPONSIVE BREAKPOINTS — matching AdminDash.css three-tier system
+   ========================================================================== */
+
+/* ── Tablet (≤1023px): narrow service cell ── */
+@media (max-width: 1023px) {
+  .mentor-services-cell {
+    max-width: 160px;
+  }
+}
+
+/* ── Mobile (≤767px): cell goes full-width, pills shrink ── */
+@media (max-width: 767px) {
+  .mentor-services-cell {
+    max-width: 100%;
+  }
+
+  .service-pill,
+  .service-pill-empty {
+    font-size: 11px;
+    padding: 3px 8px;
+  }
+
+  .status-pill {
+    font-size: 11px;
+    padding: 3px 10px;
+  }
+}

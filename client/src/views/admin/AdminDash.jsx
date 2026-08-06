@@ -1,87 +1,27 @@
 import { useEffect, useState } from "react";
 import api from "../../api/api";
-import "./AdminDash.css";
-import umLogo from "../../assets/horizontal white 1.svg";
-import sideBgSwirl from "../../assets/horizontal-swirl.svg";
+
+import Sidebar from "../../components/admin/Sidebar";
+import FullMentorsPanel from "../../components/admin/FullMentorsPanel";
+import FullCapacityPanel from "../../components/admin/FullCapacityPanel";
+import FullApplicantPanel from "../../components/admin/FullApplicantPanel";
+import FullMentorMatchPanel from "../../components/admin/FullMentorMatchPanel";
+import MeetingsPanel from "../../components/admin/MeetingsPanel";
+import MentorProfile from "../../components/admin/MentorProfile";
+import MentorApplicationsPanel from "../../components/admin/MentorApplicationsPanel";
+
+import StatCard from "../../components/ui/StatCard";
+import Icon from "../../components/ui/Icon";
+
 import bgDoubleSwirl from "../../assets/images/double-white-swirl.png";
-import { useAuth } from "../../context/useAuth";
-
-// SVG Icon Helper supporting standard 24x24 or custom viewboxes
-const Icon = ({ name, className = "nav-icon" }) => {
-  const iconConfig = ICONS[name];
-  if (!iconConfig) return null;
-
-  const isCustomConfig = typeof iconConfig === "object" && iconConfig.path;
-  const path = isCustomConfig ? iconConfig.path : iconConfig;
-  const viewBox = isCustomConfig ? iconConfig.viewBox : "0 0 24 24";
-
-  return (
-    <svg
-      viewBox={viewBox}
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={className}
-    >
-      {typeof path === "string" ? <path d={path} /> : path}
-    </svg>
-  );
-};
-
-// Standardized SVG Paths
-const ICONS = {
-  home: "M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z",
-  applicants: (
-    <>
-      <path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2" />
-      <circle cx="9" cy="7" r="4" />
-      <path d="M22 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" />
-    </>
-  ),
-  mentors: (
-    <>
-      <path d="M22 10l-10-5L2 10l10 5 10-5z" />
-      <path d="M6 12v5c3 3 9 3 12 0v-5" />
-      <path d="M22 10v6" />
-    </>
-  ),
-  match: (
-    <>
-      <path d="M19 21l-7-4-7 4V5a2 2 0 012-2h10a2 2 0 012 2v16z" />
-      <path d="M12 7l1 2 2.2.3-1.6 1.6.4 2.1-2-1-2 1 .4-2.1L8.8 9.3l2.2-.3 1-2z" />
-    </>
-  ),
-  meetings: (
-    <>
-      <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-      <line x1="16" y1="2" x2="16" y2="6" />
-      <line x1="8" y1="2" x2="8" y2="6" />
-      <line x1="3" y1="10" x2="21" y2="10" />
-      <path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01M16 18h.01" strokeWidth="2.5" />
-    </>
-  ),
-  capacity: {
-    viewBox: "0 0 34 34",
-    path: "M12.75 15.5834V28.3334M12.75 15.5834H6.51611C5.72271 15.5834 5.3264 15.5834 5.02336 15.7378C4.75679 15.8736 4.54023 16.0902 4.40441 16.3568C4.25 16.6598 4.25 17.0568 4.25 17.8502V28.3334H12.75M12.75 15.5834V7.93355C12.75 7.14015 12.75 6.74315 12.9044 6.4401C13.0402 6.17354 13.2568 5.95698 13.5234 5.82116C13.8264 5.66675 14.2227 5.66675 15.0161 5.66675H18.9828C19.7762 5.66675 20.1737 5.66675 20.4768 5.82116C20.7433 5.95698 20.9592 6.17354 21.0951 6.4401C21.2495 6.74315 21.25 7.14015 21.25 7.93355V11.3334M12.75 28.3334H21.25M21.25 28.3334L29.75 28.3336V13.6002C29.75 12.8068 29.7495 12.4098 29.5951 12.1068C29.4592 11.8402 29.2442 11.6236 28.9776 11.4878C28.6746 11.3334 28.2767 11.3334 27.4833 11.3334H21.25M21.25 28.3334V11.3334",
-  },
-  logout: "M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9",
-};
-
-// Sidebar Navigation Items
-const NAV_ITEMS = [
-  { key: "home", label: "Dashboard" },
-  { key: "applicants", label: "Applicants" },
-  { key: "mentors", label: "Mentors" },
-  { key: "match", label: "Match" },
-  { key: "meetings", label: "Meetings" },
-  { key: "capacity", label: "Capacity" },
-];
+import "./AdminDash.css";
 
 export default function AdminDash() {
   const [mentors, setMentors] = useState([]);
   const [loadingMentors, setLoadingMentors] = useState(true);
+
+  const [selectedMentor, setSelectedMentor] = useState(null);
+  const [viewedProfileMentor, setViewedProfileMentor] = useState(null);
 
   const [capacity, setCapacity] = useState([]);
   const [loadingCapacity, setLoadingCapacity] = useState(true);
@@ -89,98 +29,363 @@ export default function AdminDash() {
   const [applicants, setApplicants] = useState([]);
   const [loadingApplicants, setLoadingApplicants] = useState(true);
 
+  const [mentorApplications, setMentorApplications] = useState([]);
+  const [loadingMentorApplications, setLoadingMentorApplications] = useState(true);
+
+  const [assignments, setAssignments] = useState([]);
+  const [loadingAssignments, setLoadingAssignments] = useState(true);
+
+  const [selectedApplicant, setSelectedApplicant] = useState(null);
   const [activeTab, setActiveTab] = useState("home");
-  const { logout } = useAuth();
+
+  const [meetings, setMeetings] = useState([]);
+  const [loadingMeetings, setLoadingMeetings] = useState(true);
+
+  const fetchApplicants = async () => {
+    try {
+      const res = await api.get("/intake");
+      const payload = res?.data ?? res;
+      const dataArray = payload?.intake_forms || payload?.applicants || payload;
+      setApplicants(Array.isArray(dataArray) ? dataArray : []);
+    } catch (err) {
+      console.error("Failed to load applicants:", err);
+      setApplicants([]);
+    } finally {
+      setLoadingApplicants(false);
+    }
+  };
+
+  const fetchMentorsAndCapacity = async () => {
+    try {
+      const [mentorsRes, capacityRes] = await Promise.all([
+        api.get("/mentors").catch(() => ({ data: [] })),
+        api.get("/mentor-assignments/capacity").catch(() => ({ data: [] })),
+      ]);
+
+      const rawMentors = Array.isArray(mentorsRes.data) ? mentorsRes.data : [];
+      const rawCapacity = Array.isArray(capacityRes.data) ? capacityRes.data : [];
+
+      const capMap = new Map();
+      rawCapacity.forEach((c) => {
+        const key = c.mentor_user_id || c.id;
+        if (key) capMap.set(key, c);
+      });
+
+      const enrichedMentors = rawMentors.map((m) => {
+        const cap = capMap.get(m.user_id || m.id) || {};
+        return {
+          ...m,
+          capacity: cap.capacity ?? m.max_monthly_sessions ?? 3,
+          assigned_count: cap.assigned_count ?? 0,
+          at_capacity: cap.at_capacity ?? false,
+          cooldown_until: cap.cooldown_until ?? null,
+          has_active_assignment: cap.has_active_assignment ?? false,
+        };
+      });
+
+      const mentorMap = new Map();
+      rawMentors.forEach((m) => {
+        const key = m.user_id || m.id;
+        if (key) mentorMap.set(key, m);
+      });
+
+      const enrichedCapacity = rawCapacity.map((c) => {
+        const m = mentorMap.get(c.mentor_user_id || c.id) || {};
+        return {
+          ...c,
+          ...m,
+          full_name: m.user?.full_name || m.full_name || c.full_name || "Unknown Mentor",
+          email: m.user?.email || m.email || "N/A",
+          industry: m.industry || c.industry || "General",
+          job_title: m.job_title || m.title || c.job_title || "N/A",
+          employer: m.employer || m.company || c.employer || "",
+          gender: m.gender || m.user?.gender || c.gender || null,
+          service_types: (m.service_types && m.service_types.length > 0) ? m.service_types : (c.service_types || []),
+          bio: m.bio || c.bio || "",
+          capacity: c.capacity ?? m.max_monthly_sessions ?? 3,
+          assigned_count: c.assigned_count ?? 0,
+          at_capacity: c.at_capacity ?? false,
+          cooldown_until: c.cooldown_until ?? null,
+          has_active_assignment: c.has_active_assignment ?? false,
+        };
+      });
+
+      setMentors(enrichedMentors.length > 0 ? enrichedMentors : enrichedCapacity);
+      setCapacity(enrichedCapacity.length > 0 ? enrichedCapacity : enrichedMentors);
+    } finally {
+      setLoadingMentors(false);
+      setLoadingCapacity(false);
+    }
+  };
+
+  const fetchMentorApplications = async () => {
+    try {
+      const res = await api.get("/mentor/applications");
+      setMentorApplications(Array.isArray(res.data) ? res.data : []);
+    } catch (err) {
+      console.error("Failed to load mentor applications:", err);
+      setMentorApplications([]);
+    } finally {
+      setLoadingMentorApplications(false);
+    }
+  };
+
+  const fetchAssignments = async () => {
+    try {
+      const res = await api.get("/mentor-assignments");
+      setAssignments(Array.isArray(res.data) ? res.data : []);
+    } catch (err) {
+      console.error("Failed to load assignments:", err);
+      setAssignments([]);
+    } finally {
+      setLoadingAssignments(false);
+    }
+  };
+
+  const fetchMeetings = async () => {
+    try {
+      const res = await api.get("/meetings");
+      setMeetings(Array.isArray(res.data) ? res.data : []);
+    } catch (err) {
+      console.error("Failed to load meetings:", err);
+      setMeetings([]);
+    } finally {
+      setLoadingMeetings(false);
+    }
+  };
 
   useEffect(() => {
-    // Fetch Mentors list
-    api
-      .get("/mentors")
-      .then((res) => setMentors(res.data))
-      .catch(() => setMentors([]))
-      .finally(() => setLoadingMentors(false));
-
-    // Fetch Capacity Tracking
-    api
-      .get("/mentors/capacity")
-      .then((res) => setCapacity(res.data))
-      .catch(() => setCapacity([]))
-      .finally(() => setLoadingCapacity(false));
-
-    // Fetch Student Intake Applicants
-    api
-      .get("/intake")
-      .then((res) => {
-        const payload = res?.data ?? res;
-        console.log("Resolved Intake Payload:", payload);
-        
-        const dataArray = payload?.intake_forms || payload?.applicants || payload;
-        setApplicants(Array.isArray(dataArray) ? dataArray : []);
-      })
-      .catch((err) => {
-        console.error("Failed to load applicants:", err);
-        setApplicants([]);
-      })
-      .finally(() => setLoadingApplicants(false));
+    fetchMentorsAndCapacity();
+    fetchApplicants();
+    fetchMentorApplications();
+    fetchAssignments();
+    fetchMeetings();
   }, []);
+
+  const handleUpdateStatus = async (intakeId, newStatus) => {
+    try {
+      const res = await api.patch(`/intake/${intakeId}/status`, { status: newStatus });
+      const updated = res.data;
+      setApplicants((prev) =>
+        prev.map((item) => (item.id === intakeId ? { ...item, ...updated } : item))
+      );
+      if (selectedApplicant && selectedApplicant.id === intakeId) {
+        setSelectedApplicant((prev) => ({ ...prev, ...updated }));
+      }
+      return updated;
+    } catch (err) {
+      console.error("Failed to update applicant status:", err);
+      throw err;
+    }
+  };
+
+  const handleAssignMentor = async (applicant, mentor) => {
+    if (!applicant) {
+      alert("No applicant selected.");
+      return;
+    }
+    const intakeId = applicant.id;
+    const rawMentorId =
+      mentor?.user_id ??
+      mentor?.mentor_user_id ??
+      mentor?.id ??
+      mentor?.raw?.user_id ??
+      mentor?.raw?.mentor_user_id ??
+      mentor?.raw?.id;
+    const mentorId = Number(rawMentorId);
+    const studentId = applicant.student_id || applicant.student?.user_id || applicant.student_user_id;
+
+    if (!intakeId || !mentorId || isNaN(mentorId)) {
+      console.error("Missing valid IDs for assignment:", { intakeId, mentorId, rawMentorId, studentId, applicant, mentor });
+      alert("Cannot complete assignment: Invalid student or mentor identification.");
+      return;
+    }
+
+    try {
+      const payload = {
+        intake_form_id: intakeId,
+        mentor_id: mentorId,
+      };
+      if (studentId) {
+        payload.student_id = studentId;
+      }
+
+      await api.post("/mentor-assignments", payload);
+
+      await fetchApplicants();
+      await fetchMentorsAndCapacity();
+      await fetchAssignments();
+      
+    } catch (err) {
+      console.error("Failed to assign mentor:", err);
+      alert(err.response?.data?.detail || "Failed to assign mentor. Please try again.");
+    }
+  };
+
+  const handleAssignSuccessDone = () => {
+    setViewedProfileMentor(null);
+    setActiveTab("applicants"); // pick whatever tab should show after assigning
+  };
+
+  const handleDeleteApplicant = async (applicantToDelete) => {
+    const applicantId = applicantToDelete.id;
+    if (!applicantId) return;
+
+    try {
+      await api.delete(`/intake/${applicantId}`);
+      setApplicants((prev) => prev.filter((item) => item.id !== applicantId));
+      if (selectedApplicant && selectedApplicant.id === applicantId) {
+        setSelectedApplicant(null);
+      }
+    } catch (err) {
+      console.error("Failed to delete applicant:", err);
+      alert("Failed to delete applicant. Please try again.");
+    }
+  };
+
+  const pendingApplicantsCount = applicants.filter(
+    (app) => !app.status || app.status === "submitted"
+  ).length;
 
   return (
     <div className="admin-dash">
-      {/* SIDEBAR NAVIGATION */}
-      <aside className="admin-sidebar">
-        <img src={umLogo} alt="Ummah Professionals" className="sidebar-logo" />
-        <nav className="sidebar-nav">
-          {NAV_ITEMS.map((item) => (
-            <button
-              key={item.key}
-              className={`nav-item${activeTab === item.key ? " active" : ""}`}
-              onClick={() => setActiveTab(item.key)}
-            >
-              <Icon name={item.key} />
-              <span>{item.label}</span>
-            </button>
-          ))}
-        </nav>
-        <div className="sidebar-footer">
-          <button className="nav-item" onClick={logout}>
-            <Icon name="logout" />
-            <span>Logout</span>
-          </button>
-        </div>
-        
-        {/* SIDEBAR BACKGROUND SWIRL */}
-        <img src={sideBgSwirl} className="sidebar-bg-swirl" alt="" />
-      </aside>
+      <Sidebar
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        setSelectedApplicant={setSelectedApplicant}
+        setSelectedMentor={setSelectedMentor}
+      />
 
-      {/* MAIN DASHBOARD CONTENT */}
       <main className="admin-main">
-        {/* MAIN PANEL BACKGROUND DOUBLE SWIRL */}
         <img src={bgDoubleSwirl} className="main-bg-swirl" alt="" />
 
-        <h1 className="admin-title">Welcome Back, Admin!</h1>
-
+        {/* 1. MENTORS VIEW */}
         {activeTab === "mentors" ? (
           <FullMentorsPanel
             title="All Mentors"
             loading={loadingMentors}
             data={mentors.length ? mentors : capacity}
+            selectedMentor={selectedMentor}
+            onViewMentor={(m) => {
+              setSelectedMentor(m);
+              setActiveTab("mentors");
+            }}
+            onBackToList={() => setSelectedMentor(null)}
           />
-        ) : activeTab === "capacity" ? (
+        ) : /* 2. CAPACITY VIEW */
+        activeTab === "capacity" ? (
           <FullCapacityPanel
             title="Mentor Capacity Tracking"
             loading={loadingCapacity}
             data={capacity}
+            selectedMentor={selectedMentor}
+            onViewMentor={(m) => {
+              setSelectedMentor(m);
+              setActiveTab("capacity");
+            }}
+            onBackToList={() => setSelectedMentor(null)}
           />
-        ) : activeTab === "applicants" ? (
+        ) : /* 3. MENTOR APPLICATIONS VIEW */
+        activeTab === "applications" ? (
+          <MentorApplicationsPanel
+            loading={loadingMentorApplications}
+            applications={mentorApplications}
+            onRefresh={() => {
+              fetchMentorApplications();
+              fetchMentorsAndCapacity();
+            }}
+          />
+        ) : /* 4. ASSIGNMENTS VIEW */
+        // activeTab === "assignments" ? (
+        //   <AssignmentsPanel
+        //     loading={loadingAssignments}
+        //     assignments={assignments}
+        //     onRefresh={() => {
+        //       fetchAssignments();
+        //       fetchApplicants();
+        //       fetchMentorsAndCapacity();
+        //     }}
+        //     onReassign={(intakeForm) => {
+        //       const targetId = intakeForm.id || intakeForm.intake_form_id;
+        //       const fullIntake = applicants.find((a) => a.id === targetId) || {
+        //         ...intakeForm,
+        //         id: targetId,
+        //         student_id: intakeForm.student_id,
+        //       };
+        //       setSelectedApplicant(fullIntake);
+        //       setActiveTab("match");
+        //     }}
+        //   />
+        // ) : /* 5. MENTOR MATCHING VIEW */
+        activeTab === "match" ? (
+          viewedProfileMentor ? (
+            <MentorProfile
+              mentor={viewedProfileMentor}
+              onBack={() => setViewedProfileMentor(null)}
+              onAssignMentor={(mentor) => handleAssignMentor(selectedApplicant, mentor)}
+              onAssignSuccessDone={handleAssignSuccessDone} 
+            />
+          ) : (
+            <FullMentorMatchPanel
+              applicant={selectedApplicant}
+              applicants={applicants}
+              mentors={mentors.length ? mentors : capacity}
+              loading={loadingMentors}
+              onBack={() => setActiveTab("applicants")}
+              onBrowseAllMentors={() => setActiveTab("mentors")}
+              onAssignMentor={handleAssignMentor}
+              onAssignSuccessDone={handleAssignSuccessDone}
+              onViewMentor={setViewedProfileMentor}
+              onSelectApplicant={setSelectedApplicant}
+            />
+          )
+        ) : /* 6. APPLICANTS VIEW */
+        activeTab === "applicants" ? (
           <FullApplicantPanel
             title="All Student Applicants"
             loading={loadingApplicants}
             data={applicants}
+            selectedApplicant={selectedApplicant}
+            onViewApplicant={(app) => {
+              setSelectedApplicant(app);
+              setActiveTab("applicants");
+            }}
+            onBackToList={() => setSelectedApplicant(null)}
+            onUpdateStatus={handleUpdateStatus}
+            onDeleteApplicant={handleDeleteApplicant}
+            onFindMatches={(app) => {
+              setSelectedApplicant(app);
+              setActiveTab("match");
+            }}
+          />
+        ) : activeTab === "meetings" ? (
+          <MeetingsPanel
+            title="Mentorship Meetings & Assignments"
+            loading={loadingMeetings || loadingAssignments}
+            data={meetings}
+            assignments={assignments}
+            onRefresh={() => {
+              fetchMeetings();
+              fetchAssignments();
+              fetchApplicants();
+              fetchMentorsAndCapacity();
+            }}
+            onReassign={(intakeForm) => {
+              const targetId = intakeForm.id || intakeForm.intake_form_id;
+              const fullIntake = applicants.find((a) => a.id === targetId) || {
+                ...intakeForm,
+                id: targetId,
+                student_id: intakeForm.student_id,
+              };
+              setSelectedApplicant(fullIntake);
+              setActiveTab("match");
+            }}
           />
         ) : (
-          /* DEFAULT DASHBOARD GRID */
+          /* 7. DASHBOARD VIEW (Default / "home") */
           <>
-            {/* TOP STAT CARDS */}
+            <h1 className="admin-title">Welcome Back, Admin</h1>
+
             <div className="stat-cards">
               <StatCard
                 iconKey="applicants"
@@ -201,24 +406,23 @@ export default function AdminDash() {
               <StatCard
                 iconKey="match"
                 variant="purple"
-                value="--"
+                value={loadingApplicants ? "--" : pendingApplicantsCount}
                 label="Matches Pending"
                 linkText="View Pending Matches"
-                disabled
+                onClick={() => setActiveTab("applicants")}
               />
               <StatCard
                 iconKey="meetings"
                 variant="yellow"
-                value="--"
-                label="Meetings"
-                linkText="View Scheduled Meetings"
-                disabled
+                value={loadingMentorApplications ? "--" : mentorApplications.length}
+                label="Advisor Signups Pending"
+                linkText="Review Advisor Signups"
+                onClick={() => setActiveTab("applications")}
               />
             </div>
 
-            {/* DASHBOARD PANELS GRID */}
             <div className="panel-grid">
-              {/* Recent Applicants Panel */}
+              {/* Panel 1: Recent Applicants */}
               <section className="panel">
                 <div className="panel-header">
                   <Icon name="applicants" className="panel-icon icon-blue" />
@@ -232,21 +436,31 @@ export default function AdminDash() {
                   <table>
                     <thead>
                       <tr>
-                        <th>Student</th>
-                        <th>Status</th>
+                        <th>Applicant</th>
+                        <th>Major</th>
+                        <th>Desired Career</th>
+                        <th>Action</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {applicants.slice(0, 3).map((app, index) => {
-                        const isAssigned = app.is_assigned || app.status === "assigned";
-                        const itemKey = app.id || app.student_id || app.email || `recent-app-${index}`;
+                      {applicants.slice(0, 4).map((app, index) => {
+                        const itemKey = app.id || app.student_id || `recent-app-${index}`;
                         return (
                           <tr key={itemKey}>
-                            <td>{app.full_name || `${app.first_name || ''} ${app.last_name || ''}`}</td>
+                            <td>{app.full_name || `${app.first_name || ""} ${app.last_name || ""}`.trim() || "N/A"}</td>
+                            <td>{app.major || "N/A"}</td>
+                            <td>{app.desired_career || app.career_goal || "N/A"}</td>
                             <td>
-                              <span className={`status-pill ${isAssigned ? "assigned" : "pending"}`}>
-                                {isAssigned ? "Assigned" : "Pending"}
-                              </span>
+                              <button
+                                type="button"
+                                className="pill-btn"
+                                onClick={() => {
+                                  setSelectedApplicant(app);
+                                  setActiveTab("applicants");
+                                }}
+                              >
+                                View Applicant
+                              </button>
                             </td>
                           </tr>
                         );
@@ -254,19 +468,16 @@ export default function AdminDash() {
                     </tbody>
                   </table>
                 )}
-                <a
-                  className="view-all-link"
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setActiveTab("applicants");
-                  }}
+                <button
+                  type="button"
+                  className="view-all-link-btn"
+                  onClick={() => setActiveTab("applicants")}
                 >
                   View All Applicants
-                </a>
+                </button>
               </section>
 
-              {/* Mentor Capacity Tracking Panel */}
+              {/* Panel 2: Mentor Capacity Tracking */}
               <section className="panel">
                 <div className="panel-header">
                   <Icon name="capacity" className="panel-icon icon-pink" />
@@ -281,19 +492,19 @@ export default function AdminDash() {
                     <thead>
                       <tr>
                         <th>Mentor</th>
-                        <th>Capacity (Meetings)</th>
+                        <th>Capacity</th>
                         <th>Status</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {capacity.slice(0, 3).map((m, index) => {
-                        const itemKey = m.mentor_user_id || m.id || m.email || `recent-cap-${index}`;
+                      {capacity.slice(0, 4).map((m, index) => {
+                        const itemKey = m.mentor_user_id || m.id || `recent-cap-${index}`;
                         return (
                           <tr key={itemKey}>
-                            <td>{m.full_name || `${m.first_name || ''} ${m.last_name || ''}`}</td>
+                            <td>{m.full_name || `${m.first_name || ""} ${m.last_name || ""}`}</td>
                             <td>{m.assigned_count ?? 0}/{m.capacity ?? 0}</td>
                             <td>
-                              <span className={`status-pill ${m.at_capacity ? "booked" : m.has_active_assignment ? "booked" : "available"}`}>
+                              <span className={`status-pill ${m.at_capacity ? "cooldown" : m.has_active_assignment ? "booked" : "available"}`}>
                                 {m.at_capacity ? "Cooldown" : m.has_active_assignment ? "Booked" : "Available"}
                               </span>
                             </td>
@@ -303,34 +514,177 @@ export default function AdminDash() {
                     </tbody>
                   </table>
                 )}
-                <a
-                  className="view-all-link"
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setActiveTab("capacity");
-                  }}
+                <button
+                  type="button"
+                  className="view-all-link-btn"
+                  onClick={() => setActiveTab("capacity")}
                 >
                   View All Capacity
-                </a>
+                </button>
               </section>
 
-              {/* Pending Matches Panel */}
+              {/* Panel 3: Pending Matches */}
               <section className="panel">
                 <div className="panel-header">
                   <Icon name="match" className="panel-icon icon-purple" />
                   <h2>Pending Matches</h2>
                 </div>
-                <EmptyPanel note="No matching endpoint connected yet" />
+                {loadingApplicants ? (
+                  <p className="muted">Loading...</p>
+                ) : applicants.filter((a) => !a.status || a.status === "submitted").length === 0 ? (
+                  <p className="muted">No unmatched applicants.</p>
+                ) : (
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Student</th>
+                        <th>Desired Career</th>
+                        <th>Match Score</th>
+                        <th>Match Mentor</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {applicants
+                        .filter((a) => !a.status || a.status === "submitted")
+                        .slice(0, 4)
+                        .map((app, index) => {
+                          // Best match score across available mentors – mirrors FullMentorMatchPanel.scoreMentor
+                          const clean = (s) => (s ? String(s).toLowerCase().replace(/_/g, " ").trim() : "");
+                          const appService = clean(app.service_requested || app.service || app.service_type);
+                          const appCareer = clean(app.desired_career || app.career || app.career_goal);
+                          const appIndustry = clean(app.industry);
+                          const appMajor = clean(app.major);
+                          const appGender = clean(app.gender || app.user?.gender);
+
+                          const bestScore = mentors.length
+                            ? Math.max(
+                                ...mentors.map((m) => {
+                                  let s = 40;
+                                  const mIndustry = clean(m.industry);
+                                  const mJob = clean(m.job_title || m.jobTitle);
+                                  const mMajor = clean(m.major);
+                                  const mGender = clean(m.gender);
+                                  const mServices = (m.service_types || m.services_offered || m.services || []).map(clean);
+
+                                  if (appIndustry && mIndustry && (appIndustry.includes(mIndustry) || mIndustry.includes(appIndustry))) s += 25;
+                                  if (appCareer && mJob && (mJob.includes(appCareer) || appCareer.includes(mJob))) s += 20;
+                                  if (appService && mServices.some((sv) => sv && (sv === appService || sv.includes(appService) || appService.includes(sv)))) s += 25;
+                                  if (appMajor && mMajor && appMajor === mMajor) s += 15;
+                                  if (appGender && mGender && appGender === mGender) s += 10;
+
+                                  // Tag overlap bonus
+                                  const appTags = new Set([...(app.tags || []), appService, appCareer, appIndustry, appMajor].filter(Boolean).map(clean));
+                                  const mTags = new Set([...(m.tags || []), ...mServices, mIndustry, mJob, mMajor].filter(Boolean).map(clean));
+                                  let matches = 0;
+                                  appTags.forEach((t) => { if (t && mTags.has(t)) matches++; });
+                                  s += Math.min(20, matches * 5);
+
+                                  if ((m.assigned_count ?? 0) < (m.capacity ?? m.max_monthly_sessions ?? 2)) s += 5;
+                                  return Math.min(99, s);
+                                })
+                              )
+                            : null;
+                          return (
+                            <tr key={app.id || `pm-${index}`}>
+                              <td>{app.full_name || "N/A"}</td>
+                              <td>{app.desired_career || app.career_goal || "N/A"}</td>
+                              <td>
+                                {bestScore !== null ? (
+                                  <span className="match-score-badge">{bestScore}%</span>
+                                ) : "--"}
+                              </td>
+                              <td>
+                                <button
+                                  type="button"
+                                  className="pill-btn"
+                                  onClick={() => {
+                                    setSelectedApplicant(app);
+                                    setActiveTab("match");
+                                  }}
+                                >
+                                  Review Match
+                                </button>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                    </tbody>
+                  </table>
+                )}
+                <button
+                  type="button"
+                  className="view-all-link-btn"
+                  onClick={() => setActiveTab("applicants")}
+                >
+                  View All Pending Matches
+                </button>
               </section>
 
-              {/* Upcoming Meetings Panel */}
+              {/* Panel 4: Upcoming Meetings */}
               <section className="panel">
                 <div className="panel-header">
                   <Icon name="meetings" className="panel-icon icon-yellow" />
                   <h2>Upcoming Meetings</h2>
                 </div>
-                <EmptyPanel note="No meetings-list endpoint connected yet" />
+                {loadingMeetings ? (
+                  <p className="muted">Loading meetings...</p>
+                ) : meetings.length === 0 ? (
+                  <p className="muted">No upcoming meetings scheduled.</p>
+                ) : (
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Applicant</th>
+                        <th>Mentor</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Details</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {meetings
+                        .filter((m) => {
+                          const s = (m.status || "").toLowerCase();
+                          return s === "scheduled" || s === "upcoming" || !s;
+                        })
+                        .slice(0, 4)
+                        .map((m, index) => {
+                          const studentUser = m.assignment?.student?.user || {};
+                          const intakeForm = m.assignment?.intake_form || {};
+                          const mentorUser = m.assignment?.mentor?.user || {};
+                          const applicantName = studentUser.full_name || intakeForm.full_name || "N/A";
+                          const mentorName = mentorUser.full_name || "N/A";
+                          const d = m.start_datetime ? new Date(m.start_datetime) : null;
+                          const dateStr = d ? d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : "N/A";
+                          const timeStr = d ? d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" }) : "N/A";
+                          return (
+                            <tr key={m.id || `mtg-${index}`}>
+                              <td>{applicantName}</td>
+                              <td>{mentorName}</td>
+                              <td>{dateStr}</td>
+                              <td>{timeStr}</td>
+                              <td>
+                                {m.meeting_url ? (
+                                  <a href={m.meeting_url} target="_blank" rel="noreferrer" className="pill-btn" style={{ display: "inline-block", textDecoration: "none", fontSize: "12px" }}>
+                                    Join
+                                  </a>
+                                ) : (
+                                  <span className="muted" style={{ fontSize: "12px" }}>No URL</span>
+                                )}
+                              </td>
+                            </tr>
+                          );
+                        })}
+                    </tbody>
+                  </table>
+                )}
+                <button
+                  type="button"
+                  className="view-all-link-btn"
+                  onClick={() => setActiveTab("meetings")}
+                >
+                  View All Meetings
+                </button>
               </section>
             </div>
           </>
@@ -338,174 +692,4 @@ export default function AdminDash() {
       </main>
     </div>
   );
-}
-
-/* SUBCOMPONENTS PANEL SECTIONS */
-
-function FullMentorsPanel({ title, loading, data }) {
-  return (
-    <section className="panel full-page-panel">
-      <div className="panel-header">
-        <Icon name="mentors" className="panel-icon icon-teal" />
-        <h2>{title}</h2>
-      </div>
-      {loading ? (
-        <p className="muted">Loading mentors...</p>
-      ) : data.length === 0 ? (
-        <p className="muted">No mentors available.</p>
-      ) : (
-        <table>
-          <thead>
-            <tr>
-              <th>Mentor Name</th>
-              <th>Email</th>
-              <th>Industry / Field</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.map((m, index) => {
-              const rawName =
-                m.full_name ||
-                m.user?.full_name ||
-                `${m.first_name || m.user?.first_name || ""} ${m.last_name || m.user?.last_name || ""}`.trim();
-
-              const name = rawName || "N/A";
-              const email = m.email || m.user?.email || "N/A";
-              const industry = m.industry || m.field || m.company || "General";
-              const isActive = m.is_active !== false && m.user?.is_active !== false;
-
-              const itemKey = m.id || m.mentor_user_id || m.user_id || m.email || `mentor-${index}`;
-
-              return (
-                <tr key={itemKey}>
-                  <td>{name}</td>
-                  <td>{email}</td>
-                  <td>{industry}</td>
-                  <td>
-                    <span className={`status-pill ${isActive ? "available" : "booked"}`}>
-                      {isActive ? "Active" : "Inactive"}
-                    </span>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      )}
-    </section>
-  );
-}
-
-function FullCapacityPanel({ title, loading, data }) {
-  return (
-    <section className="panel full-page-panel">
-      <div className="panel-header">
-        <Icon name="capacity" className="panel-icon icon-pink" />
-        <h2>{title}</h2>
-      </div>
-      {loading ? (
-        <p className="muted">Loading capacity data...</p>
-      ) : data.length === 0 ? (
-        <p className="muted">No capacity data available.</p>
-      ) : (
-        <table>
-          <thead>
-            <tr>
-              <th>Mentor Name</th>
-              <th>Assigned / Capacity</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.map((m, index) => {
-              const itemKey = m.mentor_user_id || m.id || m.email || `capacity-${index}`;
-              return (
-                <tr key={itemKey}>
-                  <td>{m.full_name || `${m.first_name || ''} ${m.last_name || ''}`}</td>
-                  <td>{m.assigned_count ?? 0} / {m.capacity ?? 0}</td>
-                  <td>
-                    <span className={`status-pill ${m.at_capacity ? "booked" : m.has_active_assignment ? "booked" : "available"}`}>
-                      {m.at_capacity ? "Cooldown" : m.has_active_assignment ? "Booked" : "Available"}
-                    </span>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      )}
-    </section>
-  );
-}
-
-function FullApplicantPanel({ title, loading, data }) {
-  return (
-    <section className="panel full-page-panel">
-      <div className="panel-header">
-        <Icon name="applicants" className="panel-icon icon-blue" />
-        <h2>{title}</h2>
-      </div>
-      {loading ? (
-        <p className="muted">Loading applicants...</p>
-      ) : data.length === 0 ? (
-        <p className="muted">No student applications submitted yet.</p>
-      ) : (
-        <table>
-          <thead>
-            <tr>
-              <th>Student Name</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.map((app, index) => {
-              const isAssigned = app.is_assigned || app.status === "assigned";
-              const itemKey = app.id || app.student_id || app.email || `applicant-${index}`;
-              return (
-                <tr key={itemKey}>
-                  <td>{app.full_name || `${app.first_name || ''} ${app.last_name || ''}`}</td>
-                  <td>
-                    <span className={`status-pill ${isAssigned ? "assigned" : "pending"}`}>
-                      {isAssigned ? "Assigned" : "Pending"}
-                    </span>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      )}
-    </section>
-  );
-}
-
-function StatCard({ iconKey, variant, value, label, linkText, disabled, onClick }) {
-  return (
-    <div className="stat-card">
-      <div className="stat-card-top">
-        <div className={`stat-icon-bg bg-${variant}`}>
-          <Icon name={iconKey} className={`card-icon text-${variant}`} />
-        </div>
-        <div className="stat-card-info">
-          <div className="stat-value">{value}</div>
-          <div className="stat-label">{label}</div>
-        </div>
-      </div>
-      <a
-        className={`view-all-link${disabled ? " disabled" : ""}`}
-        href="#"
-        onClick={(e) => {
-          e.preventDefault();
-          if (!disabled && onClick) onClick();
-        }}
-      >
-        {linkText}
-      </a>
-    </div>
-  );
-}
-
-function EmptyPanel({ note }) {
-  return <p className="muted">{note}</p>;
 }

@@ -1,0 +1,473 @@
+/* ==========================================================================
+   APPLICANT DETAILS VIEW (SCOPED & ISOLATED)
+   ========================================================================== */
+
+.applicant-details-container .badge-yellow { background-color: #F9F3BD; }
+.applicant-details-container .badge-green  { background-color: #D9F9BD; }
+.applicant-details-container .badge-purple { background-color: #CABDF9; }
+.applicant-details-container .badge-pink   { background-color: #FBB8E6; }
+
+/* Main Page Canvas Container */
+.applicant-details-container {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+/* 1. Navigation Back Button */
+.applicant-details-container .back-link-btn {
+  background: transparent;
+  border: none;
+  color: var(--admin-primary);
+  font-size: clamp(13px, 1.2vw, 15px);
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  width: fit-content;
+  transition: color 0.15s ease;
+}
+
+.applicant-details-container .back-link-btn:hover {
+  color: var(--admin-dark);
+  text-decoration: underline;
+}
+
+.applicant-details-container .back-link-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Main Page Title */
+.applicant-details-container .details-main-title {
+  font-size: clamp(22px, 2.5vw, 32px);
+  font-weight: 700;
+  color: #000000;
+  margin: 0;
+  word-break: break-word;
+}
+
+/* 2. Base Card (Matches Dashboard Panel Box Spec) */
+.applicant-details-container .card {
+  background: #ffffff !important;
+  border: 1px solid var(--admin-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  box-shadow: var(--shadow-card);
+  width: 100%;
+  opacity: 1 !important;
+}
+
+/* 3. Hero Header Card */
+.applicant-details-container .top-profile-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+  width: 100%;
+}
+
+.applicant-details-container .profile-hero-left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.applicant-details-container .avatar-placeholder {
+  width: clamp(52px, 4vw, 64px);
+  height: clamp(52px, 4vw, 64px);
+  border-radius: 50%;
+  background-color: var(--admin-primary);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.applicant-details-container .avatar-placeholder svg {
+  width: 50%;
+  height: 50%;
+  fill: currentColor;
+}
+
+.applicant-details-container .hero-info h2 {
+  font-size: clamp(18px, 2vw, 24px);
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+}
+
+.applicant-details-container .sub-text {
+  font-size: clamp(12px, 1.1vw, 14px);
+  color: #6b7280;
+  margin: 4px 0 0 0;
+}
+
+.applicant-details-container .profile-hero-right {
+  text-align: right;
+  font-size: clamp(13px, 1.2vw, 15px);
+  color: #374151;
+}
+
+.applicant-details-container .profile-hero-right p {
+  margin: 2px 0;
+  font-weight: 500;
+}
+
+/* 4. Details Panel Grid (Identical Scaling Behavior to Dashboard Panel Grid) */
+.applicant-details-container .details-grid-3col {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+  gap: var(--space-md);
+  width: 100%;
+}
+
+/* Panel Header */
+.applicant-details-container .card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: var(--space-md);
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--admin-border);
+}
+
+.applicant-details-container .card-header h3 {
+  font-size: clamp(16px, 1.5vw, 20px);
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+}
+
+.applicant-details-container .icon-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: clamp(36px, 3.2vw, 44px);
+  height: clamp(36px, 3.2vw, 44px);
+  border-radius: 50%;
+  flex-shrink: 0;
+  color: #1D2026; /* icon stroke color via currentColor */
+}
+
+.applicant-details-container .icon-badge svg {
+  width: 55%;
+  height: 55%;
+}
+
+
+
+/* Key-Value Pair Data Rows */
+.applicant-details-container .info-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.applicant-details-container .info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-xs) 0;
+  border-bottom: 1px solid var(--admin-bg);
+  font-size: clamp(13px, 1.2vw, 15px);
+  gap: var(--space-xs);
+}
+
+.applicant-details-container .info-list .info-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.applicant-details-container .info-label {
+  font-weight: 600;
+  color: #4b5563;
+}
+
+.applicant-details-container .info-val {
+  color: #111827;
+  font-weight: 700;
+  text-align: right;
+  word-break: break-word;
+}
+
+/* 5. Resume Card Section */
+.applicant-details-container .resume-preview-box {
+  background-color: var(--admin-bg);
+  border: 1px dashed var(--admin-border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-md);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: var(--space-md);
+}
+
+.applicant-details-container .file-name {
+  font-size: clamp(13px, 1.1vw, 15px);
+  font-weight: 700;
+  color: #111827;
+}
+
+.applicant-details-container .upload-date {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.applicant-details-container .view-resume-btn {
+  width: 100%;
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  text-align: center;
+  font-weight: 700;
+  font-size: clamp(12px, 1vw, 14px);
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  transition: background 0.15s ease;
+}
+
+.applicant-details-container .btn-primary {
+  background-color: var(--admin-primary);
+  color: #ffffff;
+}
+
+.applicant-details-container .btn-primary:hover {
+  background-color: var(--admin-dark);
+}
+
+.applicant-details-container .btn-disabled {
+  background-color: #e5e7eb;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+/* 6. Comments Box */
+.applicant-details-container .comments-text {
+  font-size: clamp(13px, 1.2vw, 15px);
+  color: #1f2937;
+  line-height: 1.6;
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+/* 7. Action Footer Bar */
+.applicant-details-container .details-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+  margin-top: var(--space-xs);
+  width: 100%;
+}
+
+.applicant-details-container .details-actions button.btn-secondary,
+.applicant-details-container .details-actions button.btn-primary {
+  border: 1.5px solid var(--admin-primary);
+  padding: 8px 20px;
+  border-radius: var(--radius-sm);
+  font-weight: 700;
+  font-size: clamp(12px, 1.1vw, 14px);
+  line-height: 1.4;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  width: auto;
+  height: auto;
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+.applicant-details-container .details-actions button.btn-secondary {
+  background: #ffffff;
+  color: var(--admin-primary);
+}
+
+.applicant-details-container .details-actions button.btn-secondary:hover {
+  background: var(--admin-primary);
+  color: #ffffff;
+}
+
+.applicant-details-container .details-actions button.btn-primary {
+  background-color: var(--admin-primary);
+  color: #ffffff;
+}
+
+.applicant-details-container .details-actions button.btn-primary:hover {
+  background-color: var(--admin-dark);
+}
+
+/* 8. Resume Frame Overlay Modal (Outside main container, handled globally or scoped via wrapper if rendered inside) */
+.resume-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.65);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.resume-modal-container {
+  background: #ffffff;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 900px;
+  height: 85vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.resume-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid #e2e8f0;
+  background-color: #f8fafc;
+}
+
+.resume-modal-header h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #1e293b;
+  word-break: break-all;
+}
+
+.modal-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.close-modal-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+  color: #64748b;
+  padding: 4px 8px;
+}
+
+.close-modal-btn:hover {
+  color: #0f172a;
+}
+
+.resume-modal-body {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  background: #f1f5f9;
+}
+
+.resume-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.modal-download-btn {
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  padding: 6px 14px;
+}
+
+/* Status Pill Badge */
+.applicant-details-container .status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: clamp(11px, 1vw, 13px);
+  font-weight: 600;
+  width: fit-content;
+  line-height: 1.4;
+}
+
+.applicant-details-container .status-pill::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: currentColor;
+  flex-shrink: 0;
+}
+
+/* Status color variants */
+.applicant-details-container .status-pill.submitted {
+  background-color: #E0F2FE;
+  color: #0369A1;
+}
+
+.applicant-details-container .status-pill.pending-match {
+  background-color: #FEF3C7;
+  color: #B45309;
+}
+
+.applicant-details-container .status-pill.matched,
+.applicant-details-container .status-pill.accepted {
+  background-color: #D1FAE5;
+  color: #047857;
+}
+
+.applicant-details-container .status-pill.rejected,
+.applicant-details-container .status-pill.declined {
+  background-color: #FEE2E2;
+  color: #B91C1C;
+}
+
+/* ==========================================================================
+   RESPONSIVE BREAKPOINTS (MATCHING DASHBOARD RULES)
+   ========================================================================== */
+
+/* Tablet Viewports */
+@media (max-width: 767px) {
+  .applicant-details-container .details-grid-3col {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Mobile Compact Viewports */
+@media (max-width: 479px) {
+  .applicant-details-container .top-profile-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .applicant-details-container .profile-hero-right {
+    text-align: left;
+  }
+
+  .applicant-details-container .details-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .applicant-details-container .btn-secondary,
+  .applicant-details-container .btn-primary {
+    width: 100%;
+  }
+}

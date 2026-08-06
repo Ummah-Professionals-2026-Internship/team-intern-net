@@ -12,7 +12,7 @@ import "./CareerPrep.css";
 import api from '../../api/api';
 
 
-// 1. Updated enum values to match backend GenderEnum ('male', 'female')
+// --- FORM SELECT OPTIONS & CONSTANTS ---
 const GENDER_OPTIONS = [
   { label: "Male", value: "m" },
   { label: "Female", value: "f" },
@@ -31,6 +31,7 @@ const ACADEMIC_LEVEL_OPTIONS = [
   "Senior",
   "Graduate Student",
   "Recent Graduate",
+  "Other",
 ];
 
 const INDUSTRY_OPTIONS = [
@@ -55,6 +56,7 @@ const REFERRAL_OPTIONS = [
   "Other",
 ];
 
+// Resume File Upload Restrictions
 const MAX_RESUME_SIZE_MB = 5;
 const ALLOWED_RESUME_TYPES = [
   "application/pdf",
@@ -62,20 +64,28 @@ const ALLOWED_RESUME_TYPES = [
   "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
 ];
 
+// Initial form state model
 const initialForm = {
   fullName: "",
   phone: "",
   email: "",
   academicLevel: "",
+  otherAcademicLevel: "",
   gender: "",
   major: "",
   industry: "",
+  otherIndustry: "",
   desiredCareer: "",
   serviceType: "",
   referralSource: "",
   comments: "",
 };
 
+/**
+ * CareerPrep Component
+ * Handles candidate intake applications, client-side validation, 
+ * resume uploads, and backend POST requests to /intake/apply.
+ */
 export default function CareerPrep() {
   const [form, setForm] = useState(initialForm);
   const [resume, setResume] = useState(null);
@@ -84,22 +94,38 @@ export default function CareerPrep() {
   const [loading, setLoading] = useState(false);
   const [serverError, setServerError] = useState("");
 
+  /** Updates form fields in state and clears field-level errors on edit */
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
     if (errors[name]) setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
+  /** Handles selection of service type card options */
   const handleSelectService = (value) => {
     setForm((prev) => ({ ...prev, serviceType: value }));
     if (errors.serviceType) setErrors((prev) => ({ ...prev, serviceType: "" }));
   };
 
+  /** Handles resume file attachment from FileUpload component */
   const handleResumeChange = (file) => {
     setResume(file);
     if (errors.resume) setErrors((prev) => ({ ...prev, resume: "" }));
   };
 
+  /** Resets form, file, and error states when user submits another request */
+  const resetFormState = () => {
+    setForm(initialForm);
+    setResume(null);
+    setErrors({});
+    setServerError("");
+    setSubmitted(false);
+  };
+
+  /**
+   * Client-side Form Validation
+   * @returns {Object} Object containing error messages keyed by input name
+   */
   const validate = () => {
     const required = {
       fullName: "Full name is required",
@@ -114,18 +140,33 @@ export default function CareerPrep() {
     };
 
     const next = {};
+
+    // Check presence of required string fields
     Object.entries(required).forEach(([key, msg]) => {
       if (!form[key] || !form[key].trim()) next[key] = msg;
     });
 
+    // Validate 'Other' custom text input if 'Other' academic level is selected
+    if (form.academicLevel === "Other" && !form.otherAcademicLevel.trim()) {
+      next.academicLevel = "Please specify your academic level";
+    }
+
+    // Validate 'Other' custom text input if 'Other' industry is selected
+    if (form.industry === "Other" && !form.otherIndustry.trim()) {
+      next.industry = "Please specify your industry";
+    }
+
+    // Phone format regex
     if (form.phone && !/^\+?[0-9\s()-]{7,20}$/.test(form.phone)) {
       next.phone = "Enter a valid phone number";
     }
 
+    // Email format regex
     if (form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
       next.email = "Enter a valid email address";
     }
 
+    // Resume file type and size checks
     if (resume) {
       if (!ALLOWED_RESUME_TYPES.includes(resume.type)) {
         next.resume = "Resume must be a PDF or Word document";
@@ -137,7 +178,11 @@ export default function CareerPrep() {
     return next;
   };
 
-  // Helper function to map UI Academic Level to backend Enums
+  /**
+   * Maps UI Academic Level string selection to backend Database Enums
+   * @param {string} level - Selected academic level option
+   * @returns {{ education_level: string, academic_standing: string|null }}
+   */
   const getEducationAndStanding = (level) => {
     switch (level) {
       case "Freshman":
@@ -151,15 +196,17 @@ export default function CareerPrep() {
       case "Graduate Student":
         return { education_level: "graduate", academic_standing: null };
       case "Recent Graduate":
-        return { education_level: "other", academic_standing: null };
+      case "Other":
       default:
-        return { education_level: "other", academic_standing: null };
+        return { education_level: "undergraduate", academic_standing: null };
     }
   };
 
+  /** Form submit handler sending multipart/form-data payload */
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // 1. Run client-side validation
     const validationErrors = validate();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
@@ -169,8 +216,14 @@ export default function CareerPrep() {
     setLoading(true);
     setServerError("");
 
+    // 2. Map UI level selections to DB enums
     const { education_level, academic_standing } = getEducationAndStanding(form.academicLevel);
 
+    // 3. Resolve actual industry string (use specified text if "Other")
+    const finalIndustry =
+      form.industry === "Other" ? form.otherIndustry.trim() : form.industry;
+
+    // 4. Construct FormData payload for multipart submission
     const formData = new FormData();
     formData.append("full_name", form.fullName.trim());
     formData.append("email", form.email.trim());
@@ -181,9 +234,9 @@ export default function CareerPrep() {
     formData.append("major", form.major.trim());
     formData.append("service_type", form.serviceType);
     formData.append("desired_career", form.desiredCareer.trim());
-    if (form.comments) formData.append("comments", form.comments.trim());
+    if (form.comments.trim()) formData.append("comments", form.comments.trim());
     if (form.referralSource) formData.append("referral_source", form.referralSource);
-    if (form.industry) formData.append("industry", form.industry);
+    if (finalIndustry) formData.append("industry", finalIndustry);
     if (resume) formData.append("resume", resume);
 
     try {
@@ -210,24 +263,22 @@ export default function CareerPrep() {
 
 
 
+  // --- RENDER SUCCESS VIEW ---
   if (submitted) {
     return (
       <div className="career-prep-page">
         <div className="caa-bg-image" style={{ backgroundImage: `url(${appBg})` }} />
         <div className="career-prep-card career-prep-success">
-          <h2>Request Submitted</h2>
-          <p>
+          <div className="career-prep-success-icon">✓</div>
+          <h2 className="career-prep-success-title">Request Submitted</h2>
+          <p className="career-prep-success-body">
             Thank you for applying to Career Prep, <strong>{form.fullName}</strong>. Your login
             credentials will be emailed to <strong>{form.email}</strong> upon completion of your application.
           </p>
           <button
             type="button"
             className="submit-button"
-            onClick={() => {
-              setSubmitted(false);
-              setForm(initialForm);
-              setResume(null);
-            }}
+            onClick={resetFormState}
           >
             Submit Another Request
           </button>
@@ -236,6 +287,7 @@ export default function CareerPrep() {
     );
   }
 
+  // --- RENDER FORM VIEW ---
   return (
     <div className="career-prep-page">
       <div className="caa-bg-image" style={{ backgroundImage: `url(${appBg})` }} />
@@ -246,11 +298,11 @@ export default function CareerPrep() {
         <p className="career-prep-subtitle">sign up to connect with our experienced professionals</p>
 
         <form onSubmit={handleSubmit} noValidate>
-          {/* Personal Information */}
+          {/* SECTION: Personal Information */}
           <section className="form-section">
             <h2 className="section-title">Personal Information <span className="required-mark">*</span></h2>
             <div className="form-grid">
-              <Field label="Full Name:" error={errors.fullName}>
+              <Field id="fullName" label="Full Name:" error={errors.fullName}>
                 <input
                   id="fullName"
                   name="fullName"
@@ -261,7 +313,7 @@ export default function CareerPrep() {
                 />
               </Field>
 
-              <Field label="Email Address:" error={errors.email}>
+              <Field id="email" label="Email Address:" error={errors.email}>
                 <input
                   id="email"
                   name="email"
@@ -272,7 +324,7 @@ export default function CareerPrep() {
                 />
               </Field>
 
-              <Field label="Phone Number:" error={errors.phone}>
+              <Field id="phone" label="Phone Number:" error={errors.phone}>
                 <input
                   id="phone"
                   name="phone"
@@ -283,8 +335,9 @@ export default function CareerPrep() {
                 />
               </Field>
 
-              <Field label="Academic Level:" error={errors.academicLevel}>
+              <Field id="academicLevel" label="Academic Level:" error={errors.academicLevel}>
                 <select
+                  id="academicLevel"
                   name="academicLevel"
                   value={form.academicLevel}
                   onChange={handleChange}
@@ -294,15 +347,27 @@ export default function CareerPrep() {
                     <option key={o} value={o}>{o}</option>
                   ))}
                 </select>
+
+                {/* Conditional input when 'Other' academic level is selected */}
+                {form.academicLevel === "Other" && (
+                  <input
+                    type="text"
+                    name="otherAcademicLevel"
+                    value={form.otherAcademicLevel}
+                    onChange={handleChange}
+                    placeholder="Please specify (e.g. Bootcamp, High School, Self-Taught)"
+                    style={{ marginTop: "8px" }}
+                  />
+                )}
               </Field>
             </div>
           </section>
 
-          {/* Career Information */}
+          {/* SECTION: Career Information */}
           <section className="form-section">
             <h2 className="section-title">Career Information <span className="required-mark">*</span></h2>
             <div className="form-grid form-grid--three">
-              <Field label="Major/Field of Study:" error={errors.major}>
+              <Field id="major" label="Major/Field of Study:" error={errors.major}>
                 <input
                   id="major"
                   name="major"
@@ -313,16 +378,28 @@ export default function CareerPrep() {
                 />
               </Field>
 
-              <Field label="Industry:" error={errors.industry}>
-                <select name="industry" value={form.industry} onChange={handleChange}>
+              <Field id="industry" label="Industry:" error={errors.industry}>
+                <select id="industry" name="industry" value={form.industry} onChange={handleChange}>
                   <option value="">Select industry...</option>
                   {INDUSTRY_OPTIONS.map((o) => (
                     <option key={o} value={o}>{o}</option>
                   ))}
                 </select>
+
+                {/* Conditional input when 'Other' industry is selected */}
+                {form.industry === "Other" && (
+                  <input
+                    type="text"
+                    name="otherIndustry"
+                    value={form.otherIndustry}
+                    onChange={handleChange}
+                    placeholder="Please specify (e.g. Aviation, Media, Real Estate)"
+                    style={{ marginTop: "8px" }}
+                  />
+                )}
               </Field>
 
-              <Field label="Desired Career:" error={errors.desiredCareer}>
+              <Field id="desiredCareer" label="Desired Career:" error={errors.desiredCareer}>
                 <input
                   id="desiredCareer"
                   name="desiredCareer"
@@ -335,7 +412,7 @@ export default function CareerPrep() {
             </div>
           </section>
 
-          {/* Service Requested */}
+          {/* SECTION: Service Requested */}
           <section className="form-section">
             <h2 className="section-title">
               Service Requested <span className="required-mark">*</span>
@@ -366,7 +443,7 @@ export default function CareerPrep() {
             {errors.serviceType && <p className="field-error">{errors.serviceType}</p>}
           </section>
 
-          {/* Gender */}
+          {/* SECTION: Gender */}
           <section className="form-section">
             <h2 className="section-title">Gender <span className="required-mark">*</span></h2>
             <div className="form-field">
@@ -387,7 +464,7 @@ export default function CareerPrep() {
             {errors.gender && <p className="field-error">{errors.gender}</p>}
           </section>
 
-          {/* Resume Upload / Comments / Referral */}
+          {/* SECTION: Resume Upload, Referral Source, and Comments */}
           <section className="form-section form-grid">
             <div className="upload-and-referral-col">
               <div className="form-field">
@@ -431,6 +508,7 @@ export default function CareerPrep() {
             </div>
           </section>
 
+          {/* Global Server Error Rendering */}
           {serverError && <p className="submit-error">{serverError}</p>}
 
           <button type="submit" className="submit-button" disabled={loading}>
@@ -447,10 +525,14 @@ export default function CareerPrep() {
   );
 }
 
-function Field({ label, error, children }) {
+/**
+ * Reusable Form Field Wrapper
+ * Renders associated labels, form elements, and field validation errors.
+ */
+function Field({ id, label, error, children }) {
   return (
     <div className="form-field">
-      <label>{label}</label>
+      {label && <label htmlFor={id}>{label}</label>}
       {children}
       {error && <p className="field-error">{error}</p>}
     </div>

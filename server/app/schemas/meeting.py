@@ -20,6 +20,8 @@ class MeetingCreate(BaseModel):
     to prevent students from booking outside their assigned mentor's slots.
     '''
     slot_id: int
+    # Highlight: Allow students to provide context during submission
+    student_notes: Optional[str] = None
 
 
 # Status update (cancel, complete, no show)
@@ -39,13 +41,15 @@ class MeetingResponse(BaseModel):
     status           : MeetingStatusEnum
     cancelled_reason : Optional[str] = None
     meeting_notes    : Optional[str] = None
+    # Highlight: Return the student's notes so mentors/students can read them on dashboards
+    student_notes    : Optional[str] = None
     start_datetime   : datetime
     end_datetime     : datetime
     created_at       : datetime
     updated_at       : datetime
 
     # Nested slot info
-    slot             : AvailabilitySlotResponse
+    slot             : Optional[AvailabilitySlotResponse] = None
     assignment       : AssignmentWithIntakeResponse
 
     model_config = {"from_attributes": True}

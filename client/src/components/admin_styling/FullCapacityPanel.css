@@ -1,0 +1,5 @@
+.status-pill.cooldown {
+  border-color: var(--admin-accent);
+  color: #92600b;
+  background-color: #fef3c7;
+}

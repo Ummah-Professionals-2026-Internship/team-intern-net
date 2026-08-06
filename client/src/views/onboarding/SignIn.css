@@ -176,7 +176,7 @@ html, body, #root {
 }
 
 .form-header {
-  margin-bottom: var(--space-xl);
+  margin-bottom: var(--space-2xl);
   text-align: center;
 }
 

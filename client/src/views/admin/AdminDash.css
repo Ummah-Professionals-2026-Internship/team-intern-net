@@ -1,5 +1,5 @@
 /* ==========================================================================
-   DESIGN TOKENS (UPDATED FOR RESPONSIVENESS & FLUID SCALING)
+   DESIGN TOKENS (UPDATED FOR RESPONSIVENESS & FLUID SCALING) AdminDash.css
    ========================================================================== */
 :root {
   --admin-primary: #007ca6;
@@ -7,7 +7,7 @@
   --admin-sky: #8acbdb;
   --admin-accent: #fdbb37;
   --admin-available: #8adbb0;
-  --admin-pending: #FCE181;
+  --admin-pending: #fce181;
   --admin-booked: #fd788a;
   --admin-border: #e7e8ee;
   --admin-bg: #f4f4f5;
@@ -30,7 +30,9 @@
 /* ==========================================================================
    BASE & CANVAS LAYOUT
    ========================================================================== */
-html, body, #root {
+html,
+body,
+#root {
   margin: 0;
   padding: 0;
   width: 100%;
@@ -38,7 +40,9 @@ html, body, #root {
   box-sizing: border-box;
 }
 
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: inherit;
 }
 
@@ -68,16 +72,16 @@ html, body, #root {
   word-break: break-word;
 }
 
-/* Canvas Decorative Double Swirl Backdrop (Fully Contained & Zoomed Out) */
+/* Canvas Decorative Double Swirl Backdrop */
 .main-bg-swirl {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  opacity: 0.6; /* Balanced texture transparency */
+  opacity: 0.6;
   z-index: 0;
-  pointer-events: none; /* Allows user interactions to pass straight through */
+  pointer-events: none;
 }
 
 /* ==========================================================================
@@ -97,8 +101,8 @@ html, body, #root {
     var(--admin-dark)
   );
   color: #ffffff;
-  position: relative; /* Structural frame for absolutely positioned inside assets */
-  overflow: hidden; /* Clips bottom wave graphic inside border radius limits */
+  position: relative;
+  overflow: hidden;
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s ease;
 }
 
@@ -113,7 +117,7 @@ html, body, #root {
 
 .sidebar-nav {
   position: relative;
-  z-index: 2; /* Layers dynamic navigation tabs safely above backdrop waves */
+  z-index: 2;
   display: flex;
   flex-direction: column;
   gap: clamp(12px, 2vw, 22px);
@@ -121,7 +125,7 @@ html, body, #root {
 
 .sidebar-footer {
   position: relative;
-  z-index: 3; /* Elevated higher than the graphic wave layer so text clicks stay clean */
+  z-index: 3;
   margin-top: auto;
   margin-bottom: var(--space-xs);
   display: flex;
@@ -129,17 +133,16 @@ html, body, #root {
   gap: var(--space-md);
 }
 
-/* Sidebar Decorative Single Swirl/Wave Graphic (Moved up above the Logout Button) */
 .sidebar-bg-swirl {
   position: absolute;
-  bottom: 110px; 
+  bottom: 110px;
   left: 0;
   width: 100%;
   max-width: 262px;
   height: auto;
   aspect-ratio: 131 / 50;
   object-fit: fill;
-  z-index: 2; /* Layers behind foreground text, but over gradient background */
+  z-index: 2;
   pointer-events: none;
 }
 
@@ -181,6 +184,13 @@ html, body, #root {
   grid-template-columns: repeat(4, 1fr);
   gap: var(--space-sm);
   margin-bottom: var(--space-lg);
+}
+
+/* 2-column stat grid for intermediate widths */
+@media (max-width: 1100px) and (min-width: 768px) {
+  .stat-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 .stat-card {
@@ -235,17 +245,33 @@ html, body, #root {
 }
 
 /* Stat Card Colors */
-.bg-blue   { background-color: #8acbdb; }
-.text-blue { stroke: #141b34; }
+.bg-blue {
+  background-color: #8acbdb;
+}
+.text-blue {
+  stroke: #141b34;
+}
 
-.bg-teal   { background-color: #6ac377; }
-.text-teal { stroke: #000000; }
+.bg-teal {
+  background-color: #6ac377;
+}
+.text-teal {
+  stroke: #000000;
+}
 
-.bg-purple   { background-color: #b0b9ff; }
-.text-purple { stroke: #ffffff; }
+.bg-purple {
+  background-color: #b0b9ff;
+}
+.text-purple {
+  stroke: #ffffff;
+}
 
-.bg-yellow   { background-color: #f9f3bd; }
-.text-yellow { stroke: #363538; }
+.bg-yellow {
+  background-color: #f9f3bd;
+}
+.text-yellow {
+  stroke: #363538;
+}
 
 /* ==========================================================================
    PANELS & GRID COMPONENT
@@ -263,7 +289,7 @@ html, body, #root {
   border: 1px solid var(--admin-border);
   border-radius: var(--radius-md);
   padding: var(--space-md);
-  overflow-x: auto; /* Gracefully scroll wide data columns on tiny layouts */
+  overflow-x: auto;
   -webkit-overflow-scrolling: touch;
 }
 
@@ -293,17 +319,28 @@ html, body, #root {
 }
 
 /* Header Icon Accent Colors */
-.icon-blue   { stroke: #0284c7; }
-.icon-pink   { stroke: #ec4899; }
-.icon-purple { stroke: #7c3aed; }
-.icon-yellow { stroke: #d97706; }
+.icon-blue {
+  stroke: #0284c7;
+}
+.icon-pink {
+  stroke: #ec4899;
+}
+.icon-purple {
+  stroke: #7c3aed;
+}
+.icon-yellow {
+  stroke: #d97706;
+}
+.icon-teal {
+  stroke: #059669;
+}
 
-/* Data Tables Optimization */
+/* Data Tables Optimization (General Defaults) */
 .panel table {
   width: 100%;
   border-collapse: collapse;
   font-size: clamp(13px, 1.2vw, 15px);
-  min-width: 400px; /* Forces readable sub-columns without stacking squish */
+  min-width: 400px;
 }
 
 .panel th {
@@ -345,61 +382,89 @@ html, body, #root {
   transition: background 0.2s ease;
 }
 
-.pill-btn:hover {
+.pill-btn:hover:not(:disabled) {
   background-color: var(--admin-dark);
 }
 
-.status-pill { 
-  display: inline-block; 
-  border-radius: var(--radius-full); 
-  padding: 4px 14px; 
-  font-size: clamp(11px, 1vw, 13px); 
-  font-weight: 600; 
-  text-align: center; 
+.pill-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.status-pill {
+  display: inline-block;
+  border-radius: var(--radius-full);
+  padding: 4px 14px;
+  font-size: clamp(11px, 1vw, 13px);
+  font-weight: 600;
+  text-align: center;
   min-width: 80px;
-  background-color: transparent;
   border-width: 1px;
   border-style: solid;
-} 
-
-.status-pill.available, 
-.status-pill.assigned { 
-  border-color: var(--admin-available); 
-  color: #318259; 
-} 
-
-.status-pill.booked { 
-  border-color: var(--admin-booked); 
-  color: #D34356; 
-} 
-
-.status-pill.pending { 
-  border-color: #FCD34D; 
-  color: #B45309; 
 }
 
-/* Active Mentor Colors */
-.full-page-panel .status-pill.available {
+.status-pill.status-submitted,
+.status-pill.pending {
+  border-color: #fcd34d;
+  color: #b45309;
+  background-color: #fef3c7;
+}
+
+.status-pill.status-assigned,
+.status-pill.assigned,
+.status-pill.available {
   border-color: #8adbb0;
-  color: #318259;        
+  color: #15803d;
+  background-color: #dcfce7;
 }
 
-/* Inactive Mentor Colors */
-.full-page-panel .status-pill.booked {
+.status-pill.status-completed {
+  border-color: #93c5fd;
+  color: #1d4ed8;
+  background-color: #dbeafe;
+}
+
+.status-pill.status-cancelled,
+.status-pill.booked {
   border-color: #fd788a;
-  color: #D34356;        
+  color: #b91c1c;
+  background-color: #fee2e2;
 }
 
-.view-all-link {
+.match-score-badge {
+  display: inline-block;
+  border-radius: var(--radius-full);
+  padding: 3px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: #fff;
+  min-width: 54px;
+  text-align: center;
+}
+
+
+.view-all-link-btn {
   display: inline-block;
   margin-top: var(--space-sm);
   color: var(--admin-primary);
   font-size: clamp(13px, 1.2vw, 15px);
   font-weight: 500;
-  text-decoration: none;
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: inherit;
+  cursor: pointer;
+  text-align: left;
+  transition: color 0.15s ease;
 }
 
-.view-all-link.disabled {
+.view-all-link-btn:hover:not(.disabled) {
+  color: var(--admin-dark);
+  text-decoration: underline;
+}
+
+.view-all-link-btn.disabled {
   color: #9ca3af;
   cursor: default;
   pointer-events: none;
@@ -412,21 +477,545 @@ html, body, #root {
 }
 
 /* ==========================================================================
+   FIGMA APPLICANTS PAGE SPECIFIC STYLES
+   ========================================================================== */
+.applicant-page-container {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
+
+.page-header {
+  margin-bottom: 4px;
+}
+
+.page-title {
+  font-size: 28px;
+  font-weight: 800;
+  color: #000000;
+  margin: 0 0 6px 0;
+}
+
+.page-subtitle {
+  font-size: 14px;
+  color: #6b7280;
+  margin: 0;
+}
+
+.panel.figma-table-panel {
+  background: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  padding: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* Figma Filter Bar */
+.figma-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+.search-input-wrapper {
+  position: relative;
+  flex: 1;
+  min-width: 260px;
+}
+
+.search-icon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  fill: #9ca3af;
+  pointer-events: none;
+}
+
+.figma-search-input {
+  width: 100%;
+  padding: 8px 12px 8px 38px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 13px;
+  outline: none;
+  color: #111827;
+  background: #ffffff;
+}
+
+.figma-search-input:focus {
+  border-color: var(--admin-primary);
+}
+
+.filter-select {
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 13px;
+  color: #111827;
+  background: #ffffff;
+  cursor: pointer;
+  outline: none;
+}
+
+.find-btn {
+  padding: 8px 22px;
+  border: 1.5px solid #007ca6;
+  background: #ffffff;
+  color: #007ca6;
+  font-weight: 700;
+  font-size: 13px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.find-btn:hover {
+  background: #007ca6;
+  color: #ffffff;
+}
+
+/* Figma Data Table */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.figma-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 800px;
+}
+
+.figma-table th {
+  text-align: left;
+  font-size: 13px;
+  font-weight: 700;
+  color: #000000;
+  padding: 12px 14px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.figma-table td {
+  padding: 14px;
+  vertical-align: middle;
+  border-bottom: 1px solid #f3f4f6;
+  font-size: 13px;
+}
+
+.applicant-cell {
+  display: flex;
+  flex-direction: column;
+}
+
+.applicant-name {
+  font-weight: 700;
+  color: #000000;
+  font-size: 14px;
+}
+
+.applicant-email {
+  font-size: 12px;
+  color: #4b5563;
+}
+
+.career-text,
+.date-text {
+  color: #111827;
+  font-weight: 500;
+}
+
+/* Outlined Service Badges */
+.service-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  background: #ffffff;
+  border: 1.5px solid transparent;
+  white-space: nowrap;
+}
+
+.badge-advice {
+  border-color: #7b78ee;
+  color: #7b78ee;
+}
+
+.badge-interview {
+  border-color: #f472b6;
+  color: #f472b6;
+}
+
+.badge-resume {
+  border-color: #2dd4bf;
+  color: #2dd4bf;
+}
+
+.badge-default {
+  border-color: #9ca3af;
+  color: #4b5563;
+}
+
+/* Text-only Status Colors */
+.status-text {
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.status-pending {
+  color: #f59e0b;
+}
+
+.status-matched {
+  color: #10b981;
+}
+
+.status-meeting {
+  color: #0284c7;
+}
+
+/* Action Cell */
+.action-cell {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.figma-view-btn {
+  background: #007ca6;
+  color: #ffffff;
+  border: none;
+  padding: 7px 16px;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  white-space: nowrap;
+}
+
+.figma-view-btn:hover {
+  background: #005a78;
+}
+
+.more-options-btn {
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: #000000;
+  cursor: pointer;
+  padding: 0 4px;
+}
+
+/* Table Footer / Pagination */
+.figma-table-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 20px;
+  padding-top: 12px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.footer-count {
+  font-size: 13px;
+  color: #9ca3af;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pagination-btn {
+  background: #f3f4f6;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 12px;
+  color: #6b7280;
+  cursor: pointer;
+}
+
+.pagination-btn.active-next {
+  border: 1px solid #007ca6;
+  background: #ffffff;
+  color: #007ca6;
+  font-weight: 700;
+}
+
+.pagination-num {
+  background: transparent;
+  border: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #111827;
+  cursor: pointer;
+}
+
+.pagination-num.active {
+  background: #007ca6;
+  color: #ffffff;
+}
+
+.pagination-dots {
+  color: #6b7280;
+  font-size: 12px;
+  padding: 0 4px;
+}
+
+/* ==========================================================================
+   APPLICANT DETAIL PAGE VIEW (INLINE CARD)
+   ========================================================================== */
+.applicant-detail-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  background: #ffffff;
+  border-radius: var(--radius-md);
+  padding: var(--space-lg);
+}
+
+.back-link-btn {
+  background: transparent;
+  border: none;
+  color: var(--admin-primary);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  margin-bottom: var(--space-xs);
+  width: fit-content;
+  transition: color 0.15s ease;
+}
+
+.back-link-btn:hover {
+  color: var(--admin-dark);
+  text-decoration: underline;
+}
+
+.applicant-detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: var(--space-md);
+  border-bottom: 1px solid var(--admin-border);
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.applicant-user-info {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.applicant-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--admin-primary);
+  color: #ffffff !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.applicant-details-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-lg) var(--space-md);
+  margin-top: var(--space-sm);
+}
+
+.detail-card-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.detail-card-item.full-width {
+  grid-column: span 2;
+}
+
+.detail-card-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #4b5563 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.detail-card-value {
+  font-size: 16px;
+  color: #111827 !important;
+  font-weight: 500;
+  word-break: break-word;
+}
+
+.highlight-value {
+  font-weight: 600;
+  color: #007ca6 !important;
+}
+
+.detail-comments-box {
+  background: #f9fafb !important;
+  border: 1px solid var(--admin-border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-md);
+  font-size: 15px;
+  color: #1f2937 !important;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+.detail-actions-bar {
+  margin-top: var(--space-lg);
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--admin-border);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.status-select-group {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+}
+
+.status-select-group label {
+  color: #374151 !important;
+  font-weight: 600;
+}
+
+.status-select-dropdown {
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--admin-border);
+  font-family: inherit;
+  font-size: 14px;
+  background-color: #ffffff !important;
+  color: #111827 !important;
+  cursor: pointer;
+  outline: none;
+}
+
+.status-msg {
+  font-size: 13px;
+  color: #059669 !important;
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   SIDEBAR NAV DROPDOWN (Applicants > Career Prep Submissions, etc.)
+   ========================================================================== */
+.nav-item-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.nav-chevron {
+  margin-left: auto;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.nav-chevron--open {
+  transform: rotate(180deg);
+}
+
+.nav-submenu {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 4px;
+  padding-left: clamp(30px, 3vw, 42px);
+}
+
+.nav-subitem {
+  background: transparent;
+  border: none;
+  padding: 4px 0;
+  color: rgba(255, 255, 255, 0.8);
+  font-family: inherit;
+  font-size: clamp(13px, 1.3vw, 16px);
+  text-align: left;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color 0.15s ease-in-out;
+}
+
+.nav-subitem:hover,
+.nav-subitem.active {
+  color: var(--admin-accent);
+}
+
+/* Mobile: sidebar nav becomes a horizontal scroll row, so let each
+   group (and its submenu) stack vertically within its own column
+   instead of trying to lay the submenu out sideways. */
+@media (max-width: 767px) {
+  .nav-item-group {
+    flex-shrink: 0;
+  }
+
+  .nav-submenu {
+    padding-left: var(--space-sm);
+  }
+}
+
+/* ==========================================================================
    MEDIA RESPONSIVE CANVAS BREAKPOINTS
    ========================================================================== */
 
-/* ── Tablet Viewports (Below 1024px) ── */
+/* ── Tablet & Small Laptops (Below 1024px) ── */
 @media (max-width: 1023px) {
   .stat-cards {
-    grid-template-columns: repeat(2, 1fr); /* 2x2 grid instead of 4 wide */
+    grid-template-columns: repeat(2, 1fr);
     gap: var(--space-md);
+  }
+
+  .figma-filter-bar {
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .search-input-wrapper {
+    min-width: 100%;
+  }
+
+  .filter-select {
+    flex: 1 1 calc(50% - 12px);
+    min-width: 140px;
   }
 }
 
 /* ── Mobile Stacking Viewports (Below 768px) ── */
 @media (max-width: 767px) {
   .admin-dash {
-    flex-direction: column; /* Stacks navigation sidebar on top of the panels */
+    flex-direction: column;
   }
 
   .admin-sidebar {
@@ -434,13 +1023,13 @@ html, body, #root {
     height: auto;
     padding: var(--space-sm) var(--space-md);
     display: flex;
-    flex-direction: row; /* Horizontal navbar flow */
+    flex-direction: row;
     align-items: center;
     justify-content: space-between;
     position: sticky;
     top: 0;
     z-index: 100;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     gap: var(--space-sm);
   }
 
@@ -449,12 +1038,10 @@ html, body, #root {
     flex-shrink: 0;
   }
 
-  /* Hide background swirl on top mobile navbar so it doesn't overlap text layout */
   .sidebar-bg-swirl {
     display: none;
   }
 
-  /* Transform links into a clean scrollable horizontal sub-row */
   .sidebar-nav {
     flex-direction: row;
     gap: var(--space-md);
@@ -464,26 +1051,25 @@ html, body, #root {
     flex: 1;
     justify-content: flex-start;
   }
-  
+
   .sidebar-nav::-webkit-scrollbar {
-    display: none; /* Keeps UI clean */
+    display: none;
   }
 
   .nav-item {
     padding: var(--space-xs) 0;
-    font-size: 15px; /* Compact format for mobile header tabs */
+    font-size: 15px;
   }
 
-  /* OPTIMIZED FOR MOBILE: Keep footer container active and display it on the right side */
   .sidebar-footer {
-    display: flex; 
+    display: flex;
     flex-direction: row;
     margin-top: 0;
     margin-bottom: 0;
     flex-shrink: 0;
+    gap: 0;
   }
 
-  /* Ensure your logout nav item inside the footer renders cleanly */
   .sidebar-footer .nav-item {
     padding: var(--space-xs) var(--space-sm);
     background: rgba(255, 255, 255, 0.1);
@@ -492,7 +1078,91 @@ html, body, #root {
   }
 
   .admin-main {
-    padding: var(--space-md);
+    padding: var(--space-sm) var(--space-md);
+  }
+
+  .panel.figma-table-panel {
+    padding: 14px;
+    border-radius: 8px;
+  }
+
+  .page-title {
+    font-size: 22px;
+  }
+
+  .page-subtitle {
+    font-size: 13px;
+  }
+
+  .figma-filter-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .search-input-wrapper,
+  .filter-select {
+    width: 100%;
+    flex: none;
+  }
+
+  .figma-table th {
+    padding: 10px 8px;
+    font-size: 12px;
+    white-space: nowrap;
+  }
+
+  .figma-table td {
+    padding: 10px 8px;
+    font-size: 12px;
+  }
+
+  .applicant-name {
+    font-size: 13px;
+  }
+
+  .applicant-email {
+    font-size: 11px;
+  }
+
+  .service-badge {
+    padding: 3px 8px;
+    font-size: 11px;
+  }
+
+  .figma-view-btn {
+    padding: 6px 10px;
+    font-size: 11px;
+  }
+
+  .figma-table-footer {
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    text-align: center;
+  }
+
+  .footer-count {
+    font-size: 12px;
+  }
+
+  .pagination {
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .pagination-btn {
+    padding: 6px 10px;
+    font-size: 11px;
+  }
+
+  .pagination-num {
+    width: 32px;
+    height: 32px;
+    font-size: 12px;
   }
 }
 
@@ -500,21 +1170,21 @@ html, body, #root {
 @media (max-width: 479px) {
   .admin-sidebar {
     padding: var(--space-sm);
-    flex-wrap: wrap; /* Wrap links if screen size gets absolutely tiny */
+    flex-wrap: wrap;
   }
-  
+
   .sidebar-logo {
     max-width: 95px;
   }
 
   .sidebar-nav {
-    order: 3; /* Push navigation choices underneath logo/logout row on narrow frames */
+    order: 3;
     width: 100%;
     margin-top: 4px;
   }
 
   .stat-cards {
-    grid-template-columns: 1fr; /* Complete single column list stack */
+    grid-template-columns: 1fr;
     gap: var(--space-sm);
   }
 
@@ -524,5 +1194,33 @@ html, body, #root {
 
   .panel-grid {
     grid-template-columns: 1fr;
+  }
+
+  .applicant-detail-panel {
+    padding: 16px;
+  }
+
+  .applicant-details-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .detail-card-item.full-width {
+    grid-column: span 1;
+  }
+
+  .applicant-user-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .status-select-group {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .status-select-dropdown {
+    width: 100%;
   }
 }

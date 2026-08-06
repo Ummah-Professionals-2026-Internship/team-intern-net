@@ -1,0 +1,283 @@
+/* ==========================================================================
+   MENTOR PROFILE — Consistent with AdminDash.css & ApplicantDetails.css
+   Three-tier breakpoints: ≤1023px tablet · ≤767px mobile · ≤479px compact
+   ========================================================================== */
+
+.mentor-profile-container .badge-purple { background-color: #CABDF9; }
+.mentor-profile-container .badge-pink   { background-color: #FBB8E6; }
+
+.mentor-profile-container {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  padding-bottom: 80px; /* Clears the sticky assign bar */
+}
+
+/* ── Back Button — matches ApplicantDetails .back-link-btn pattern ── */
+.mentor-profile-back-btn {
+  background: transparent;
+  border: none;
+  color: var(--admin-primary);
+  font-size: clamp(13px, 1.2vw, 15px);
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  width: fit-content;
+  font-family: inherit;
+  transition: color 0.15s ease;
+}
+
+.mentor-profile-back-btn:hover {
+  color: var(--admin-dark);
+  text-decoration: underline;
+}
+
+/* ── Header Card — matches .top-profile-card pattern from ApplicantDetails ── */
+.mentor-profile-header-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+  background: #fff;
+  border: 1px solid var(--admin-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-lg);
+  box-shadow: var(--shadow-card);
+  flex-wrap: wrap;
+}
+
+.mentor-profile-avatar {
+  width: clamp(72px, 9vw, 120px);
+  height: clamp(72px, 9vw, 120px);
+  border-radius: 50%;
+  background: var(--admin-primary);
+  color: #fff;
+  font-weight: 700;
+  font-size: clamp(22px, 3vw, 36px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.mentor-profile-header-main {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+}
+
+.mentor-profile-name {
+  font-weight: 700;
+  font-size: clamp(20px, 2.2vw, 30px);
+  color: #111827;
+  margin: 0;
+  word-break: break-word;
+}
+
+.mentor-profile-role,
+.mentor-profile-employer {
+  font-size: clamp(14px, 1.4vw, 18px);
+  color: #374151;
+  margin: 0;
+}
+
+/* ── Capacity Box ── */
+.mentor-profile-capacity-box {
+  background: var(--admin-bg);
+  border: 1px solid var(--admin-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-sm) var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-width: 160px;
+}
+
+.mentor-profile-capacity-label {
+  font-weight: 700;
+  font-size: clamp(16px, 1.8vw, 22px);
+  color: #111827;
+}
+
+.mentor-profile-capacity-value {
+  font-size: clamp(13px, 1.3vw, 17px);
+  color: #4b5563;
+  text-align: center;
+  margin: 0;
+}
+
+/* ── About / Info Cards — matches .card pattern from ApplicantDetails ── */
+.mentor-profile-about-card,
+.mentor-profile-info-card {
+  background: #fff;
+  border: 1px solid var(--admin-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-lg);
+  box-shadow: var(--shadow-card);
+}
+
+.mentor-profile-section-title {
+  font-weight: 700;
+  font-size: clamp(15px, 1.5vw, 20px);
+  color: #111827;
+  margin: 0 0 var(--space-sm);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.mentor-profile-container .mentor-profile-icon {
+  width: clamp(20px, 1.8vw, 26px);
+  height: clamp(20px, 1.8vw, 26px);
+  flex-shrink: 0;
+  color: #0E7C96;
+}
+
+.mentor-profile-container .icon-badge svg {
+  width: 55%;
+  height: 55%;
+}
+
+.mentor-profile-about-text {
+  font-size: clamp(13px, 1.3vw, 16px);
+  color: #1f2937;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* ── Info Grid — matches .applicant-details-grid pattern ── */
+.mentor-profile-info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0;
+  border-top: 1px solid var(--admin-primary);
+  border-left: 1px solid var(--admin-primary);
+}
+
+.mentor-profile-info-cell {
+  border-right: 1px solid var(--admin-primary);
+  border-bottom: 1px solid var(--admin-primary);
+  padding: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  text-align: center;
+}
+
+.mentor-profile-info-label {
+  font-weight: 700;
+  font-size: clamp(12px, 1.3vw, 16px);
+  color: #111827;
+}
+
+.mentor-profile-info-value {
+  font-size: clamp(12px, 1.3vw, 16px);
+  color: #374151;
+}
+
+/* ── Sticky Assign Bar ── */
+.mentor-profile-assign-bar {
+  position: sticky;
+  bottom: var(--space-md);
+  display: flex;
+  justify-content: center;
+  z-index: 3;
+  width: 100%;
+}
+
+.mentor-profile-assign-btn {
+  background-color: var(--admin-primary);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm, 8px);
+  padding: 14px 24px;
+  font-weight: 700;
+  font-size: clamp(15px, 1.6vw, 18px);
+  cursor: pointer;
+  width: 50%;
+  max-width: 400px;
+  text-align: center;
+  font-family: inherit;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.15s ease;
+}
+
+.mentor-profile-assign-btn:hover {
+  background-color: var(--admin-dark);
+}
+
+/* ==========================================================================
+   RESPONSIVE BREAKPOINTS
+   ========================================================================== */
+
+/* ── Tablet (≤1023px): info grid goes single column ── */
+@media (max-width: 1023px) {
+  .mentor-profile-info-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Mobile (≤767px): header card stacks, full-width capacity box ── */
+@media (max-width: 767px) {
+  .mentor-profile-header-card {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: var(--space-md);
+    padding: var(--space-md);
+  }
+
+  .mentor-profile-header-main {
+    min-width: 0;
+    width: 100%;
+    align-items: center;
+  }
+
+  .mentor-profile-capacity-box {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .mentor-profile-about-card,
+  .mentor-profile-info-card {
+    padding: var(--space-md);
+  }
+
+  .mentor-profile-assign-btn {
+    width: 100%;
+    padding: 12px 24px;
+  }
+}
+
+/* ── Compact Mobile (≤479px): tight padding ── */
+@media (max-width: 479px) {
+  .mentor-profile-container {
+    padding-bottom: 72px;
+  }
+
+  .mentor-profile-header-card {
+    padding: var(--space-sm);
+  }
+
+  .mentor-profile-about-card,
+  .mentor-profile-info-card {
+    padding: var(--space-sm);
+  }
+
+  .mentor-profile-info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .mentor-profile-info-cell {
+    padding: var(--space-sm);
+  }
+}

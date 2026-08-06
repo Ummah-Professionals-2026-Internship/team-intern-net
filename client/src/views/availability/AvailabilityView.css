@@ -1,0 +1,327 @@
+@font-face {
+  font-family: "Kollektif";
+  src: url("../../fonts/kollektif-webfont/Kollektif.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Kollektif Bold";
+  src: url("../../fonts/kollektif-webfont/Kollektif-Bold.woff") format("woff");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+.sav-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 8px 32px 32px;
+  box-sizing: border-box;
+}
+
+.sav-title-section { margin-bottom: 24px; }
+
+.sav-title {
+  margin: 0 0 5px;
+  font-family: "Kollektif Bold", system-ui, sans-serif;
+  font-size: 35px;
+  font-weight: 700;
+  color: #000;
+}
+
+.sav-subtitle {
+  font-family: "Kollektif", system-ui, sans-serif;
+  color: #363538;
+  line-height: 1.4;
+}
+
+.sav-container {
+  display: flex;
+  gap: 32px;
+  flex: 1;
+  font-family: "Kollektif", system-ui, sans-serif;
+  min-height: 0;
+}
+
+.sav-calendar-panel {
+  flex: 1;
+  background: #fff;
+  border-radius: 15px;
+  border: 1px solid #e5e7eb;
+  padding: 32px;
+  box-sizing: border-box;
+  position: relative;
+  overflow-y: auto;
+  box-shadow: 0 4px 4px rgba(0,0,0,0.25);
+}
+
+.sav-loading {
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px;
+  z-index: 10;
+}
+
+.sav-spinner {
+  width: 28px;
+  height: 28px;
+  border: 3px solid #e5e7eb;
+  border-top-color: #025571;
+  border-radius: 50%;
+  animation: sav-spin 0.7s linear infinite;
+}
+
+@keyframes sav-spin { to { transform: rotate(360deg); } }
+
+.sav-calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.sav-month-title {
+  font-size: 24px;
+  font-weight: 700;
+  font-family: "Kollektif Bold", system-ui, sans-serif;
+  color: #111827;
+  margin: 0;
+  letter-spacing: 0.04em;
+}
+
+.sav-nav-btn {
+  width: 32px;
+  height: 32px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #fff;
+  color: #374151;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+}
+
+.sav-nav-btn:hover { background: #f3f4f6; }
+.sav-nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+.sav-day-labels {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  margin-bottom: 8px;
+}
+
+.sav-day-label {
+  text-align: center;
+  font-size: 18px;
+  font-family: "Kollektif Bold", system-ui, sans-serif;
+  color: black;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 4px 0;
+}
+
+.sav-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+}
+
+.sav-cell {
+  position: relative;
+  height: 70px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  border: 1px solid rgba(0,0,0,0.25);
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.15s;
+  font-family: "Kollektif Bold", system-ui, sans-serif;
+  font-size: 20px;
+  gap: 2px;
+  padding: 0;
+}
+
+.sav-cell:hover:not(.sav-cell--selected) { background: #f0f9ff; }
+.sav-cell--empty { pointer-events: none; cursor: default; }
+
+.sav-cell--today .sav-cell-number {
+  color: #007CA6;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.sav-cell--selected { background: #025571; }
+.sav-cell--selected .sav-cell-number { color: #fff; font-weight: 700; }
+
+.sav-cell--available { background: #ecfdf5; border-color: #16a34a; }
+.sav-cell--available .sav-cell-number { color: #166534; }
+
+.sav-cell--selected-available { background: #15803D; border-color: #15803D; }
+.sav-cell--selected-available .sav-cell-number { color: white; }
+.sav-cell--selected-available .sav-dot { background: white; }
+
+.sav-cell-number { font-size: 20px; line-height: 1; }
+
+.sav-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #40AE50;
+  flex-shrink: 0;
+}
+
+.sav-slot-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin-top: 6px;
+}
+
+.sav-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.25);
+  z-index: 999;
+}
+
+.sav-side-panel {
+  width: 380px;
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100vh;
+  background: #fff;
+  border-radius: 15px 0 0 15px;
+  border: 1px solid rgba(0,0,0,0.25);
+  padding: 24px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  z-index: 1000;
+  box-shadow: 0 4px 4px rgba(0,0,0,0.25);
+  animation: slideInRight 0.25s ease;
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+.sav-side-header {
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+}
+
+.sav-side-date {
+  margin: 0;
+  font-size: 24px;
+  text-align: center;
+  font-family: "Kollektif Bold", system-ui, sans-serif;
+  color: #111827;
+}
+
+.sav-side-title {
+  margin: 0;
+  font-size: 20px;
+  font-family: "Kollektif Bold", system-ui, sans-serif;
+  color: #111827;
+}
+
+.sav-slots {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.sav-no-slots { margin: 0; font-size: 13px; color: #9ca3af; }
+
+.sav-slot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f9fafb;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 12px 14px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.sav-slot:hover { border-color: #025571; background: #f0f9ff; }
+
+.sav-slot--selected {
+  border-color: #025571;
+  background: #e0f2fe;
+}
+
+.sav-slot-time { font-size: 16px; color: #111827; }
+.sav-slot-check { color: #025571; font-weight: 700; font-size: 18px; }
+
+.sav-error { margin: 0; font-size: 12px; color: #dc2626; }
+
+.sav-toast {
+  background: #16a34a;
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.sav-side-footer {
+  display: flex;
+  gap: 10px;
+  margin-top: auto;
+}
+
+.sav-btn-cancel {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #DA1D37;
+  border-radius: 10px;
+  background: #fff;
+  color: #DA1D37;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: "Kollektif", system-ui, sans-serif;
+  transition: background 0.15s;
+}
+
+.sav-btn-cancel:hover { background: #fef2f2; }
+
+.sav-btn-book {
+  flex: 1;
+  padding: 10px;
+  background: #025571;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: "Kollektif", system-ui, sans-serif;
+  transition: background 0.15s;
+}
+
+.sav-btn-book:hover { background: #024a62; }
+.sav-btn-book:disabled { opacity: 0.5; cursor: not-allowed; }

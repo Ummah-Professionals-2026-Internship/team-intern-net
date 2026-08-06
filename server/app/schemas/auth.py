@@ -32,6 +32,22 @@ class RefreshTokenRequest(BaseModel):
     refresh_token: str
 
 
+# Password Reset
+
+class ForgotPasswordRequest(BaseModel):
+    email: EmailStr
+
+
+class ResetPasswordRequest(BaseModel):
+    token: str
+    new_password: str
+
+
+class ChangePasswordRequest(BaseModel):
+    current_password: str
+    new_password: str
+
+
 # Resolve forward reference
 TokenResponse.model_rebuild()
 
