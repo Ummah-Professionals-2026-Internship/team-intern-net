@@ -289,12 +289,35 @@
   border: 1px solid #e5e7eb;  
 }
 
+.sd-final-dash-card{
+  display: flex;
+  flex-direction: column;
+}
+
+.sd-upcoming-session-box{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow-y: auto;
+}
+
+.sd-upcoming-session-box-h2{
+  color: #007CA6;
+  font-family: "Kollektif Bold", system-ui, sans-serif;
+  font-size: 28px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+}
+
 .sd-cal-header-row{
   display: flex;
   gap: 15px;
   align-items: center;
 
 }
+
+
 
 .sd-cal-title {
   font-family: "Kollektif Bold", system-ui, sans-serif;

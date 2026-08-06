@@ -30,6 +30,20 @@
   }
 }
 
+*::-webkit-scrollbar {
+  width: 6px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: #c0d9e0;
+  border-radius: 999px;
+}
+
+
 @media (prefers-color-scheme: dark) {
   :root {
     --text: #9ca3af;
