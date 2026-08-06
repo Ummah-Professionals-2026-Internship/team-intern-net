@@ -35,6 +35,7 @@
   font-size: clamp(35px, 2vw, 28px);
   margin: 0;
   color: #000;
+  letter-spacing: 0.01rem;
 }
 
 .sd-user-badge {
@@ -47,7 +48,7 @@
   padding: 8px 16px;
   font-size: 14px;
   cursor: pointer;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+  box-shadow: 0 4px 4px rgba(0,0,0,0.08);
 }
 
 /* Progress */
@@ -71,8 +72,8 @@
 }
 
 .sd-step-circle {
-  width: 44px;
-  height: 44px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
   background: #e5e7eb;
   display: flex;
@@ -92,15 +93,25 @@
 
 .sd-step--active {
   background: #fff;
-  border-color: #025571;
-  color: #025571;
+  border-color: #007CA6;
+  color: #007CA6;
 }
 
 .sd-step-label {
-  font-size: 12px;
+  font-size: 16px;
   margin-top: 8px;
-  color: #6b7280;
+  color: #000;
   text-align: center;
+}
+
+.sd-step-svg {
+  width: 32px;
+  height: 32px;
+}
+
+.sd-step-circle img {
+  width: 32px;
+  height: 32px;
 }
 
 .sd-step-label--active {
@@ -126,23 +137,71 @@
   gap: 20px;
   flex: 1;
   min-height: 0;
-  overflow: hidden;
+  overflow-y: auto;
+  border: 0;
+  padding: 8px;
+}
+
+/* No mentor card */
+.sd-matching-card{
+  width: 100%;
+  display: flex;
+  border-radius: 20px;
+  background: #FFF;
+  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+  align-items: flex-start;
+  border: 1px solid #e5e7eb;
+  justify-content: center;
+}
+.sd-matching-card-body{
+  padding-top: 10%;
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+}
+
+.sd-matching-card-body-h1{
+  color: #007CA6;
+  font-family: "Kollektif Bold", system-ui, sans-serif;
+  font-size: clamp(35px, 2vw, 28px);
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  letter-spacing: 0.2px; 
+}
+
+.sd-matching-card-body-p{
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  line-height: normal;
+
+}
+
+.sd-matching-card-footer{
+  padding-top: 5%;
+  display: flex;
+  align-items: center;
+  gap: 15px;
 }
 
 /* Mentor Card */
 .sd-mentor-card {
-  width: 260px;
+  width: 400px;
+  height: 300px;
+  overflow-y: auto;
   flex-shrink: 0;
   background: #fff;
   border-radius: 12px;
   padding: 24px;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 8px;
+  align-items: flex-start;
+  gap: 50px;
   box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
-  border: 1px solid #e5e7eb;  
+  border: 1px solid #e5e7eb;    
 }
+
 
 .sd-mentor-card-header{
   display: flex;
@@ -158,6 +217,20 @@
   font-weight: 700;
   margin: 0;
 }
+
+.sd-mentor-card-body{
+  display: flex;
+  gap: 15px;
+  align-items: flex-start;
+}
+
+.sd-mentor-card-deatails{
+  display: flex;
+  flex-direction: column;
+
+}
+
+
 
 .sd-mentor-avatar {
   width: 80px;
@@ -176,14 +249,14 @@
   font-size: 18px;
   color: #025571;
   margin: 0;
-  text-align: center;
+  /* text-align: center; */
 }
 
 .sd-mentor-detail {
   font-size: 13px;
   color: #374151;
   margin: 0;
-  text-align: center;
+  /* text-align: center; */
 }
 
 .sd-view-profile {

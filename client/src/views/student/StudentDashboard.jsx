@@ -1,8 +1,9 @@
 import { useState, useMemo, useEffect, useCallback } from "react";
 import "./StudentDashboard.css";
 import api from '../../api/api'; // adjust path as needed
-
-
+import RequestIcon from '../../assets/icons/Check.svg'
+import SearchIcon from '../../assets/icons/search.svg'
+import HandWavingIcon from '../../assets/icons/HandWaving.svg'
 const DAYS = ["Sun", "Mon", "Tues", "Wed", "Thurs", "Fri", "Sat"];
 const MONTHS = [
   "January", "February", "March", "April", "May", "June",
@@ -46,6 +47,7 @@ function formatDateLong(dateStr) {
     timeZone: "UTC",
   });
 }
+
 
 export default function StudentDashboard() {
   const today = useMemo(() => new Date(), []);
@@ -311,11 +313,12 @@ export default function StudentDashboard() {
       </div>
 
       {/* Progress Tracker Map */}
+
       <div className="sd-progress">
         {steps.map((step, i) => (
           <div key={i} className="sd-step-wrap">
             <div className={`sd-step-circle ${step.done ? "sd-step--done" : ""} ${step.active ? "sd-step--active" : ""}`}>
-              {step.done ? "✓" : step.active && !upcomingMeeting ? "📅" : "🤝"}
+              {step.done ? <img src={RequestIcon} alt="done"/> : step.active && !upcomingMeeting ? <img src={SearchIcon} alt="search"/> : <img src={HandWavingIcon} alt="img"/>}
             </div>
             <span className={`sd-step-label ${step.active ? "sd-step-label--active" : ""}`}>{step.label}</span>
             {i < steps.length - 1 && (
@@ -329,15 +332,24 @@ export default function StudentDashboard() {
       <div className="sd-body">
         {!mentor ? (
           <div className="sd-matching-card">
-            <div className="sd-illustration-search">
+            {/* <div className="sd-illustration-search">
               <span className="sd-search-icon">🔍</span>
               <span className="sd-avatar-icon-small">👤</span>
-            </div>
-            <h2>We're currently finding the right mentor for you!</h2>
-            <p>Your career form request is being carefully reviewed.</p>
-            <p>We will email you once we've found the best mentor match for your career goals.</p>
-            <div className="sd-thanks-note">
-              <span>⏳</span> Thank you for your patience.
+            </div> */}
+            <div className="sd-matching-card-body"> 
+              <h1 className="sd-matching-card-body-h1">We're currently finding the right mentor for you!</h1>
+              <div className="sd-matching-card-body-p"> 
+                <p>Your career form request is being carefully reviewed.</p>
+                <p>We will email you once we've found the best mentor match for your career goals.</p>
+                <div className="sd-matching-card-footer">
+                  <svg width="40" height="45" viewBox="0 0 40 45" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path fillRule="evenodd" clipRule="evenodd" d="M28.8282 6.5017C28.5376 6.70529 28.1291 6.70529 27.8384 6.5017C27.3063 6.12905 26.3987 5.625 25.3821 5.625C25.3284 5.625 25.2755 5.62539 25.2234 5.62615C22.698 5.66303 21.2067 8.22942 21.7943 10.6994C22.4451 13.4348 26.2521 15.8594 27.7388 16.7148C28.1102 16.9284 28.5565 16.9284 28.9278 16.7148C30.4146 15.8594 34.2215 13.4348 34.8723 10.6994C35.4599 8.22942 33.9686 5.66303 31.4432 5.62615C31.3911 5.62539 31.3382 5.625 31.2845 5.625C30.2679 5.625 29.3603 6.12905 28.8282 6.5017ZM32.4573 9.97226C32.3609 10.3775 31.8483 11.1797 30.6891 12.183C29.8848 12.8791 29.0063 13.4716 28.3333 13.8865C27.6603 13.4716 26.7818 12.8791 25.9775 12.183C24.8183 11.1797 24.3057 10.3775 24.2093 9.97226C24.1101 9.5551 24.1928 9.16936 24.3659 8.90056C24.5207 8.66035 24.7885 8.44524 25.2558 8.43841C25.297 8.43781 25.3391 8.4375 25.3821 8.4375C25.528 8.4375 25.7145 8.47521 25.935 8.56574C26.1538 8.65553 26.357 8.77715 26.5171 8.88932C27.6167 9.65942 29.0499 9.65942 30.1495 8.88933C30.3097 8.77715 30.5128 8.65553 30.7316 8.56574C30.9521 8.47521 31.1386 8.4375 31.2845 8.4375C31.3275 8.4375 31.3696 8.43781 31.4108 8.43841C31.8782 8.44524 32.146 8.66035 32.3007 8.90056C32.4738 9.16936 32.5565 9.5551 32.4573 9.97226Z" fill="#FDBB37"/>
+                    <path fillRule="evenodd" clipRule="evenodd" d="M4.69695 13.5938C3.03064 13.5938 2.08331 15.3398 2.08331 16.875V35.625C2.08331 37.1602 3.03064 38.9062 4.69695 38.9062H9.46968C11.136 38.9062 12.0833 37.1602 12.0833 35.625V35.0756C12.1314 35.0564 12.1789 35.0337 12.2257 35.0074C13.085 34.524 13.5414 34.46 13.9468 34.5045C14.3876 34.5529 14.8328 34.7252 15.6502 35.0416C15.8043 35.1012 15.9715 35.166 16.1544 35.236C19.1942 36.399 23.3336 36.7922 27.2186 35.8123C31.1192 34.8284 34.9076 32.4145 36.9513 27.8169C37.281 27.0753 37.5363 26.3327 37.5683 25.6467C37.5853 25.2804 37.5426 24.8564 37.3534 24.4486C37.1562 24.0236 36.8528 23.7309 36.5234 23.5506C35.945 23.234 35.2767 23.2588 34.7797 23.3176C34.2303 23.3826 33.5979 23.5328 32.9375 23.7111C32.4523 23.8421 31.9343 23.9923 31.388 24.1507C28.8754 24.8793 25.7644 25.7813 22.4999 25.7817C22.5016 25.7817 22.5024 25.7818 22.4999 25.7817C22.4913 25.7812 22.457 25.7792 22.3936 25.7722C22.319 25.7639 22.2218 25.7506 22.1077 25.7314C21.8786 25.6929 21.6003 25.6344 21.3198 25.5561C21.2495 25.5364 21.1806 25.516 21.1137 25.4948C21.8792 25.0634 23.1951 24.5117 25.3289 23.857L25.4737 23.8125C26.7169 23.4288 27.904 22.3972 27.9015 20.87C27.9002 20.0769 27.5476 19.3871 26.9933 18.9407C26.4649 18.5153 25.8009 18.339 25.1119 18.3335C24.1002 18.3254 22.9626 18.4861 21.9502 18.629C21.7743 18.6539 21.602 18.6782 21.435 18.701C20.209 18.8683 19.2951 18.9467 18.7034 18.8167C18.554 18.7839 18.3761 18.6988 18.0749 18.5133C18.0307 18.4861 17.9813 18.4549 17.9273 18.4208C17.6741 18.261 17.3224 18.039 16.9653 17.8826C15.4874 17.2352 14.348 16.9433 13.3126 17.1492C12.8498 17.2412 12.4448 17.4297 12.0833 17.6566V16.875C12.0833 15.3398 11.136 13.5938 9.46968 13.5938H4.69695ZM14.1895 31.7053C13.4797 31.6274 12.8091 31.7318 12.0833 32.019V21.0133C12.1999 20.9669 12.3123 20.9001 12.4165 20.8122C13.1756 20.1719 13.4196 19.984 13.7478 19.9188C14.0744 19.8538 14.6697 19.8952 16.0582 20.5034C16.2374 20.5819 16.3963 20.6815 16.6324 20.8296C16.7047 20.8749 16.7845 20.9249 16.8741 20.9801C17.2063 21.1848 17.6708 21.4555 18.2243 21.5771C19.2737 21.8076 20.595 21.6487 21.7361 21.493C21.9251 21.4672 22.1117 21.441 22.2959 21.4152C23.134 21.2976 23.9198 21.1874 24.6336 21.1552C21.947 21.9815 20.234 22.7306 19.255 23.4531C18.7813 23.8026 18.2817 24.2865 18.0677 24.9718C17.8021 25.8221 18.0854 26.5659 18.4682 27.0356C18.8005 27.4433 19.2377 27.7024 19.584 27.8696C19.9544 28.0485 20.3542 28.1842 20.7175 28.2857C21.416 28.4808 22.1485 28.5942 22.5001 28.5942C26.1174 28.5938 29.6045 27.5779 32.1104 26.8478C32.6241 26.6981 33.0969 26.5604 33.5208 26.446C34.081 26.2948 34.5335 26.1892 34.8912 26.135C34.8449 26.2567 34.7871 26.3974 34.7153 26.559C33.105 30.1815 30.0823 32.2076 26.6717 33.0679C23.2454 33.9321 19.5736 33.5735 16.9594 32.5732C16.815 32.518 16.6713 32.4618 16.5283 32.4059C15.728 32.0929 14.9503 31.7888 14.1895 31.7053ZM25.4269 20.7299C25.4269 20.7299 25.4264 20.7311 25.425 20.7333L25.4269 20.7299ZM4.58331 16.875C4.58331 16.6623 4.64684 16.513 4.70016 16.4397C4.71201 16.4234 4.7214 16.4128 4.72811 16.4062H9.43852C9.44522 16.4128 9.45462 16.4234 9.46647 16.4397C9.51979 16.513 9.58331 16.6623 9.58331 16.875V35.625C9.58331 35.8377 9.51979 35.987 9.46647 36.0603C9.45462 36.0766 9.44522 36.0872 9.43852 36.0938H4.72811C4.7214 36.0872 4.71201 36.0766 4.70016 36.0603C4.64684 35.987 4.58331 35.8377 4.58331 35.625V16.875Z" fill="#FDBB37"/>
+                  </svg>
+                  <p> Thank you for your patience.</p>
+                </div>
+              </div>
+
             </div>
           </div>
         ) : (
@@ -351,39 +363,56 @@ export default function StudentDashboard() {
                 <p className="sd-mentor-label">Your Mentor</p>
 
               </div>
-              <div className="sd-mentor-avatar">
-                <span className="sd-avatar-icon">👤</span>
-              </div>
-              <h2 className="sd-mentor-name">{mentor.name}</h2>
-              <p className="sd-mentor-detail">{mentor.job_title || "Professional Profile"}</p>
-              <p className="sd-mentor-detail">{mentor.employer || "Industry Group"}</p>
-              <p className="sd-mentor-detail">{mentor.industry || "Field Expert"}</p>
-
-              {(mentor.linkedin || mentor.linkedin_url) && (
-                <div style={{ display: 'flex', justifyContent: 'center', width: '100%', marginTop: '8px', marginBottom: '8px' }}>
-                  <a
-                    href={formatExternalUrl(mentor.linkedin || mentor.linkedin_url)}
-                    target="_blank"
-                    rel="noreferrer"
-                    style={{
-                      color: '#0077b5',
-                      textDecoration: 'none',
-                      fontWeight: '600',
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '6px',
-                      fontSize: '0.9rem'
-                    }}
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#0077b5">
-                      <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
-                    </svg>
-                    Connect on LinkedIn
-                  </a>
+              <div className="sd-mentor-card-body">
+                <div className="sd-mentor-card-profile-photo">
+                  <svg width="120" height="120" viewBox="0 0 117 117" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <g filter="url(#filter0_d_856_1728)">
+                      <path d="M58.5 102.375C82.7315 102.375 102.375 82.7315 102.375 58.5C102.375 34.2685 82.7315 14.625 58.5 14.625C34.2685 14.625 14.625 34.2685 14.625 58.5C14.625 82.7315 34.2685 102.375 58.5 102.375Z" fill="#8ACBDB" stroke="#007CA6" strokeWidth="1.5" strokeMiterlimit="10"/>
+                      <path d="M58.5 73.125C68.5965 73.125 76.7812 64.9402 76.7812 54.8438C76.7812 44.7473 68.5965 36.5625 58.5 36.5625C48.4035 36.5625 40.2188 44.7473 40.2188 54.8438C40.2188 64.9402 48.4035 73.125 58.5 73.125Z" stroke="#007CA6" strokeWidth="1.5" strokeMiterlimit="10"/>
+                      <path d="M29.1577 91.1202C31.9118 85.7053 36.1106 81.1582 41.2893 77.9821C46.4679 74.8061 52.4245 73.125 58.4995 73.125C64.5745 73.125 70.531 74.806 75.7097 77.9821C80.8884 81.1581 85.0872 85.7052 87.8413 91.1201" stroke="#007CA6" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    </g>
+                  </svg>
+                  {/* <div className="sd-mentor-avatar">
+                    <span className="sd-avatar-icon">👤</span>
+                  </div> */}
                 </div>
-              )}
+                <div className="sd-mentor-card-deatails">
+                  <h2 className="sd-mentor-name">{mentor.name}</h2>
+                  <p className="sd-mentor-detail">{mentor.job_title || "Professional Profile"}</p>
+                  <p className="sd-mentor-detail">{mentor.employer || "Industry Group"}</p>
+                  <p className="sd-mentor-detail">{mentor.industry || "Field Expert"}</p>
 
-              <button onClick={() => setShowMentorModal(true)} className="sd-view-profile">View Profile</button>
+                  {(mentor.linkedin || mentor.linkedin_url) && (
+                    <div style={{ display: 'flex', justifyContent: 'center', width: '100%', marginTop: '8px', marginBottom: '8px' }}>
+                      <a
+                        href={formatExternalUrl(mentor.linkedin || mentor.linkedin_url)}
+                        target="_blank"
+                        rel="noreferrer"
+                        style={{
+                          color: '#0077b5',
+                          textDecoration: 'none',
+                          fontWeight: '600',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                          fontSize: '0.9rem'
+                        }}
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#0077b5">
+                          <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+                        </svg>
+                        Connect on LinkedIn
+                      </a>
+                    </div>
+                  )}
+
+                  <button onClick={() => setShowMentorModal(true)} className="sd-view-profile">View Profile</button>
+
+
+                </div>
+
+                
+              </div>
             </div>
 
             {/* Right Column: Calendar / Session */}
@@ -618,39 +647,39 @@ export default function StudentDashboard() {
         <div className="sd-modal-overlay" onClick={() => setShowMentorModal(false)}>
           <div className="sd-modal-content" onClick={(e) => e.stopPropagation()} style={{ textAlign: 'left', maxWidth: '500px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '20px' }}>
-              <div style={{ width: '60px', height: '60px', borderRadius: '50%', backgroundColor: '#e5e7eb', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2rem' }}>
+              {/* <div style={{ width: '60px', height: '60px', borderRadius: '50%', backgroundColor: '#e5e7eb', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2rem' }}>
                 👤
-              </div>
+              </div> */}
               <div>
-                <h3 style={{ margin: 0, color: '#0f766e', fontSize: '1.4rem' }}>{mentor.name}</h3>
-                <p style={{ margin: 0, color: '#4b5563', fontWeight: '500' }}>{mentor.job_title || "Professional Profile"}</p>
+                <h2 style={{ margin: 0, color: '#025571', fontSize: '1.4rem', fontWeight: '700' }}>{mentor.name}</h2>
+                {/* <p style={{ margin: 0, color: '#4b5563', fontWeight: '500' }}>{mentor.job_title || "Professional Profile"}</p> */}
               </div>
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', fontSize: '0.95rem', color: '#374151' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span style={{ fontSize: '1.1rem', width: '20px', display: 'inline-block', textAlign: 'center' }}>💼</span>
+                {/* <span style={{ fontSize: '1.1rem', width: '20px', display: 'inline-block', textAlign: 'center' }}>💼</span> */}
                 <span><strong>Job Title:</strong> {mentor.job_title || "N/A"}</span>
               </div>
 
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span style={{ fontSize: '1.1rem', width: '20px', display: 'inline-block', textAlign: 'center' }}>🏢</span>
+                {/* <span style={{ fontSize: '1.1rem', width: '20px', display: 'inline-block', textAlign: 'center' }}>🏢</span> */}
                 <span><strong>Employer / Company:</strong> {mentor.employer || "N/A"}</span>
               </div>
 
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span style={{ fontSize: '1.1rem', width: '20px', display: 'inline-block', textAlign: 'center' }}>🌐</span>
+                {/* <span style={{ fontSize: '1.1rem', width: '20px', display: 'inline-block', textAlign: 'center' }}>🌐</span> */}
                 <span><strong>Focus Industry:</strong> {mentor.industry || "N/A"}</span>
               </div>
 
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span style={{ fontSize: '1.1rem', width: '20px', display: 'inline-block', textAlign: 'center' }}>🧑</span>
+                {/* <span style={{ fontSize: '1.1rem', width: '20px', display: 'inline-block', textAlign: 'center' }}>🧑</span> */}
                 <span><strong>Gender:</strong> {mentor.gender || "N/A"}</span>
               </div>
 
               {mentor.alma_mater && (
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <span style={{ fontSize: '1.1rem', width: '20px', display: 'inline-block', textAlign: 'center' }}>🎓</span>
+                  {/* <span style={{ fontSize: '1.1rem', width: '20px', display: 'inline-block', textAlign: 'center' }}>🎓</span> */}
                   <span><strong>Alma Mater:</strong> {mentor.alma_mater}</span>
                 </div>
               )}
