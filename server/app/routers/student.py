@@ -16,6 +16,7 @@ except ImportError:
     ServiceTypeEnum = None
 from pydantic import BaseModel
 from typing import Optional
+from app.models.enums import AssignmentStatusEnum
 
 router = APIRouter(prefix="/student", tags=["student"])
 
@@ -74,7 +75,7 @@ async def get_student_profile(
     assignment_res = await db.execute(
         select(MentorAssignment).where(
             MentorAssignment.student_id == user_id,
-            MentorAssignment.status == "active"
+            MentorAssignment.status == AssignmentStatusEnum.active
         )
     )
     assignment = assignment_res.scalar_one_or_none()
@@ -210,8 +211,11 @@ async def get_student_meetings(
     user_id = int(current_user["sub"])
 
     assignment_res = await db.execute(
-        select(MentorAssignment).where(MentorAssignment.student_id == user_id)
+    select(MentorAssignment).where(
+        MentorAssignment.student_id == user_id,
+        MentorAssignment.status == AssignmentStatusEnum.active
     )
+)
     assignment = assignment_res.scalar_one_or_none()
     if not assignment:
         return []
@@ -252,7 +256,7 @@ async def get_student_status(
     assignment_res = await db.execute(
         select(MentorAssignment).where(
             MentorAssignment.student_id == user_id,
-            MentorAssignment.status == "active"
+            MentorAssignment.status == AssignmentStatusEnum.active
         )
     )
     assignment = assignment_res.scalar_one_or_none()

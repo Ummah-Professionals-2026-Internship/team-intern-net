@@ -27,6 +27,10 @@ from app.schemas.mentor_assignment import (
     MentorCapacity,
 )
 
+from app.core.email import send_email
+import logging
+
+
 router = APIRouter(prefix="/mentor-assignments", tags=["mentor-assignments"])
 
 
@@ -372,6 +376,27 @@ async def create_assignment(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"Database constraint error: {str(e.orig) if hasattr(e, 'orig') else str(e)}"
         )
+
+    mentor_email = mentor.user.email if mentor.user else None
+    student_name = student_obj.full_name if hasattr(student_obj, 'full_name') else "A student"
+
+
+    if mentor_email:
+        try:
+            await send_email(
+                subject="New Mentorship Assignment",
+                recipient=mentor_email,
+                body=f"""
+                <p>Assalamu Alaikum,</p>
+                <p>You have been assigned a new student: <strong>{student_name}</strong>.</p>
+                <p>Please log in to your dashboard to review and accept or decline the assignment.</p>
+                <br>
+                <p>Jazakum Allahu Khayran,</p>
+                <p>The Ummah Professionals Team</p>
+                """
+            )
+        except Exception as e:
+            logging.getLogger(__name__).error(f"Failed to send assignment email to mentor: {e}")
 
     stmt = (
         select(MentorAssignment)
