@@ -638,7 +638,7 @@ export default function StudentDashboard() {
             <p className="sd-modal-footer-notice">Google Meet invite details have been emailed to you.</p>
             <button className="sd-modal-close-btn" onClick={() => setShowConfirmedModal(false)}>
               View Dashboard
-            </button>s
+            </button>
           </div>
         </div>
       )}

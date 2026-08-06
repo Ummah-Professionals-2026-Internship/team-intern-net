@@ -101,7 +101,8 @@ async def get_student_profile(
                 "alma_mater": getattr(mentor_profile, "alma_mater", ""),
                 "state": getattr(mentor_profile, "state", ""),
                 "county": getattr(mentor_profile, "county", ""),
-                "service_types": getattr(mentor_profile, "service_types", [])
+                "service_types": getattr(mentor_profile, "service_types", []),
+                "gender": mentor_profile.gender.value if mentor_profile and mentor_profile.gender else "",
             }
 
     # Formatting metadata variations safely
