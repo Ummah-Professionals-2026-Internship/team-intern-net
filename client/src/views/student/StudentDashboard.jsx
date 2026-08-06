@@ -49,7 +49,7 @@ function formatDateLong(dateStr) {
 
 export default function StudentDashboard() {
   const today = useMemo(() => new Date(), []);
-  
+
   // 1. Dashboard State
   const [studentProfile, setStudentProfile] = useState(null);
   const [mentor, setMentor] = useState(null);
@@ -64,7 +64,7 @@ export default function StudentDashboard() {
   const [availability, setAvailability] = useState({});
   const [loadingSlots, setLoadingSlots] = useState(false);
   const [selectedSlotId, setSelectedSlotId] = useState(null);
-  
+
   // 3. User Input & Modal State
   const [studentNotes, setStudentNotes] = useState("");
   const [showConfirmedModal, setShowConfirmedModal] = useState(false);
@@ -220,7 +220,7 @@ export default function StudentDashboard() {
   const handleDayClick = (day) => {
     setSelectedDate(toDateKey(viewYear, viewMonth, day));
     setSelectedSlotId(null);
-    setStudentNotes(""); 
+    setStudentNotes("");
     setBookingError("");
   };
 
@@ -303,11 +303,11 @@ export default function StudentDashboard() {
       {/* Header Bar */}
       <div className="sd-header">
         <h1 className="sd-welcome">Welcome Back, {studentProfile?.full_name || "Applicant"}!</h1>
-        <div className="sd-user-badge">
+        {/* <div className="sd-user-badge">
           <span className="sd-user-icon">👤</span>
           <span className="sd-user-name">{studentProfile?.full_name?.split(" ")[0] || "Applicant"}</span>
           <span className="sd-chevron">∨</span>
-        </div>
+        </div> */}
       </div>
 
       {/* Progress Tracker Map */}
@@ -344,7 +344,13 @@ export default function StudentDashboard() {
           <>
             {/* Left Column: Mentor Card */}
             <div className="sd-mentor-card">
-              <p className="sd-mentor-label">👤 Your Mentor</p>
+              <div className="sd-mentor-card-header">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M26.6667 28C26.6667 24.3181 21.891 21.3333 16 21.3333C10.109 21.3333 5.33334 24.3181 5.33334 28M16 17.3333C12.3181 17.3333 9.33334 14.3486 9.33334 10.6667C9.33334 6.98477 12.3181 4 16 4C19.6819 4 22.6667 6.98477 22.6667 10.6667C22.6667 14.3486 19.6819 17.3333 16 17.3333Z" stroke="black" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                <p className="sd-mentor-label">Your Mentor</p>
+
+              </div>
               <div className="sd-mentor-avatar">
                 <span className="sd-avatar-icon">👤</span>
               </div>
@@ -352,25 +358,25 @@ export default function StudentDashboard() {
               <p className="sd-mentor-detail">{mentor.job_title || "Professional Profile"}</p>
               <p className="sd-mentor-detail">{mentor.employer || "Industry Group"}</p>
               <p className="sd-mentor-detail">{mentor.industry || "Field Expert"}</p>
-              
+
               {(mentor.linkedin || mentor.linkedin_url) && (
                 <div style={{ display: 'flex', justifyContent: 'center', width: '100%', marginTop: '8px', marginBottom: '8px' }}>
-                  <a 
-                    href={formatExternalUrl(mentor.linkedin || mentor.linkedin_url)} 
-                    target="_blank" 
+                  <a
+                    href={formatExternalUrl(mentor.linkedin || mentor.linkedin_url)}
+                    target="_blank"
                     rel="noreferrer"
-                    style={{ 
-                      color: '#0077b5', 
-                      textDecoration: 'none', 
-                      fontWeight: '600', 
-                      display: 'inline-flex', 
-                      alignItems: 'center', 
-                      gap: '6px', 
-                      fontSize: '0.9rem' 
+                    style={{
+                      color: '#0077b5',
+                      textDecoration: 'none',
+                      fontWeight: '600',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                      fontSize: '0.9rem'
                     }}
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#0077b5">
-                      <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                      <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
                     </svg>
                     Connect on LinkedIn
                   </a>
@@ -394,16 +400,16 @@ export default function StudentDashboard() {
                     <p>📹 Meeting Platform: Google Meet</p>
                   </div>
                   <div className="sd-action-buttons-row" style={{ display: 'flex', gap: '12px', marginTop: '16px' }}>
-                    <a 
-                      href={upcomingMeeting.meeting_url || upcomingMeeting.google_meet_link || "#"} 
-                      target="_blank" 
-                      rel="noreferrer" 
+                    <a
+                      href={upcomingMeeting.meeting_url || upcomingMeeting.google_meet_link || "#"}
+                      target="_blank"
+                      rel="noreferrer"
                       className="sd-join-btn"
                       style={{ flex: 1, textAlign: 'center', display: 'block' }}
                     >
                       Join Google Meet
                     </a>
-                    <button 
+                    <button
                       onClick={handleCancelMeeting}
                       className="sd-dashboard-cancel-btn"
                       disabled={!meetingCancellable}
@@ -424,14 +430,30 @@ export default function StudentDashboard() {
                   </div>
                 </div>
               </div>
-            ) : (  
+            ) : (
               <div className="sd-calendar-card">
                 <div className="sd-cal-header-row">
-                  <h3 className="sd-cal-title">📅 Choose Meeting Time</h3>
+                  <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M6.21862 11.0184C6.90551 11.0184 7.46235 10.4546 7.46235 9.75911C7.46235 9.06365 6.90551 8.49987 6.21862 8.49987C5.53173 8.49987 4.9749 9.06365 4.9749 9.75911C4.9749 10.4546 5.53173 11.0184 6.21862 11.0184Z" fill="#007CA6" />
+                    <path d="M13.681 9.75911C13.681 10.4546 13.1241 11.0184 12.4372 11.0184C11.7504 11.0184 11.1935 10.4546 11.1935 9.75911C11.1935 9.06365 11.7504 8.49987 12.4372 8.49987C13.1241 8.49987 13.681 9.06365 13.681 9.75911Z" fill="#007CA6" />
+                    <path d="M18.6559 11.0184C19.3428 11.0184 19.8996 10.4546 19.8996 9.75911C19.8996 9.06365 19.3428 8.49987 18.6559 8.49987C17.969 8.49987 17.4121 9.06365 17.4121 9.75911C17.4121 10.4546 17.969 11.0184 18.6559 11.0184Z" fill="#007CA6" />
+                    <path d="M7.46235 14.1665C7.46235 14.8619 6.90551 15.4257 6.21862 15.4257C5.53173 15.4257 4.9749 14.8619 4.9749 14.1665C4.9749 13.471 5.53173 12.9072 6.21862 12.9072C6.90551 12.9072 7.46235 13.471 7.46235 14.1665Z" fill="#007CA6" />
+                    <path d="M12.4372 15.4257C13.1241 15.4257 13.681 14.8619 13.681 14.1665C13.681 13.471 13.1241 12.9072 12.4372 12.9072C11.7504 12.9072 11.1935 13.471 11.1935 14.1665C11.1935 14.8619 11.7504 15.4257 12.4372 15.4257Z" fill="#007CA6" />
+                    <path d="M19.8996 14.1665C19.8996 14.8619 19.3428 15.4257 18.6559 15.4257C17.969 15.4257 17.4121 14.8619 17.4121 14.1665C17.4121 13.471 17.969 12.9072 18.6559 12.9072C19.3428 12.9072 19.8996 13.471 19.8996 14.1665Z" fill="#007CA6" />
+                    <path d="M6.21862 19.833C6.90551 19.833 7.46235 19.2693 7.46235 18.5738C7.46235 17.8783 6.90551 17.3146 6.21862 17.3146C5.53173 17.3146 4.9749 17.8783 4.9749 18.5738C4.9749 19.2693 5.53173 19.833 6.21862 19.833Z" fill="#007CA6" />
+                    <path d="M13.681 18.5738C13.681 19.2693 13.1241 19.833 12.4372 19.833C11.7504 19.833 11.1935 19.2693 11.1935 18.5738C11.1935 17.8783 11.7504 17.3146 12.4372 17.3146C13.1241 17.3146 13.681 17.8783 13.681 18.5738Z" fill="#007CA6" />
+                    <path d="M18.6559 19.833C19.3428 19.833 19.8996 19.2693 19.8996 18.5738C19.8996 17.8783 19.3428 17.3146 18.6559 17.3146C17.969 17.3146 17.4121 17.8783 17.4121 18.5738C17.4121 19.2693 17.969 19.833 18.6559 19.833Z" fill="#007CA6" />
+                    <path fillRule="evenodd" clipRule="evenodd" d="M7.15142 0.94443C7.15142 0.422836 6.73379 0 6.21862 0C5.70346 0 5.28583 0.422836 5.28583 0.94443H4.9749C2.22734 0.94443 0 3.19956 0 5.98139V19.833C0 22.6149 2.22734 24.87 4.9749 24.87H19.8996C22.6472 24.87 24.8745 22.6149 24.8745 19.833V5.98139C24.8745 3.19955 22.6472 0.94443 19.8996 0.94443H19.5887C19.5887 0.422836 19.171 0 18.6559 0C18.1407 0 17.7231 0.422836 17.7231 0.94443H7.15142ZM17.7231 4.72215V2.83329H7.15142V4.72215C7.15142 5.24375 6.73379 5.66658 6.21862 5.66658C5.70346 5.66658 5.28583 5.24375 5.28583 4.72215V2.83329H4.9749C3.25767 2.83329 1.86559 4.24274 1.86559 5.98139V19.833C1.86559 21.5717 3.25767 22.9811 4.9749 22.9811H19.8996C21.6168 22.9811 23.0089 21.5717 23.0089 19.833V5.98139C23.0089 4.24274 21.6168 2.83329 19.8996 2.83329H19.5887V4.72215C19.5887 5.24375 19.171 5.66658 18.6559 5.66658C18.1407 5.66658 17.7231 5.24375 17.7231 4.72215Z" fill="#007CA6" />
+                  </svg>
+                  <h3 className="sd-cal-title">Choose Meeting Time</h3>
                 </div>
-                
+
                 <div className="sd-cal-info" style={{ backgroundColor: '#fffbeb', border: '1px solid #fef3c7', color: '#b45309' }}>
-                  <span>⚠️</span>
+                  <svg width="30" height="30" viewBox="0 0 35 35" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M16.252 23.5016C16.238 24.2046 16.8045 24.7817 17.5076 24.7807C18.2104 24.7797 18.7752 24.2014 18.7595 23.4988L18.5852 15.6725C18.572 15.0803 18.0878 14.6074 17.4954 14.6082C16.9034 14.6091 16.4206 15.083 16.4088 15.6749L16.252 23.5016Z" fill="#b45309"/>
+                    <path d="M18.5227 10.6672C18.2354 10.3675 17.891 10.2179 17.4894 10.2185C17.2247 10.2188 16.9843 10.2872 16.7682 10.4235C16.5478 10.5645 16.3716 10.7524 16.2395 10.9871C16.1031 11.2218 16.035 11.4822 16.0355 11.7682C16.0361 12.1903 16.1822 12.5513 16.4739 12.851C16.7612 13.1507 17.1012 13.3003 17.4939 13.2997C17.8955 13.2992 18.2394 13.1486 18.5258 12.848C18.8078 12.5475 18.9485 12.1861 18.9479 11.764C18.9473 11.3326 18.8055 10.9669 18.5227 10.6672Z" fill="#b45309"/>
+                    <path fillRule="evenodd" clipRule="evenodd" d="M2.93772 17.5207C2.92608 9.47815 9.43639 2.94897 17.4789 2.93733C25.5214 2.92569 32.0506 9.436 32.0622 17.4785C32.0739 25.521 25.5636 32.0502 17.5211 32.0618C9.47854 32.0735 2.94936 25.5632 2.93772 17.5207ZM5.12206 17.5175C5.11216 10.6814 10.6459 5.13156 17.4821 5.12166C24.3182 5.11177 29.868 10.6455 29.8779 17.4817C29.8878 24.3178 24.354 29.8676 17.5179 29.8775C10.6818 29.8874 5.13195 24.3536 5.12206 17.5175Z" fill="#b45309"/>
+                  </svg>
                   <span><strong>Notice:</strong> All schedule windows are displayed in <strong>Eastern Time (EST/EDT)</strong>. Please manually adjust if you are booking from another timezone.</span>
                 </div>
 
@@ -439,8 +461,8 @@ export default function StudentDashboard() {
                   {loadingSlots && <div className="sd-loading"><div className="sd-spinner" /></div>}
 
                   <div className="sd-cal-nav">
-                    <button 
-                      className="sd-nav-btn" 
+                    <button
+                      className="sd-nav-btn"
                       onClick={prevMonth}
                       disabled={viewMonth === today.getMonth() && viewYear === today.getFullYear()}
                     >
@@ -495,9 +517,9 @@ export default function StudentDashboard() {
                         <div
                           key={slot.id}
                           className={`sd-slot ${selectedSlotId === slot.id ? "sd-slot--selected" : ""}`}
-                          onClick={() => { 
-                            setSelectedSlotId(slot.id); 
-                            setBookingError(""); 
+                          onClick={() => {
+                            setSelectedSlotId(slot.id);
+                            setBookingError("");
                           }}
                         >
                           <span className="sd-slot-time">
@@ -507,17 +529,18 @@ export default function StudentDashboard() {
                         </div>
                       ))
                     )}
-                    
+
                     {selectedSlots.length > 0 && (
                       <div className="sd-notes-container" style={{ marginTop: "16px", marginBottom: "12px" }}>
-                        <label 
-                          htmlFor="dashboard-student-notes" 
+                        <label
+                          htmlFor="dashboard-student-notes"
                           style={{ display: "block", fontSize: "0.85rem", fontWeight: "600", marginBottom: "6px", color: "#374151", textAlign: "left" }}
                         >
                           What would you like to discuss? (Optional)
                         </label>
                         <textarea
                           id="dashboard-student-notes"
+                          className="sd-dashboard-student-notes"
                           rows="3"
                           maxLength="500"
                           placeholder="e.g., Help reviewing my DevOps resume, backend engineering roadmaps, or interview prep advice..."
@@ -526,7 +549,9 @@ export default function StudentDashboard() {
                           style={{
                             width: "100%",
                             padding: "10px",
+                            backgroundColor: "#f9fafb",
                             fontSize: "0.875rem",
+                            color: "#111827",
                             borderRadius: "6px",
                             border: "1px solid #d1d5db",
                             resize: "none",
@@ -565,7 +590,7 @@ export default function StudentDashboard() {
             <div className="sd-modal-success-icon">✓</div>
             <h2>Meeting Confirmed!</h2>
             <p className="sd-modal-subtext">Your Career Advice session with <strong>{mentor?.name}</strong> has been scheduled.</p>
-            
+
             <div className="sd-modal-receipt-box">
               <p>📅 {formatDateLong(upcomingMeeting.start_datetime?.split("T")[0])}</p>
               <p>⏰ {formatTime(upcomingMeeting.start_datetime)} – {formatTime(upcomingMeeting.end_datetime)} EST</p>
@@ -579,7 +604,7 @@ export default function StudentDashboard() {
                 </p>
               )}
             </div>
-            
+
             <p className="sd-modal-footer-notice">Google Meet invite details have been emailed to you.</p>
             <button className="sd-modal-close-btn" onClick={() => setShowConfirmedModal(false)}>
               View Dashboard
@@ -634,15 +659,15 @@ export default function StudentDashboard() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <div style={{ width: '20px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#0077b5" style={{ flexShrink: 0 }}>
-                      <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                      <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
                     </svg>
                   </div>
                   <span>
                     <strong>LinkedIn Profile:</strong>{' '}
-                    <a 
-                      href={formatExternalUrl(mentor.linkedin || mentor.linkedin_url)} 
-                      target="_blank" 
-                      rel="noreferrer" 
+                    <a
+                      href={formatExternalUrl(mentor.linkedin || mentor.linkedin_url)}
+                      target="_blank"
+                      rel="noreferrer"
                       style={{ color: '#0077b5', fontWeight: '600', textDecoration: 'none' }}
                     >
                       View Profile
@@ -656,16 +681,16 @@ export default function StudentDashboard() {
                   <p style={{ fontWeight: '600', margin: '0 0 6px 0' }}>Expertise Offerings:</p>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
                     {mentor.service_types.map((type, index) => (
-                      <span 
-                        key={index} 
-                        style={{ 
-                          backgroundColor: '#f0fdf4', 
-                          color: '#166534', 
+                      <span
+                        key={index}
+                        style={{
+                          backgroundColor: '#f0fdf4',
+                          color: '#166534',
                           border: '1px solid #bbf7d0',
-                          padding: '3px 8px', 
-                          borderRadius: '12px', 
+                          padding: '3px 8px',
+                          borderRadius: '12px',
                           fontSize: '0.8rem',
-                          fontWeight: '500' 
+                          fontWeight: '500'
                         }}
                       >
                         {type}
@@ -674,16 +699,16 @@ export default function StudentDashboard() {
                   </div>
                 </div>
               )}
-              
+
               <hr style={{ border: 0, borderTop: '1px solid #e5e7eb', margin: '6px 0' }} />
-              
+
               <p style={{ fontWeight: '600', marginBottom: '4px' }}>About Your Mentor:</p>
               <p style={{ color: '#6b7280', lineHeight: '1.5', fontStyle: mentor.bio ? 'normal' : 'italic', marginTop: 0 }}>
                 {mentor.bio || "No professional biography has been provided yet by the mentor. Use your scheduled meeting to ask them about their career path and field experiences!"}
               </p>
             </div>
 
-            <button 
+            <button
               onClick={() => setShowMentorModal(false)}
               style={{
                 marginTop: '24px',
