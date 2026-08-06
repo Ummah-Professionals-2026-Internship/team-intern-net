@@ -48,7 +48,7 @@ from app.routers import (
     test,
 )
 
-app = FastAPI()
+app = FastAPI(docs_url="/api/docs", redoc_url="/api/redoc", openapi_url="/api/openapi.json")
 
 origins = [
     "http://localhost:5173",
