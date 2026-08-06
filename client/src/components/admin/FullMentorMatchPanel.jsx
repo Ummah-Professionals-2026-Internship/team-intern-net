@@ -294,6 +294,14 @@ export default function FullMentorMatchPanel({
                 <div className="match-mentor-actions">
                   <button
                     type="button"
+                    className="match-view-btn"
+                    onClick={() => onViewMentor?.(m)}
+                  >
+                    View Mentor
+                  </button>
+
+                  <button
+                    type="button"
                     className="match-assign-btn"
                     disabled={isFull}
                     title={isFull ? "Mentor at capacity" : undefined}
