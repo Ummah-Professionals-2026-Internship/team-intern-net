@@ -1,5 +1,7 @@
 import { useState, useMemo, useEffect, useCallback } from "react";
 import "./StudentDashboard.css";
+import api from '../../api/api'; // adjust path as needed
+
 
 const DAYS = ["Sun", "Mon", "Tues", "Wed", "Thurs", "Fri", "Sat"];
 const MONTHS = [
@@ -86,13 +88,8 @@ export default function StudentDashboard() {
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        const token = localStorage.getItem("token");
-        const headers = { Authorization: `Bearer ${token}` };
-
-        const profileRes = await fetch("http://localhost:8000/student/profile", { headers });
-        if (!profileRes.ok) throw new Error("Failed to load profile context.");
-        
-        const profileData = await profileRes.json();
+        const profileRes = await api.get("/student/profile");
+        const profileData = profileRes.data;
         setStudentProfile(profileData);
 
         const activeMentor = profileData?.mentor || profileData?.assigned_mentor;
@@ -103,12 +100,10 @@ export default function StudentDashboard() {
           });
         }
 
-        const meetingsRes = await fetch("http://localhost:8000/student/meetings", { headers });
-        if (meetingsRes.ok) {
-          const meetings = await meetingsRes.json();
-          if (meetings?.length > 0) {
-            setUpcomingMeeting(meetings[0]);
-          }
+        const meetingsRes = await api.get("/student/meetings");
+        const meetings = meetingsRes.data;
+        if (meetings?.length > 0) {
+          setUpcomingMeeting(meetings[0]);
         }
       } catch (err) {
         console.error("Error setting up application dashboard:", err);
@@ -128,14 +123,10 @@ export default function StudentDashboard() {
     const fetchSlots = async () => {
       setLoadingSlots(true);
       try {
-        const res = await fetch(`http://localhost:8000/mentors/${mentorId}/availability`);
-        if (!res.ok) throw new Error("Could not fetch availability slots.");
-        
-        const data = await res.json();
+        const res = await api.get(`/mentors/${mentorId}/availability`);
+        const data = res.data;
         const grouped = {};
 
-        // Slots less than 24 hours out (or already in the past) can't be booked,
-        // so they shouldn't show up as bookable on the calendar at all.
         const earliestBookable = new Date(Date.now() + MIN_BOOKING_LEAD_HOURS * 60 * 60 * 1000);
 
         data.forEach((slot) => {
@@ -152,7 +143,6 @@ export default function StudentDashboard() {
           const d = parts.find((p) => p.type === "day").value;
           const y = parts.find((p) => p.type === "year").value;
           const dateKey = `${y}-${m}-${d}`;
-          
           if (!grouped[dateKey]) grouped[dateKey] = [];
           grouped[dateKey].push(slot);
         });
@@ -256,39 +246,9 @@ export default function StudentDashboard() {
     setBookingError("");
 
     try {
-      const token = localStorage.getItem("token");
+      const res = await api.post(`/google/student/meetings/book?slot_id=${selectedSlotId}`);
+      const resData = res.data;
 
-      // NOTE: this hits the shared /google/student/meetings/book endpoint
-      // (owned by another dev). It takes slot_id as a query param, has no
-      // request body, and does not currently accept student_notes -- so
-      // studentNotes is collected in the UI but not persisted server-side
-      // until that endpoint supports it.
-      const res = await fetch(
-        `http://localhost:8000/google/student/meetings/book?slot_id=${selectedSlotId}`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`
-          },
-        }
-      );
-
-      const resData = await res.json().catch(() => ({}));
-
-      if (!res.ok) {
-        let errorMsg = "Failed to book meeting.";
-        if (typeof resData.detail === "string") {
-          errorMsg = resData.detail;
-        } else if (Array.isArray(resData.detail) && resData.detail[0]?.msg) {
-          errorMsg = `${resData.detail[0].loc?.join(" -> ")}: ${resData.detail[0].msg}`;
-        }
-        setBookingError(errorMsg);
-        return;
-      }
-
-      // /google/student/meetings/book returns { message, meeting_id, meeting_url,
-      // start_datetime, end_datetime } -- normalize it to the shape the rest of
-      // this component expects (upcomingMeeting.id, .meeting_url, etc).
       setUpcomingMeeting({
         id: resData.meeting_id,
         start_datetime: resData.start_datetime,
@@ -299,7 +259,14 @@ export default function StudentDashboard() {
       setSelectedSlotId(null);
       setStudentNotes("");
     } catch (err) {
-      setBookingError("Network validation failed. Please try again.");
+      const resData = err.response?.data;
+      let errorMsg = "Failed to book meeting.";
+      if (typeof resData?.detail === "string") {
+        errorMsg = resData.detail;
+      } else if (Array.isArray(resData?.detail) && resData.detail[0]?.msg) {
+        errorMsg = `${resData.detail[0].loc?.join(" -> ")}: ${resData.detail[0].msg}`;
+      }
+      setBookingError(errorMsg);
     } finally {
       setBooking(false);
     }
@@ -318,27 +285,15 @@ export default function StudentDashboard() {
     if (!window.confirm("Are you sure you want to cancel this mentorship session?")) return;
 
     try {
-      const token = localStorage.getItem("token");
-      const res = await fetch(`http://localhost:8000/meetings/${upcomingMeeting.id}`, {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${token}` }
-      });
-
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        alert(data.detail || "Failed to cancel the meeting. Please try again.");
-        return;
-      }
-
+      await api.delete(`/meetings/${upcomingMeeting.id}`);
       setUpcomingMeeting(null);
       setSelectedDate(null);
       setSelectedSlotId(null);
     } catch (err) {
-      console.error("Error canceling meeting:", err);
-      alert("Network error. Could not cancel meeting.");
+      const detail = err.response?.data?.detail;
+      alert(detail || "Failed to cancel the meeting. Please try again.");
     }
   };
-
   if (loading) {
     return <div className="sd-loading-page">Loading dashboard data...</div>;
   }

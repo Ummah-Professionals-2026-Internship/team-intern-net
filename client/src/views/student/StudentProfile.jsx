@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../../context/useAuth"; 
 import "./StudentProfile.css";
+import api from '../../api/api'; // adjust path as needed
 
 const INDUSTRY_OPTIONS = [
   "Architecture",
@@ -40,17 +41,9 @@ export default function StudentProfile() {
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
-        const token = localStorage.getItem("token");
-        const res = await fetch("http://localhost:8000/student/profile", {
-          headers: { "Authorization": `Bearer ${token}` }
-        });
-        
-        let apiData = {};
-        if (res.ok) {
-          apiData = await res.json();
-        }
+        const res = await api.get("/student/profile");
+        const apiData = res.data;
 
-        // Bind incoming values directly to frontend form property names
         setFormData({
           full_name: apiData.full_name || user?.full_name || user?.name || "Student User",
           email: apiData.email || user?.email || "",
@@ -60,12 +53,10 @@ export default function StudentProfile() {
           academic_level: apiData.academic_level || "Senior",
           industry: apiData.industry || "Technology",
           desired_career: apiData.desired_career || "Software Engineer",
-          // 💡 FIXED: Read direct 'service_requested' key from backend API response
           service_requested: apiData.service_requested || "Career Advice",
           comments: apiData.comments || ""
         });
       } catch (err) {
-        // Safe catch fallback if backend server is offline or fails
         setFormData(prev => ({
           ...prev,
           full_name: user?.full_name || user?.name || "Student User",
@@ -75,7 +66,6 @@ export default function StudentProfile() {
         setLoading(false);
       }
     };
-    
     fetchProfileData();
   }, [user]);
 
@@ -95,25 +85,12 @@ export default function StudentProfile() {
     }
 
     try {
-      const token = localStorage.getItem("token");
-      const res = await fetch("http://localhost:8000/student/profile/update", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
-        },
-        body: JSON.stringify(formData)
-      });
-
-      if (!res.ok) {
-        throw new Error(`Server Error Code: ${res.status} (${res.statusText || 'Check Endpoint Path/Method'})`);
-      }
-      
+      await api.put("/student/profile/update", formData);
       setSuccessMessage("Profile updates saved successfully!");
       setIsEditMode(false);
       setTimeout(() => setSuccessMessage(""), 4000);
     } catch (err) {
-      setError(err.message);
+      setError(err.response?.data?.detail || err.message);
     }
   };
 

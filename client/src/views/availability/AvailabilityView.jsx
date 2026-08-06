@@ -1,5 +1,8 @@
 import { useState, useMemo, useEffect } from "react";
 import "./AvailabilityView.css";
+import api from '../../api/api'; // adjust path as needed
+
+
 
 const DAYS = ["Sun", "Mon", "Tues", "Wed", "Thurs", "Fri", "Sat"];
 const MONTHS = [
@@ -51,16 +54,10 @@ export default function AvailabilityView() {
     const fetchSlots = async () => {
       setLoading(true);
       try {
-        const res = await fetch(`http://localhost:8000/mentors/${MENTOR_ID}/availability`);
-        if (!res.ok) {
-          setAvailability({});
-          return;
-        }
-        const data = await res.json();
+        const res = await api.get(`/mentors/${MENTOR_ID}/availability`);
+        const data = res.data;
         const grouped = {};
 
-        // Slots less than 24 hours out (or already in the past) can't be booked,
-        // so they shouldn't show up as bookable on the calendar at all.
         const earliestBookable = new Date(Date.now() + MIN_BOOKING_LEAD_HOURS * 60 * 60 * 1000);
 
         data.forEach((slot) => {
@@ -73,6 +70,7 @@ export default function AvailabilityView() {
         setAvailability(grouped);
       } catch (err) {
         console.error("Failed to fetch availability", err);
+        setAvailability({});
       } finally {
         setLoading(false);
       }
@@ -148,33 +146,9 @@ export default function AvailabilityView() {
     setBookingError("");
 
     try {
-      const token = localStorage.getItem("token") || localStorage.getItem("access_token");
+      const res = await api.post(`/google/student/meetings/book?slot_id=${selectedSlotId}`);
+      const bookedData = res.data;
 
-      // NOTE: this hits the shared /google/student/meetings/book endpoint
-      // (owned by another dev). It takes slot_id as a query param and has
-      // no request body -- there is currently no student_notes field on
-      // this view, so nothing is lost there.
-      const res = await fetch(
-        `http://localhost:8000/google/student/meetings/book?slot_id=${selectedSlotId}`,
-        {
-          method: "POST",
-          headers: {
-            "Authorization": `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        setBookingError(data.detail || "Failed to book meeting.");
-        return;
-      }
-
-      const bookedData = await res.json();
-
-      // /google/student/meetings/book returns { message, meeting_id, meeting_url,
-      // start_datetime, end_datetime } -- normalize to the shape this component
-      // reads below (bookedMeeting.id, .meeting_url, etc).
       setBookedMeeting({
         id: bookedData.meeting_id,
         meeting_url: bookedData.meeting_url,
@@ -182,7 +156,6 @@ export default function AvailabilityView() {
         end_datetime: bookedData.end_datetime,
       });
 
-      // Remove the slot locally from state
       setAvailability((prev) => {
         const updated = (prev[selectedDate] || []).filter(s => s.id !== selectedSlotId);
         const next = { ...prev };
@@ -193,8 +166,8 @@ export default function AvailabilityView() {
 
       setSelectedSlotId(null);
     } catch (err) {
-      console.error("Booking error:", err);
-      setBookingError("Network error. Please try again.");
+      const detail = err.response?.data?.detail;
+      setBookingError(detail || "Failed to book meeting.");
     } finally {
       setBooking(false);
     }
