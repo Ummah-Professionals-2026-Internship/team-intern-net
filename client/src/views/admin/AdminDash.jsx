@@ -58,7 +58,7 @@ export default function AdminDash() {
   const fetchMentorsAndCapacity = async () => {
     try {
       const [mentorsRes, capacityRes] = await Promise.all([
-        api.get("/mentors").catch(() => ({ data: [] })),
+        api.get("/mentor/list").catch(() => ({ data: [] })),
         api.get("/mentor-assignments/capacity").catch(() => ({ data: [] })),
       ]);
 

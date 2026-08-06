@@ -201,7 +201,9 @@ body,
   flex-direction: column;
   justify-content: space-between;
   min-height: clamp(100px, 10vw, 130px);
-  box-shadow: var(--shadow-card);
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+  /* box-shadow: var(--shadow-card); */
 }
 
 .stat-card-top {
@@ -287,6 +289,7 @@ body,
 .panel {
   background: #ffffff;
   border: 1px solid var(--admin-border);
+  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
   border-radius: var(--radius-md);
   padding: var(--space-md);
   overflow-x: auto;
@@ -510,7 +513,7 @@ body,
   border-radius: 12px;
   border: 1px solid #e5e7eb;
   padding: 20px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
 }
 
 /* Figma Filter Bar */

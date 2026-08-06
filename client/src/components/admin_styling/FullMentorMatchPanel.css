@@ -20,7 +20,7 @@
   border: 1px solid var(--admin-border);
   border-radius: var(--radius-md);
   padding: var(--space-md) var(--space-lg);
-  box-shadow: var(--shadow-card);
+  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);  
   position: relative;
   flex-wrap: wrap;
 }
@@ -111,6 +111,7 @@
 .match-mentor-list {
   background: var(--admin-border);
   border-radius: var(--radius-md);
+  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
   overflow: hidden;
 }
 

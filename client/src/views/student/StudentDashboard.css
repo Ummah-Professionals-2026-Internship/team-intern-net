@@ -32,7 +32,7 @@
 
 .sd-welcome {
   font-family: "Kollektif Bold", system-ui, sans-serif;
-  font-size: 28px;
+  font-size: clamp(35px, 2vw, 28px);
   margin: 0;
   color: #000;
 }

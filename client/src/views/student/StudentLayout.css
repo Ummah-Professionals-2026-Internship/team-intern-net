@@ -15,6 +15,7 @@
 }
 
 .sl-shell {
+  --sidebar-width: 240px;
   display: flex;
   height: 100vh;
   width: 100vw;
@@ -23,13 +24,14 @@
 }
 
 .sl-sidebar {
-  width: 240px;
+  width: var(--sidebar-width);
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
   background: linear-gradient(0deg, #8ACBDB 0%, #007CA6 38%, #00212C 100%);
   align-items: flex-start;
   overflow: hidden;
+  overflow-y: auto;
   gap: 40px;
   box-sizing: border-box;
 }
@@ -52,7 +54,7 @@
   display: flex;
   flex-direction: column;
   flex: 1;
-  gap: 10px;
+  gap: 20px;
   padding: 0 16px;
 }
 
@@ -69,6 +71,8 @@
   font-weight: 400;
   transition: background 0.15s;
   white-space: nowrap;
+  line-height: normal;
+
 }
 
 .sl-nav-item:hover { background: #ffffff18; }
@@ -97,12 +101,76 @@
 .sl-logout:hover { background: #ffffff18; }
 
 .sl-main {
+  position: relative;
   flex: 1;
   overflow-y: auto;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
   padding: 36px 40px;
   box-sizing: border-box;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-position: top left;
+}
+
+/* Chrome/Safari scrollbar */
+.sl-main::-webkit-scrollbar {
+  width: 6px;
+}
+.sl-main::-webkit-scrollbar-track {
+  background: transparent;
+}
+.sl-main::-webkit-scrollbar-thumb {
+  background: #c0d9e0;
+  border-radius: 999px;
+}
+
+.sl-sidebar-bg-swirl {
+  /* bottom: 110px; */
+  left: 0;
+  width: 100%;
+  max-width: 262px;
+  height: auto;
+  aspect-ratio: 131 / 50;
+  object-fit: fill;
+  z-index: 2;
+  pointer-events: none;
+}
+
+
+
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .sl-sidebar {
+    width: 64px;
+  }
+  .sl-shell {
+    --sidebar-width: 64px;
+  }
+  .sl-brand-name,
+  .sl-nav-label {
+    display: none;
+  }
+
+  .sl-brand {
+    justify-content: center;
+    padding: 0 0 28px;
+  }
+
+  .sl-nav-item,
+  .sl-logout {
+    justify-content: center;
+    padding: 12px;
+  }
+
+  .sl-main {
+    padding: 24px 20px;
+  }
+}
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .sl-nav-item,
+  .sl-logout {
+    transition: none;
+  }
 }

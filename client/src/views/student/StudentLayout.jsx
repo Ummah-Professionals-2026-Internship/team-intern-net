@@ -1,14 +1,15 @@
-import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { NavLink, Outlet } from "react-router-dom";
 import { useAuth } from "../../context/useAuth"; // 👈 Integrated Auth context for clean system logout
 import "./StudentLayout.css";
-import umLogo from "../../assets/images/um-small-logo.png";
-import bgImage from "../../assets/images/mentor-app-bg.png";
+import umLogo from "../../assets/images/um-text-logo.png";
+import bgImage from "../../assets/images/bg-reverse.png"
 import DashIcon from "../../assets/icons/home.svg";
 import MeetingIcon from "../../assets/icons/meeting.svg";
 import ProfileIcon from "../../assets/icons/person.svg";
-import SettingIcon from "../../assets/icons/settings.svg";
+// import SettingIcon from "../../assets/icons/settings.svg";
 import LogOutIcon from "../../assets/icons/signout.svg";
 import RequestsIcon from "../../assets/icons/requests.svg";
+import sideBgSwirl from "../../assets/horizontal-swirl.svg";
 
 // Fixed to match the exact paths configured in routes.jsx
 const NAV_ITEMS = [
@@ -41,6 +42,9 @@ export default function StudentLayout() {
             </NavLink>
           ))}
         </nav>
+
+        <img src={sideBgSwirl} className="sl-sidebar-bg-swirl" alt="" />
+
         <div className="sl-sidebar-footer">
           {/* Scrub storage context on logout */}
           <button className="sl-logout" onClick={logout}>
@@ -48,6 +52,8 @@ export default function StudentLayout() {
             <span className="sl-nav-label">Logout</span>
           </button>
         </div>
+        
+        
       </aside>
       <main className="sl-main" style={{ backgroundImage: `url(${bgImage})` }}>
         <Outlet />

@@ -56,6 +56,8 @@ export default function MentorLayout() {
           ))}
         </nav>
 
+        <img src={sideBgSwirl} className="ml-sidebar-bg-swirl" alt="" />
+
         <div className="ml-sidebar-footer">
           {/* Logout pinned to bottom */}
           <button className="ml-logout" onClick={() => setShowLogoutModal(true)}>
@@ -66,7 +68,6 @@ export default function MentorLayout() {
 
         </div>
 
-        <img src={sideBgSwirl} className="sidebar-bg-swirl" alt="" />
 
       </aside>
 
