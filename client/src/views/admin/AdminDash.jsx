@@ -414,10 +414,10 @@ export default function AdminDash() {
               <StatCard
                 iconKey="meetings"
                 variant="yellow"
-                value={loadingMentorApplications ? "--" : mentorApplications.length}
-                label="Advisor Signups Pending"
-                linkText="Review Advisor Signups"
-                onClick={() => setActiveTab("applications")}
+                value={loadingMeetings ? "--" : meetings.length}
+                label="Upcoming Meetings"
+                linkText="View Upcoming Meetings"
+                onClick={() => setActiveTab("meetings")}
               />
             </div>
 

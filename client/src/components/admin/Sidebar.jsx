@@ -6,21 +6,30 @@ import sideBgSwirl from "../../assets/horizontal-swirl.svg";
 import { useAuth } from "../../context/useAuth";
 import '../admin_styling/Sidebar.css';
 
+// const NAV_ITEMS = [
+//   { key: "home", label: "Dashboard" },
+//   { key: "applicants", label: "Applicants" },
+//   {
+//     key: "mentors",
+//     label: "Mentors",
+//     children: [
+//       { key: "mentors", label: "All Mentors" },
+//       { key: "applications", label: "Advisor Applications" },
+//     ],
+//   },
+//   { key: "match", label: "Match", },
+//   { key: "meetings", label: "Meetings" },
+//   { key: "capacity", label: "Capacity" },
+// ];
 const NAV_ITEMS = [
   { key: "home", label: "Dashboard" },
   { key: "applicants", label: "Applicants" },
-  {
-    key: "mentors",
-    label: "Mentors",
-    children: [
-      { key: "mentors", label: "All Mentors" },
-      { key: "applications", label: "Advisor Applications" },
-    ],
-  },
-  { key: "match", label: "Match", },
+  { key: "mentors", label: "Mentors" },
+  { key: "match", label: "Match" },
   { key: "meetings", label: "Meetings" },
   { key: "capacity", label: "Capacity" },
 ];
+
 
 function isParentActive(item, activeTab) {
   if (!item.children) return activeTab === item.key;
